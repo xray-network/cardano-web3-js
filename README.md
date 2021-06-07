@@ -10,7 +10,7 @@ Cardano JavaScript API with fetching network data via cardano-graphql
 
 # Milestones
 - [x] cardano-web3.js (beta)
-- [x] testing UI
+- [ ] testing UI
 - [ ] cardano-web3.js (release)
 - [ ] documentation
 - [ ] npm publish
@@ -34,6 +34,7 @@ Cardano JavaScript API with fetching network data via cardano-graphql
 - [ ] ray3.crypto.getStakeKey
 - [ ] ray3.crypto.getAddresses
 - [ ] ray3.crypto.signTx
+- [ ] ray3.crypto.getFees
 - [ ] ...
 
 ### ray3.network (gql queries wrappers)
@@ -41,7 +42,6 @@ Cardano JavaScript API with fetching network data via cardano-graphql
 - [ ] ray3.network.transmitQuery
 - [ ] ray3.network.getBalances
 - [ ] ray3.network.getUtxos
-- [ ] ray3.network.getFees
 - [ ] ray3.network.getUnsignedTx
 - [ ] ray3.network.sendTx
 - [ ] ray3.network.delegateTx
