@@ -1,0 +1,58 @@
+{
+  "name": "cardano-web3.js",
+  "private": true,
+  "description": "Cardano JavaScript API wrapper",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ray-network/cardano-web3.js.git"
+  },
+  "homepage": "https://github.com/ray-network/cardano-web3.js",
+  "bugs": {
+    "url": "https://github.com/ray-network/cardano-web3.js/issues"
+  },
+  "keywords": [
+    "Cardano",
+    "JavaScript",
+    "API"
+  ],
+  "author": "Ray Network",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "webpack",
+    "serve": "webpack serve --mode development",
+    "prettier": "prettier --write \"src/**/*.{js,ts}\"",
+    "eslint": "eslint --ext .js,jsx src"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "npm run prettier",
+      "npm run eslint",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/runtime": "^7.12.1",
+    "babel-loader": "^8.1.0",
+    "bignumber.js": "^9.0.1",
+    "eslint": "^7.28.0",
+    "html-webpack-plugin": "^5.3.1",
+    "husky": "4.3.8",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
