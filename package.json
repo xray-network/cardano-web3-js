@@ -1,8 +1,8 @@
 {
   "name": "cardano-web3.js",
-  "private": true,
   "version": "0.1.0",
-  "description": "Cardano JavaScript API wrapper",
+  "author": "Ray Network",
+  "description": "Cardano Web3 JavaScript API",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -17,13 +17,13 @@
     "JavaScript",
     "API"
   ],
-  "author": "Ray Network",
   "main": "../src/index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "rm -rf ./dist && webpack",
     "serve": "webpack serve --mode development",
     "prettier": "prettier --write \"src/**/*.{js,ts}\"",
-    "eslint": "eslint --ext .js,jsx src"
+    "eslint": "eslint --ext .js,jsx src",
+    "publish": "yarn build"
   },
   "husky": {
     "hooks": {
@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^7.1.0",
+    "@emurgo/cardano-serialization-lib-nodejs": "^7.1.0",
     "bech32": "^2.0.0",
     "bip39-light": "^1.0.7"
   }
