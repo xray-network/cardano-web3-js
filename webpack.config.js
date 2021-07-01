@@ -6,10 +6,14 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 module.exports = {
   mode: 'production',
   plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }),
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Cardano-Web3.js',
-      template: './test/ui.ejs',
+      title: 'cardano-web3.js',
+      template: './test/app.html',
+      minify: false,
     }),
     new webpack.ContextReplacementPlugin(/@emurgo\/cardano-serialization-lib-browser/),
     new webpack.SourceMapDevToolPlugin({
@@ -18,9 +22,9 @@ module.exports = {
   ],
   output: {
     webassemblyModuleFilename: "[hash].wasm",
-    filename: 'index.js',
+    filename: 'cardano-web3.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'Cardano-Web3.js',
+    library: 'cardano-web3.js',
     libraryTarget: 'umd',
   },
   devServer: {
@@ -28,8 +32,11 @@ module.exports = {
     compress: true,
     port: 9000,
   },
+  experiments: {
+    asyncWebAssembly: true,
+  },
   optimization: {
-    chunkIds: 'deterministic',
+    chunkIds: "deterministic",
     minimize: false,
   },
   performance: {
@@ -37,9 +44,6 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-  },
-  experiments: {
-    asyncWebAssembly: true,
   },
   module: {
     rules: [

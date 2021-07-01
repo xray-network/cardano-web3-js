@@ -1,14 +1,13 @@
 const Bech32 = require('bech32').bech32
 const BigNumber = require('bignumber.js')
 const Bip39 = require('bip39-light')
-const CardanoWasm = require('@emurgo/cardano-serialization-lib-browser/cardano_serialization_lib_bg')
 
-const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
+const Crypto = function Crypto(pkg, settings) {
   return (async () => {
     /**
      * Cardano Serialization Lib
      */
-    this.Cardano = await CardanoWasm
+    this.Cardano = await import('@emurgo/cardano-serialization-lib-browser')
 
     /**
      * Lib proxies
@@ -22,7 +21,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      * Cardano Serialization Lib
      */
     this.Network =
-      _network || 'mainnet' === 'mainnet'
+      settings.network === 'mainnet'
         ? this.Cardano.NetworkInfo.mainnet().network_id()
         : this.Cardano.NetworkInfo.testnet().network_id()
 
@@ -30,24 +29,35 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      * Protocol Parameters
      */
 
-    const protocolParams = _protocolParams || {
-      linearFeeCoefficient: '44',
-      linearFeeConstant: '155381',
-      minimumUtxoVal: '1000000',
-      poolDeposit: '500000000',
-      keyDeposit: '2000000',
-      ttlOffset: 7200,
-    }
+    const { protocolParams } = settings
 
     /**
      * Error Handler
      */
 
     const errorHandler =
-      _errorHandler ||
+      settings.errorHandler ||
       ((error) => {
-        throw new Error(error)
+        console.error(error)
       })
+
+    /**
+     * Errors Mapping
+     */
+
+    const Errors = (type) => {
+      const messages = {
+        ada_not_enough: 'Not enough ADA',
+        ada_less_than_min: 'Minimum 1 ADA',
+        ada_not_number: 'Wrong ADA value',
+        ada_wrong_value: 'Wrong ADA value',
+        address_wrong: 'Wrong address',
+      }
+      const error = new Error(messages[type] || 'An unspecified error has occurred')
+      error.type = type || 'default'
+
+      return error
+    }
 
     /**
      * Bech to hex string converter
@@ -64,6 +74,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         }
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -73,11 +84,12 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      * @return {string} seed phrase
      */
 
-    this.generateMmenonic = (length = 24) => {
+    this.generateMnemonic = (length = 24) => {
       try {
         return Bip39.generateMnemonic((32 * length) / 3)
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -92,6 +104,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         return !!mnemonic && Bip39.validateMnemonic(mnemonic)
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -102,15 +115,13 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.getAccountKeys = (mnemonic) => {
-      const Cardano = this.Cardano
-      const Network = this.Network
+      const { Cardano, Network } = this
       try {
         const harden = (num) => {
-          return 0x80000000 + num
+          return settings.harden + num
         }
 
         const entropy = Bip39.mnemonicToEntropy(mnemonic)
-
         const rootKey = Cardano.Bip32PrivateKey.from_bip39_entropy(
           Buffer.from(entropy, 'hex'),
           Buffer.from(''),
@@ -132,9 +143,11 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
           publicKey: publicKeyBech32,
           rewardAddress: rewardAddressBech32,
           accountId: accountId.data.slice(2),
+          accountIdFull: accountId.data,
         }
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -148,8 +161,8 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.getAccountAddresses = (publicKeyBech32, type = 'external', page = 20, shift = 0) => {
-      const Cardano = this.Cardano
-      const Network = this.Network
+      const { Cardano, Network } = this
+
       try {
         const publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32)
         let accountAdresses = {}
@@ -204,6 +217,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         }
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -214,7 +228,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.validateAddress = (address) => {
-      const Cardano = this.Cardano
+      const { Cardano } = this
 
       try {
         if (Cardano.ByronAddress.is_valid(address)) return 'byron'
@@ -226,13 +240,14 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         if (Cardano.RewardAddress.from_address(shelleyAddress)) return 'reward'
         return false
       } catch (error) {
+        errorHandler(error)
         return false
       }
     }
 
     /**
      * Build Transaction
-     * @param {boolean} isSend build final transaction (not for calculation fees)
+     * @param {string} type transaction type
      * @param {BigNumber} value ADA amount
      * @param {string} toAddress to address
      * @param {string} changeAddress change address
@@ -245,7 +260,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.txBuild = (
-      isSend,
+      type,
       value,
       toAddress,
       changeAddress,
@@ -255,21 +270,24 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
       certificates,
       withdrawals,
     ) => {
-      const Cardano = this.Cardano
+      const { Cardano } = this
 
       try {
+        const isSend = type === 'send' || type === 'calculate'
+
         // initial checks
         if (isSend && this.validateAddress(toAddress) !== 'base') {
-          throw CardanoError('address_wrong')
+          throw Errors('address_wrong')
         }
+
         if (isSend && new BigNumber(value).isNaN()) {
-          throw CardanoError('ada_not_number')
+          throw Errors('ada_not_number')
         }
         if (isSend && new BigNumber(value).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
-          throw CardanoError('ada_less_than_min')
+          throw Errors('ada_less_than_min')
         }
         if (isSend && new BigNumber(value).decimalPlaces() > 6) {
-          throw CardanoError('ada_wrong_value')
+          throw Errors('ada_wrong_value')
         }
 
         // create transaction
@@ -284,7 +302,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         )
 
         // set ttl
-        txBuilder.set_ttl(currentSlot + protocolParams.ttlOffset)
+        txBuilder.set_ttl(currentSlot + settings.ttl)
 
         // add outputs
         if (toAddress) {
@@ -371,7 +389,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         const isEnough = compare != null && compare >= 0
 
         if (!isEnough) {
-          throw CardanoError('ada_not_enough')
+          throw Errors('ada_not_enough')
         }
 
         // add change address
@@ -395,6 +413,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         }
       } catch (error) {
         errorHandler(error)
+        return error
       }
     }
 
@@ -406,7 +425,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.txSign = (transaction, privateKey) => {
-      const Cardano = this.Cardano
+      const { Cardano } = this
 
       try {
         const { txHash, txBody, metadata, usedUtxos, certificates, withdrawals } = transaction
@@ -439,6 +458,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
         return signedTx
       } catch (error) {
         errorHandler(error)
+        return false
       }
     }
 
@@ -451,7 +471,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
      */
 
     this.generateDelegationCerts = (publicKeyBech32, hasStakingKey, poolId) => {
-      const Cardano = this.Cardano
+      const { Cardano } = this
 
       try {
         const publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32)
@@ -480,6 +500,7 @@ const Crypto = function (pkg, _protocolParams, _network, _errorHandler) {
 
         return certificates
       } catch (error) {
+        errorHandler(error)
         return false
       }
     }

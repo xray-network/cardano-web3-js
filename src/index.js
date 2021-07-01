@@ -1,19 +1,69 @@
-const version = require('../package.json').version
+const { version } = require('../package.json')
 
 const Crypto = require('./crypto')
-const Network = require('./network')
+const Explorer = require('./explorer')
 const Contract = require('./contract')
 
-const CardanoWeb3 = function (args = {}) {
+const CardanoWeb3 = function CardanoWeb3(settings = {}) {
   this.version = version
-  return (async () => {
-    this.crypto = await new Crypto(this, args.protocolParams, args.network, args.cryptoErrorHandler)
-    this.network = new Network(this, args.provider, args.networkErrorHandler)
-    this.contract = new Contract(this, args.contractErrorHandler)
+  this.initialized = false
+  this.settings = {
+    crypto: {
+      protocolParams: {
+        linearFeeCoefficient: '44',
+        linearFeeConstant: '155381',
+        minimumUtxoVal: '1000000',
+        poolDeposit: '500000000',
+        keyDeposit: '2000000',
+      },
+      harden: 0x80000000,
+      ttl: 7200,
+      ...settings.crypto,
+    },
+    explorer: {
+      ...settings.explorer,
+    },
+    contract: {
+      ...settings.contract,
+    },
+  }
+
+  const tmpProviders = []
+
+  this.addProvider = function provider(name, Provider) {
+    if (this.initialized) {
+      this[name] = new Provider(this)
+    } else {
+      tmpProviders.push({
+        name,
+        Provider,
+      })
+    }
+  }
+
+  this.init = async () => {
+    this.crypto = await new Crypto(this, this.settings.crypto)
+    if (this.settings.explorer.url) {
+      this.explorer = new Explorer(this, this.settings.explorer)
+    }
+    if (this.settings.contract.url) {
+      this.contract = new Contract(this, this.settings.contract)
+    }
+    this.initialized = true
+    tmpProviders.forEach((i) => {
+      this[i.name] = new i.Provider(this)
+    })
+
     return this
-  })()
+  }
+
+  return this
 }
 
 CardanoWeb3.version = version
+
+if (typeof window === 'object') {
+  window.CardanoWeb3 = CardanoWeb3
+}
 
 module.exports = CardanoWeb3
