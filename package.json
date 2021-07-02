@@ -4,11 +4,11 @@
   "author": "Ray Network",
   "description": "Cardano Web3 JavaScript API",
   "license": "MIT",
+  "homepage": "https://github.com/ray-network/cardano-web3.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ray-network/cardano-web3.js.git"
   },
-  "homepage": "https://github.com/ray-network/cardano-web3.js",
   "bugs": {
     "url": "https://github.com/ray-network/cardano-web3.js/issues"
   },
@@ -22,10 +22,11 @@
     "serve": "webpack serve --mode development",
     "prettier": "prettier --write \"src/**/*.{js,ts}\"",
     "eslint": "eslint --ext .js,jsx src",
-    "build:dist": "node ./scripts/webpack && webpack",
-    "build:browser": "node ./scripts/build --browser",
-    "publish:prepublish": "node ./scripts/prepublish",
-    "publish:browser": "cd ./publish/browser && npm publish --access public"
+    "build": "node ./scripts/build && node ./scripts/webpack && webpack",
+    "publish:browser": "cd ./publish/browser && npm publish --access public",
+    "publish:nodejs": "cd ./publish/nodejs && npm publish --access public",
+    "publish:asmjs": "cd ./publish/asmjs && npm publish --access public",
+    "publish:gh-pages": "git subtree push --prefix dist origin gh-pages"
   },
   "husky": {
     "hooks": {
@@ -61,6 +62,7 @@
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^7.1.0",
     "@emurgo/cardano-serialization-lib-nodejs": "^7.1.0",
+    "@emurgo/cardano-serialization-lib-asmjs": "^7.1.0",
     "axios": "^0.21.1",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.1",

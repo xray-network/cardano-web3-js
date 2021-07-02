@@ -1,56 +1,82 @@
 const fs = require('fs')
 const path = require('path')
-const version = require('../package.json').version
-const dependencies = require('../package.json').dependencies
+const package = require('../package.json')
 
-const package = {
-  "name": 'cardano-web3.js',
-  version,
-  "author": "Ray Network",
-  "description": "Cardano Web3 JavaScript API",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ray-network/cardano-web3.js.git"
+const versions = [
+  {
+    postfix: 'browser',
+    lib: '@emurgo/cardano-serialization-lib-browser',
   },
-  "homepage": "https://github.com/ray-network/cardano-web3.js",
-  "bugs": {
-    "url": "https://github.com/ray-network/cardano-web3.js/issues"
+  {
+    postfix: 'nodejs',
+    lib: '@emurgo/cardano-serialization-lib-nodejs',
   },
-  "keywords": [
-    "Cardano",
-    "JavaScript",
-    "API"
-  ],
-  "module": "cardano-web3.js",
-  "sideEffects": false,
-  "main": "index.js",
-  dependencies,
-}
+  {
+    postfix: 'asmjs',
+    lib: '@emurgo/cardano-serialization-lib-asmjs',
+  },
+]
 
-function copyFolderSync(from, to) {
-  fs.mkdirSync(to)
-  fs.readdirSync(from).forEach(element => {
-    if (fs.lstatSync(path.join(from, element)).isFile()) {
-      fs.copyFileSync(path.join(from, element), path.join(to, element))
-    } else {
-      copyFolderSync(path.join(from, element), path.join(to, element))
-    }
-  })
-}
-
+// clean
 fs.rmdirSync('./publish', { recursive: true })
-copyFolderSync('./src', './publish')
-fs.copyFileSync('./LICENSE', './publish/LICENSE')
-fs.copyFileSync('./README.md', './publish/README.md')
-fs.writeFileSync('./publish/package.json', JSON.stringify(package, null, 2))
-fs.readFile('./publish/index.js', 'utf8', function (err, data) {
-  if (err) {
-    return console.log(err)
-  }
-  var result = data.replace(/..\/package.json/g, './package.json')
+fs.mkdirSync('./publish')
 
-  fs.writeFile('./publish/index.js', result, 'utf8', function (err) {
-    if (err) return console.log(err)
+// process
+versions.forEach(v => {
+  const versionName = `cardano-web3-${v.postfix}`
+
+  const packageFields = {
+    "name": versionName,
+    "version": package.version,
+    "description": package.description,
+    "license": package.license,
+    "repository": package.repository,
+    "homepage": package.homepage,
+    "bugs": package.bugs,
+    "keywords": package.keywords,
+    "main": "index.js",
+    "dependencies": package.dependencies,
+  }
+
+  function copyFolderSync(from, to) {
+    fs.mkdirSync(to)
+    fs.readdirSync(from).forEach(element => {
+      if (fs.lstatSync(path.join(from, element)).isFile()) {
+        fs.copyFileSync(path.join(from, element), path.join(to, element))
+      } else {
+        copyFolderSync(path.join(from, element), path.join(to, element))
+      }
+    })
+  }
+
+  // copy files
+  copyFolderSync('./src', `./publish/${versionName}`)
+  fs.copyFileSync('./LICENSE', `./publish/${versionName}/LICENSE`)
+  fs.copyFileSync('./README.md', `./publish/${versionName}/README.md`)
+
+  // process package.json
+  fs.writeFileSync(`./publish/${versionName}/package.json`, JSON.stringify(packageFields, null, 2))
+  fs.readFile(`./publish/${versionName}/index.js`, 'utf8', function (err, data) {
+    if (err) {
+      return console.log(err)
+    }
+    var result = data.replace(/..\/package.json/g, './package.json')
+
+    fs.writeFile(`./publish/${versionName}/index.js`, result, 'utf8', function (err) {
+      if (err) return console.log(err)
+    })
   })
+
+  // replace serialization lib
+  fs.readFile(`./publish/${versionName}/crypto/index.js`, 'utf8', function (err, data) {
+    if (err) {
+      return console.log(err)
+    }
+    var result = data.replace(/\@emurgo\/cardano-serialization-lib-browser/g, v.lib)
+
+    fs.writeFile(`./publish/${versionName}/crypto/index.js`, result, 'utf8', function (err) {
+      if (err) return console.log(err)
+    })
+  })
+
 })

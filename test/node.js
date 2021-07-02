@@ -1,4 +1,4 @@
-const CardanoWeb3 = require('../src/index')
+const CardanoWeb3 = require('../publish/cardano-web3-nodejs')
 
 const Cardano = new CardanoWeb3({
   crypto: {

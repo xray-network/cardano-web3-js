@@ -4,7 +4,7 @@ const package = require('../package.json')
 const packageFields = {
   "name": package.name,
   "version": package.version,
-  "name": package.name,
+  "author": package.author,
   "description": package.description,
   "license": package.license,
   "repository": package.repository,

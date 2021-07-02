@@ -1,6 +1,7 @@
 {
   "name": "cardano-web3.js",
   "version": "0.1.0",
+  "author": "Ray Network",
   "description": "Cardano Web3 JavaScript API",
   "license": "MIT",
   "repository": {

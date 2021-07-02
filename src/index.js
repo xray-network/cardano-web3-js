@@ -63,7 +63,9 @@ const CardanoWeb3 = function CardanoWeb3(settings = {}) {
 CardanoWeb3.version = version
 
 if (typeof window === 'object') {
-  window.CardanoWeb3 = CardanoWeb3
+  if (!window.CardanoWeb3) {
+    window.CardanoWeb3 = CardanoWeb3
+  }
 }
 
 module.exports = CardanoWeb3

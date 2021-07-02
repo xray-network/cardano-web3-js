@@ -20930,7 +20930,9 @@ var CardanoWeb3 = function CardanoWeb3() {
 CardanoWeb3.version = version;
 
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
-  window.CardanoWeb3 = CardanoWeb3;
+  if (!window.CardanoWeb3) {
+    window.CardanoWeb3 = CardanoWeb3;
+  }
 }
 
 module.exports = CardanoWeb3;
@@ -66612,7 +66614,7 @@ module.exports = function whichTypedArray(value) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"cardano-web3.js","version":"0.1.0","author":"Ray Network","description":"Cardano Web3 JavaScript API","license":"MIT","repository":{"type":"git","url":"https://github.com/ray-network/cardano-web3.js.git"},"homepage":"https://github.com/ray-network/cardano-web3.js","bugs":{"url":"https://github.com/ray-network/cardano-web3.js/issues"},"keywords":["Cardano","JavaScript","API"],"main":"src/index.js","scripts":{"serve":"webpack serve --mode development","prettier":"prettier --write \\"src/**/*.{js,ts}\\"","eslint":"eslint --ext .js,jsx src","build:dist":"node ./scripts/webpack && webpack","build:browser":"node ./scripts/build --browser","publish:prepublish":"node ./scripts/prepublish","publish:browser":"cd ./publish/browser && npm publish --access public"},"husky":{"hooks":{"pre-commit":"lint-staged"}},"lint-staged":{"src/**/*.{js,ts}":["npm run prettier","npm run eslint","git add"]},"devDependencies":{"@babel/cli":"^7.12.1","@babel/core":"^7.12.3","@babel/plugin-proposal-class-properties":"^7.12.1","@babel/plugin-transform-modules-commonjs":"^7.12.1","@babel/plugin-transform-runtime":"^7.12.1","@babel/preset-env":"^7.12.1","@babel/runtime":"^7.12.1","babel-loader":"^8.1.0","eslint":"^7.28.0","html-webpack-plugin":"^5.3.2","husky":"4.3.8","lint-staged":"^11.0.0","node-polyfill-webpack-plugin":"^1.1.2","prettier":"^2.3.1","webpack":"^5.38.1","webpack-cli":"^4.7.0","webpack-dev-server":"^3.11.2"},"dependencies":{"@emurgo/cardano-serialization-lib-browser":"^7.1.0","@emurgo/cardano-serialization-lib-nodejs":"^7.1.0","axios":"^0.21.1","bech32":"^2.0.0","bignumber.js":"^9.0.1","bip39-light":"^1.0.7"}}');
+module.exports = JSON.parse('{"name":"cardano-web3.js","version":"0.1.0","author":"Ray Network","description":"Cardano Web3 JavaScript API","license":"MIT","homepage":"https://github.com/ray-network/cardano-web3.js","repository":{"type":"git","url":"https://github.com/ray-network/cardano-web3.js.git"},"bugs":{"url":"https://github.com/ray-network/cardano-web3.js/issues"},"keywords":["Cardano","JavaScript","API"],"main":"src/index.js","scripts":{"serve":"webpack serve --mode development","prettier":"prettier --write \\"src/**/*.{js,ts}\\"","eslint":"eslint --ext .js,jsx src","build":"node ./scripts/build && node ./scripts/webpack && webpack","publish:browser":"cd ./publish/browser && npm publish --access public","publish:nodejs":"cd ./publish/nodejs && npm publish --access public","publish:asmjs":"cd ./publish/asmjs && npm publish --access public","publish:gh-pages":"git subtree push --prefix dist origin gh-pages"},"husky":{"hooks":{"pre-commit":"lint-staged"}},"lint-staged":{"src/**/*.{js,ts}":["npm run prettier","npm run eslint","git add"]},"devDependencies":{"@babel/cli":"^7.12.1","@babel/core":"^7.12.3","@babel/plugin-proposal-class-properties":"^7.12.1","@babel/plugin-transform-modules-commonjs":"^7.12.1","@babel/plugin-transform-runtime":"^7.12.1","@babel/preset-env":"^7.12.1","@babel/runtime":"^7.12.1","babel-loader":"^8.1.0","eslint":"^7.28.0","html-webpack-plugin":"^5.3.2","husky":"4.3.8","lint-staged":"^11.0.0","node-polyfill-webpack-plugin":"^1.1.2","prettier":"^2.3.1","webpack":"^5.38.1","webpack-cli":"^4.7.0","webpack-dev-server":"^3.11.2"},"dependencies":{"@emurgo/cardano-serialization-lib-browser":"^7.1.0","@emurgo/cardano-serialization-lib-nodejs":"^7.1.0","@emurgo/cardano-serialization-lib-asmjs":"^7.1.0","axios":"^0.21.1","bech32":"^2.0.0","bignumber.js":"^9.0.1","bip39-light":"^1.0.7"}}');
 
 /***/ }),
 
