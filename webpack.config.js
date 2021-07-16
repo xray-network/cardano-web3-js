@@ -12,7 +12,7 @@ module.exports = {
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
       title: 'cardano-web3.js',
-      template: './test/app.html',
+      template: './test/web3.html',
       minify: false,
     }),
     new webpack.ContextReplacementPlugin(/@emurgo\/cardano-serialization-lib-browser/),

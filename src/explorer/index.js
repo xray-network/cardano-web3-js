@@ -1,23 +1,11 @@
-const axios = require('axios')
+import axios from 'axios'
 
 const Explorer = function Explorer(pkg, settings) {
   const Cardano = pkg
   const { BigNumber } = Cardano.crypto
 
-  const errorHandler =
-    settings.errorHandler ||
-    ((error) => {
-      return error.response
-        ? error.response.data
-        : {
-            errors: [
-              {
-                name: error.name,
-                message: error.message,
-              },
-            ],
-          }
-    })
+  const responseHandler = settings.responseHandler || ((response) => response)
+  const errorHandler = settings.errorHandler || ((error) => error)
 
   const client = axios.create({
     baseURL: settings.url,
@@ -26,7 +14,7 @@ const Explorer = function Explorer(pkg, settings) {
 
   client.interceptors.response.use(
     (response) => {
-      return response?.data
+      return responseHandler(response)
     },
     (error) => {
       return errorHandler(error)
@@ -102,12 +90,12 @@ const Explorer = function Explorer(pkg, settings) {
         ),
         variables: config.variables,
       })
-      response = arraysDeepMerge(response, update)
-      if (update.errors) {
+      response = arraysDeepMerge(response, update.data)
+      if (update.data.errors) {
         return
       }
       iteration += 1
-      const totalCount = Number(update.data[config.aggregateString].aggregate.count)
+      const totalCount = Number(update.data.data[config.aggregateString].aggregate.count)
       const currentPage = iteration * config.limit + config.offset
       const limitReason = iteration < config.maxPages
       if (currentPage < totalCount && limitReason) {
@@ -359,26 +347,30 @@ const Explorer = function Explorer(pkg, settings) {
     publicKey,
     pageSize = 20,
     maxShiftIndex = 10,
-    type = 'all',
+    type = [0],
   ) => {
     // generate address pack and get addresses utxos with addressing paths
 
     async function checkAddressesUTXO(checkType, checkPageSize, checkShift) {
       const tmpAddresses = await Cardano.crypto.getAccountAddresses(
         publicKey,
-        checkType,
         checkPageSize,
+        checkType,
         checkShift,
       )
 
-      const checkedAdresses = tmpAddresses.addresses
+      const checkedAdresses = tmpAddresses.map((addr) => addr.address)
       const { data: tmpAddresssesUTXO } = await Cardano.explorer.getAddressesUTXO(checkedAdresses)
 
       const adressesWithUTXOs = tmpAddresssesUTXO.utxos
         ? tmpAddresssesUTXO.utxos.map((utxo) => {
+            const filteredUtxo = tmpAddresses.filter((addr) => addr.address === utxo.address)[0]
             return {
               ...utxo,
-              addressing: tmpAddresses.paths[utxo.address],
+              addressing: {
+                type: filteredUtxo.type,
+                path: filteredUtxo.path,
+              },
             }
           })
         : []
@@ -397,13 +389,14 @@ const Explorer = function Explorer(pkg, settings) {
         checkPageSize,
         checkShift,
       )
+
       adressesArray.push(...checkedAdresses)
+      if (adressesWithUTXOs.length) {
+        utxos.push(...adressesWithUTXOs)
+      }
       if (checkShift < maxShiftIndex) {
-        if (adressesWithUTXOs.length) {
-          checkShift += 1
-          utxos.push(...adressesWithUTXOs)
-          await checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift)
-        }
+        checkShift += 1
+        await checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift)
       }
     }
 
@@ -423,13 +416,14 @@ const Explorer = function Explorer(pkg, settings) {
     )
 
     const transactions = (transactionsInputsOutputs?.transactions || []).map((tx) => {
-      let inputAmount = new BigNumber(0)
-      let outputAmount = new BigNumber(0)
+      // let inputAmount = new BigNumber(0)
+      // let outputAmount = new BigNumber(0)
+      let amount = new BigNumber(0)
       const tokens = {}
 
       tx.inputs.forEach((input) => {
-        if (adressesArray.includes(input.address)) {
-          inputAmount = inputAmount.plus(input.value)
+        if (input && adressesArray.includes(input.address)) {
+          amount = amount.minus(input.value)
           input.tokens.forEach((token) => {
             const { asset, quantity } = token
             const { assetId } = asset
@@ -449,8 +443,8 @@ const Explorer = function Explorer(pkg, settings) {
         }
       })
       tx.outputs.forEach((output) => {
-        if (adressesArray.includes(output.address)) {
-          outputAmount = outputAmount.plus(output.value)
+        if (output && adressesArray.includes(output.address)) {
+          amount = amount.plus(output.value)
           output.tokens.forEach((token) => {
             const { asset, quantity } = token
             const { assetId } = asset
@@ -472,9 +466,14 @@ const Explorer = function Explorer(pkg, settings) {
 
       return {
         ...tx,
-        type: new BigNumber(inputAmount).isZero() ? 'receive' : 'send',
-        value: new BigNumber(outputAmount).minus(inputAmount),
-        tokens: Object.keys(tokens).map((key) => tokens[key]),
+        type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
+        value: new BigNumber(amount).abs(),
+        tokens: Object.keys(tokens).map((key) => {
+          return {
+            ...tokens[key],
+            quantity: tokens[key].quantity.abs(),
+          }
+        }),
       }
     })
 
@@ -542,4 +541,4 @@ const Explorer = function Explorer(pkg, settings) {
   }
 }
 
-module.exports = Explorer
+export default Explorer

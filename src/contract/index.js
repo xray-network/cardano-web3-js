@@ -6,4 +6,4 @@ const Contract = function Contract() {
   //   })
 }
 
-module.exports = Contract
+export default Contract

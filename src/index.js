@@ -1,8 +1,7 @@
-const { version } = require('../package.json')
-
-const Crypto = require('./crypto')
-const Explorer = require('./explorer')
-const Contract = require('./contract')
+import Crypto from './crypto'
+import Explorer from './explorer'
+import Contract from './contract'
+import { version } from '../package.json'
 
 const CardanoWeb3 = function CardanoWeb3(settings = {}) {
   this.version = version
@@ -68,4 +67,4 @@ if (typeof window === 'object') {
   }
 }
 
-module.exports = CardanoWeb3
+export default CardanoWeb3
