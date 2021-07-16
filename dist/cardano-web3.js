@@ -122,6 +122,20 @@ module.exports.default = module.exports, module.exports.__esModule = true;
 
 /***/ }),
 
+/***/ 5318:
+/***/ ((module) => {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+module.exports.default = module.exports, module.exports.__esModule = true;
+
+/***/ }),
+
 /***/ 6860:
 /***/ ((module) => {
 
@@ -19834,7 +19848,15 @@ module.exports = {
 /***/ }),
 
 /***/ 4825:
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = void 0;
 
 var Contract = function Contract() {// const errorHandler =
   //   _errorHandler ||
@@ -19843,37 +19865,65 @@ var Contract = function Contract() {// const errorHandler =
   //   })
 };
 
-module.exports = Contract;
+var _default = Contract;
+exports.default = _default;
 
 /***/ }),
 
 /***/ 2094:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 /* provided dependency */ var console = __webpack_require__(5108);
 /* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
-var _regeneratorRuntime = __webpack_require__(7757);
 
-var _defineProperty = __webpack_require__(9713);
 
-var _asyncToGenerator = __webpack_require__(8926);
+var _interopRequireDefault = __webpack_require__(5318);
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = void 0;
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var _regenerator = _interopRequireDefault(__webpack_require__(7757));
 
-var Bech32 = __webpack_require__(7715)/* .bech32 */ .gW;
+var _typeof2 = _interopRequireDefault(__webpack_require__(8));
 
-var BigNumber = __webpack_require__(4431);
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(8926));
 
-var Bip39 = __webpack_require__(1691);
+var _bech = __webpack_require__(7715);
 
+var _bignumber = _interopRequireDefault(__webpack_require__(4431));
+
+var _bip39Light = _interopRequireDefault(__webpack_require__(1691));
+
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021, Ray Network <hello@rraayy.com>
+ * https://rraayy.com, https://raywallet.io
+ *
+ * Copyright (c) 2018 EMURGO
+ * Copyright (c) 2021 Tango-crypto
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 var Crypto = function Crypto(pkg, settings) {
   var _this = this;
 
-  return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee() {
-    var protocolParams, errorHandler, Errors;
-    return _regeneratorRuntime.wrap(function _callee$(_context) {
+  return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+    var protocolParams, errorHandler, ErrorMessages, ErrorException, AddInputResult;
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -19886,9 +19936,9 @@ var Crypto = function Crypto(pkg, settings) {
             /**
              * Lib proxies
              */
-            _this.Bech32 = Bech32;
-            _this.Bip39 = Bip39;
-            _this.BigNumber = BigNumber;
+            _this.Bech32 = _bech.bech32;
+            _this.Bip39 = _bip39Light.default;
+            _this.BigNumber = _bignumber.default;
             /**
              * Cardano Serialization Lib
              */
@@ -19907,53 +19957,52 @@ var Crypto = function Crypto(pkg, settings) {
               console.error(error);
             };
             /**
-             * Errors Mapping
+             * Errors
              */
 
 
-            Errors = function Errors(type) {
-              var messages = {
-                ada_not_enough: 'Not enough ADA',
-                ada_less_than_min: 'Minimum 1 ADA',
-                ada_not_number: 'Wrong ADA value',
-                ada_wrong_value: 'Wrong ADA value',
-                address_wrong: 'Wrong address'
-              };
-              var error = new Error(messages[type] || 'An unspecified error has occurred');
-              error.type = type || 'default';
-              return error;
+            ErrorMessages = {
+              DEFAULT: 'An unspecified error has occurred',
+              NOT_ENOUGH: 'Not enough funds to send a transaction',
+              TOKENS_NOT_ENOUGH: 'Token output must be greater than 1',
+              ADA_LESS_THAN_MIN: 'Minimum 1 ADA',
+              ADA_NOT_NUMBER: 'Wrong ADA value',
+              ADA_WRONG_VALUE: 'Wrong ADA value',
+              ADDRESS_WRONG: 'Wrong Cardano address',
+              NO_OUTPUTS: 'Transaction requires at least 1 output, but no output was added',
+              NO_CHANGE: 'No change added even though it should be forced',
+              ASSET_OVERFLOW: 'Maximum value of a token inside a UTXO exceeded (overflow)'
+            };
+
+            ErrorException = function ErrorException(type) {
+              return new Error(type || ErrorMessages.DEFAULT);
             };
             /**
-             * Bech to hex string converter
-             * @param {string} str bech32 string
-             * @return {string} hex string
+             * Add input results values
              */
 
 
-            _this.bechToHex = function (str) {
-              try {
-                var tmp = Bech32.decode(str, 1000);
-                return {
-                  prefix: tmp.prefix,
-                  data: Buffer.from(Bech32.fromWords(tmp.words)).toString('hex')
-                };
-              } catch (error) {
-                errorHandler(error);
-                return false;
-              }
-            };
+            AddInputResult = Object.freeze({
+              // valid
+              VALID: 0,
+              // not worth the fee of adding it to input
+              TOO_SMALL: 1,
+              // token would overflow if added
+              OVERFLOW: 2,
+              // doesn't contribute to target
+              NO_NEED: 3
+            });
             /**
              * Generate mnemonic
              * @param {number} length string length (words count)
              * @return {string} seed phrase
              */
 
-
             _this.generateMnemonic = function () {
               var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 24;
 
               try {
-                return Bip39.generateMnemonic(32 * length / 3);
+                return _bip39Light.default.generateMnemonic(32 * length / 3);
               } catch (error) {
                 errorHandler(error);
                 return false;
@@ -19968,7 +20017,7 @@ var Crypto = function Crypto(pkg, settings) {
 
             _this.validateMnemonic = function (mnemonic) {
               try {
-                return !!mnemonic && Bip39.validateMnemonic(mnemonic);
+                return !!mnemonic && _bip39Light.default.validateMnemonic(mnemonic);
               } catch (error) {
                 errorHandler(error);
                 return false;
@@ -19983,14 +20032,16 @@ var Crypto = function Crypto(pkg, settings) {
 
             _this.getAccountKeys = function (mnemonic) {
               var Cardano = _this.Cardano,
-                  Network = _this.Network;
+                  Network = _this.Network,
+                  Utils = _this.Utils;
 
               try {
                 var harden = function harden(num) {
                   return settings.harden + num;
                 };
 
-                var entropy = Bip39.mnemonicToEntropy(mnemonic);
+                var entropy = _bip39Light.default.mnemonicToEntropy(mnemonic);
+
                 var rootKey = Cardano.Bip32PrivateKey.from_bip39_entropy(Buffer.from(entropy, 'hex'), Buffer.from(''));
                 var privateKey = rootKey.derive(harden(1852)).derive(harden(1815)).derive(harden(0));
                 var stakeKey = privateKey.derive(2).derive(0).to_public();
@@ -19998,9 +20049,7 @@ var Crypto = function Crypto(pkg, settings) {
                 var privateKeyBech32 = privateKey.to_bech32();
                 var publicKeyBech32 = privateKey.to_public().to_bech32();
                 var rewardAddressBech32 = rewardAddress.to_address().to_bech32();
-
-                var accountId = _this.bechToHex(rewardAddressBech32);
-
+                var accountId = Utils.bechToHex(rewardAddressBech32);
                 return {
                   privateKey: privateKeyBech32,
                   publicKey: publicKeyBech32,
@@ -20024,18 +20073,17 @@ var Crypto = function Crypto(pkg, settings) {
 
 
             _this.getAccountAddresses = function (publicKeyBech32) {
-              var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'external';
-              var page = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 20;
+              var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 20;
+              var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [0];
               var shift = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
               var Cardano = _this.Cardano,
                   Network = _this.Network;
 
               try {
                 var publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32);
-                var accountAdresses = {};
 
                 var generateAddresses = function generateAddresses(addressType) {
-                  var tmpAddresses = {};
+                  var tmpAddresses = [];
 
                   for (var i = 0 + page * shift; i < page + page * shift; i += 1) {
                     var utxoPubKey = publicKey.derive(addressType) // 0 external / 1 internal
@@ -20043,37 +20091,19 @@ var Crypto = function Crypto(pkg, settings) {
                     var stakeKey = publicKey.derive(2) // chimeric
                     .derive(0);
                     var baseAddr = Cardano.BaseAddress.new(Network, Cardano.StakeCredential.from_keyhash(utxoPubKey.to_raw_key().hash()), Cardano.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()));
-                    var baseAddrBech32 = baseAddr.to_address().to_bech32();
-                    tmpAddresses[baseAddrBech32] = {
+                    tmpAddresses.push({
+                      address: baseAddr.to_address().to_bech32(),
                       type: addressType,
                       path: i
-                    };
+                    });
                   }
 
                   return tmpAddresses;
                 };
 
-                switch (type) {
-                  case 'external':
-                    accountAdresses = _objectSpread({}, generateAddresses(0));
-                    break;
-
-                  case 'internal':
-                    accountAdresses = _objectSpread({}, generateAddresses(1));
-                    break;
-
-                  case 'all':
-                    accountAdresses = _objectSpread(_objectSpread({}, generateAddresses(0)), generateAddresses(1));
-                    break;
-
-                  default:
-                    break;
-                }
-
-                return {
-                  addresses: Object.keys(accountAdresses),
-                  paths: accountAdresses
-                };
+                return type.map(function (i) {
+                  return generateAddresses(i);
+                }).flat(1);
               } catch (error) {
                 errorHandler(error);
                 return false;
@@ -20103,56 +20133,693 @@ var Crypto = function Crypto(pkg, settings) {
                 return false;
               }
             };
+
+            _this.Utils = {
+              /**
+               * Bech to hex string converter
+               * @param {string} str bech32 string
+               * @return {string} hex string
+               */
+              bechToHex: function bechToHex(str) {
+                try {
+                  var tmp = _bech.bech32.decode(str, 1000);
+
+                  return {
+                    prefix: tmp.prefix,
+                    data: Buffer.from(_bech.bech32.fromWords(tmp.words)).toString('hex')
+                  };
+                } catch (error) {
+                  errorHandler(error);
+                  return false;
+                }
+              },
+              // parse tokens
+              parseTokenList: function parseTokenList(assets) {
+                if (assets == null) return [];
+                var result = [];
+                var hashes = assets.keys();
+
+                for (var i = 0; i < hashes.len(); i += 1) {
+                  var policyId = hashes.get(i);
+                  var assetsForPolicy = assets.get(policyId); // eslint-disable-next-line
+
+                  if (assetsForPolicy == null) continue;
+                  var policies = assetsForPolicy.keys();
+
+                  for (var j = 0; j < policies.len(); j += 1) {
+                    var assetName = policies.get(j);
+                    var amount = assetsForPolicy.get(assetName); // eslint-disable-next-line
+
+                    if (amount == null) continue;
+                    var parsedQuantity = amount.to_str();
+                    var parsedName = Buffer.from(assetName.name()).toString('hex');
+                    var parsedPolicyId = Buffer.from(policyId.to_bytes()).toString('hex');
+                    var parsedAssetId = "".concat(parsedPolicyId).concat(parsedName);
+                    result.push({
+                      asset: {
+                        policyId: parsedPolicyId,
+                        assetId: parsedAssetId,
+                        assetName: parsedName
+                      },
+                      quantity: parsedQuantity
+                    });
+                  }
+                }
+
+                return result;
+              },
+              // parse tcBody outputs
+              parseOutputs: function parseOutputs(txBody) {
+                var Utils = _this.Utils;
+                var length = txBody.outputs().len();
+                var result = []; // eslint-disable-next-line
+
+                for (var i = 0; i < length; i++) {
+                  var output = txBody.outputs().get(i);
+                  var transformed = {
+                    address: output.address().to_bech32(),
+                    value: output.amount().coin().to_str(),
+                    tokens: Utils.parseTokenList(output.amount().multiasset())
+                  };
+                  result.push(transformed);
+                }
+
+                return result;
+              },
+              // value from outputs (ada value/tokens) data
+              cardanoValueFromTokens: function cardanoValueFromTokens(value) {
+                var tokens = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+                var Cardano = _this.Cardano;
+                var cardanoValue = Cardano.Value.new(Cardano.BigNum.from_str(value));
+
+                if (tokens && tokens.length === 0) {
+                  return cardanoValue;
+                }
+
+                var assets = Cardano.MultiAsset.new();
+                tokens.forEach(function (token) {
+                  var _assets$get;
+
+                  var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'));
+                  var quantity = Cardano.BigNum.from_str(token.quantity);
+                  var asset = (_assets$get = assets.get(policyId)) !== null && _assets$get !== void 0 ? _assets$get : Cardano.Assets.new();
+                  asset.insert(assetName, quantity);
+                  assets.insert(policyId, asset);
+                });
+
+                if (assets.len() > 0) {
+                  cardanoValue.set_multiasset(assets);
+                }
+
+                return cardanoValue;
+              },
+              // value from mint (ada value/tokens) data
+              cardanoValueFromMint: function cardanoValueFromMint(value) {
+                var tokens = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+                var Cardano = _this.Cardano;
+                var cardanoValue = Cardano.Value.new(Cardano.BigNum.from_str(value));
+
+                if (tokens && tokens.length === 0) {
+                  return cardanoValue;
+                }
+
+                var assets = Cardano.MultiAsset.new();
+                tokens.forEach(function (token) {
+                  var _assets$get2;
+
+                  var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName));
+                  var quantity = Cardano.BigNum.from_str(token.quantity);
+                  var asset = (_assets$get2 = assets.get(policyId)) !== null && _assets$get2 !== void 0 ? _assets$get2 : Cardano.Assets.new();
+                  asset.insert(assetName, quantity);
+                  assets.insert(policyId, asset);
+                });
+
+                if (assets.len() > 0) {
+                  cardanoValue.set_multiasset(assets);
+                }
+
+                return cardanoValue;
+              },
+              // value from utxo
+              cardanoValueFromRemoteFormat: function cardanoValueFromRemoteFormat(utxo) {
+                var Cardano = _this.Cardano;
+                var cardanoValue = Cardano.Value.new(Cardano.BigNum.from_str(utxo.value));
+
+                if (utxo.tokens.length === 0) {
+                  return cardanoValue;
+                }
+
+                var assets = Cardano.MultiAsset.new();
+                utxo.tokens.forEach(function (token) {
+                  var _assets$get3;
+
+                  var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'));
+                  var quantity = Cardano.BigNum.from_str(token.quantity);
+                  var policyContent = (_assets$get3 = assets.get(policyId)) !== null && _assets$get3 !== void 0 ? _assets$get3 : Cardano.Assets.new();
+                  policyContent.insert(assetName, quantity);
+                  assets.insert(policyId, policyContent);
+                });
+
+                if (assets.len() > 0) {
+                  cardanoValue.set_multiasset(assets);
+                }
+
+                return cardanoValue;
+              },
+              // mint values for set_mint
+              mint: function mint(tokens) {
+                var Cardano = _this.Cardano;
+                var mint = Cardano.Mint.new();
+                tokens.forEach(function (token) {
+                  var _mint$get;
+
+                  var scriptHash = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
+                  var mintAssets = (_mint$get = mint.get(scriptHash)) !== null && _mint$get !== void 0 ? _mint$get : Cardano.MintAssets.new();
+                  mintAssets.insert(Cardano.AssetName.new(Buffer.from(token.asset.assetName)), Cardano.Int.new_i32(token.quantity));
+                  mint.insert(scriptHash, mintAssets);
+                });
+                return mint;
+              },
+              // process metadata
+              metadata: function metadata(metadataInput) {
+                var Cardano = _this.Cardano;
+                var MetadateTypesEnum = {
+                  Number: 'int',
+                  String: 'string',
+                  Bytes: 'bytes',
+                  List: 'list',
+                  Map: 'map'
+                };
+
+                var getMetadataObject = function getMetadataObject(data) {
+                  var result = {};
+                  var type = (0, _typeof2.default)(data);
+
+                  if (type == 'number') {
+                    result[MetadateTypesEnum.Number] = data;
+                  } else if (type == 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
+                    result[MetadateTypesEnum.String] = data;
+                  } else if (Buffer.isBuffer(data) && Buffer.byteLength(data, 'hex') <= 64) {
+                    result[MetadateTypesEnum.Bytes] = data.toString('hex');
+                  } else if (type == 'boolean') {
+                    result[MetadateTypesEnum.String] = data.toString();
+                  } else if (type == 'undefined') {
+                    result[MetadateTypesEnum.String] = 'undefined';
+                  } else if (Array.isArray(data)) {
+                    result[MetadateTypesEnum.List] = data.map(function (a) {
+                      return getMetadataObject(a);
+                    });
+                  } else if (type == 'object') {
+                    if (data) {
+                      result[MetadateTypesEnum.Map] = Object.keys(data).map(function (k) {
+                        return {
+                          k: getMetadataObject(k),
+                          v: getMetadataObject(data[k])
+                        };
+                      });
+                    } else {
+                      result[MetadateTypesEnum.String] = 'null';
+                    }
+                  }
+
+                  return result;
+                };
+
+                var constructMetadata = function constructMetadata(data) {
+                  var metadata = {};
+
+                  if (Array.isArray(data)) {
+                    //eslint-disbale-next-line
+                    for (var i = 0; i < data.length; i++) {
+                      var value = data[i];
+                      metadata[i] = getMetadataObject(value);
+                    }
+                  } else {
+                    var keys = Object.keys(data); //eslint-disbale-next-line
+
+                    for (var _i = 0; _i < keys.length; _i++) {
+                      var key = keys[_i];
+
+                      if (Number.isInteger(Number(key))) {
+                        var index = parseInt(key);
+                        metadata[index] = getMetadataObject(data[key]);
+                      }
+                    }
+                  }
+
+                  return metadata;
+                };
+
+                var getTransactionMetadatum = function getTransactionMetadatum(value) {
+                  if (value.hasOwnProperty(MetadateTypesEnum.Number)) {
+                    return Cardano.TransactionMetadatum.new_int(Int.new_i32(value[MetadateTypesEnum.Number]));
+                  }
+
+                  if (value.hasOwnProperty(MetadateTypesEnum.String)) {
+                    return Cardano.TransactionMetadatum.new_text(value[MetadateTypesEnum.String]);
+                  }
+
+                  if (value.hasOwnProperty(MetadateTypesEnum.Bytes)) {
+                    return Cardano.TransactionMetadatum.new_bytes(Buffer.from(value[MetadateTypesEnum.Bytes], 'hex'));
+                  }
+
+                  if (value.hasOwnProperty(MetadateTypesEnum.List)) {
+                    var list = value[MetadateTypesEnum.List];
+                    var metalist = Cardano.MetadataList.new();
+
+                    for (var i = 0; i < list.length; i++) {
+                      metalist.add(getTransactionMetadatum(list[i]));
+                    }
+
+                    return Cardano.TransactionMetadatum.new_list(metalist);
+                  }
+
+                  if (value.hasOwnProperty(MetadateTypesEnum.Map)) {
+                    var map = value[MetadateTypesEnum.Map];
+                    var metamap = Cardano.MetadataMap.new();
+
+                    for (var _i2 = 0; _i2 < map.length; _i2++) {
+                      var _map$_i = map[_i2],
+                          k = _map$_i.k,
+                          v = _map$_i.v;
+                      metamap.insert(getTransactionMetadatum(k), getTransactionMetadatum(v));
+                    }
+
+                    return Cardano.TransactionMetadatum.new_map(metamap);
+                  }
+                };
+
+                var metadata = constructMetadata(metadataInput);
+                var generalMetatada = Cardano.GeneralTransactionMetadata.new(); //eslint-disable-next-line
+
+                for (var key in metadata) {
+                  var value = metadata[key];
+                  generalMetatada.insert(Cardano.BigNum.from_str(key), getTransactionMetadatum(value));
+                }
+
+                return Cardano.TransactionMetadata.new(generalMetatada);
+              },
+              // min required for change
+              minRequiredForChange: function minRequiredForChange(txBuilder, address, value) {
+                var Cardano = _this.Cardano;
+                var minimumAda = Cardano.min_ada_required(value, Cardano.BigNum.from_str(protocolParams.minimumUtxoVal));
+
+                var baseValue = function () {
+                  if (value.coin().compare(minimumAda) < 0) {
+                    var newVal = Cardano.Value.new(minimumAda);
+                    var assets = value.multiasset();
+
+                    if (assets) {
+                      newVal.set_multiasset(assets);
+                    }
+
+                    return newVal;
+                  }
+
+                  return value;
+                }();
+
+                var minRequired = txBuilder.fee_for_output(Cardano.TransactionOutput.new(Cardano.Address.from_bech32(address), baseValue)).checked_add(minimumAda);
+                return minRequired;
+              },
+              // put utxo input
+              addUtxoInput: function addUtxoInput(txBuilder, remaining, input, excludeIfSmall) {
+                var Cardano = _this.Cardano,
+                    Utils = _this.Utils;
+                var txAddr = Cardano.Address.from_bech32(input.address);
+                var txInput = Cardano.TransactionInput.new(Cardano.TransactionHash.from_bytes(Buffer.from(input.transaction.hash, 'hex')), input.index);
+                var txAmount = Utils.cardanoValueFromRemoteFormat(input);
+
+                var skipOverflow = function skipOverflow() {
+                  var currentInputSum = txBuilder.get_explicit_input().checked_add(txBuilder.get_implicit_input());
+
+                  try {
+                    currentInputSum.checked_add(txAmount);
+                  } catch (e) {
+                    return AddInputResult.OVERFLOW;
+                  }
+
+                  return AddInputResult.VALID;
+                };
+
+                var skipInput = function skipInput() {
+                  if (remaining == null) return skipOverflow();
+                  var tokenSetInInput = new Set(input.tokens.map(function (token) {
+                    return token.asset.assetId;
+                  }));
+                  var remainingAda = remaining.value.coin().to_str();
+                  var remainingTokens = Utils.parseTokenList(remaining.value.multiasset());
+                  var includedTargets = remainingTokens.filter(function (entry) {
+                    return tokenSetInInput.has(entry.asset.assetId);
+                  });
+
+                  if (new _bignumber.default(remainingAda).gt(0) && new _bignumber.default(input.value).gt(0)) {
+                    includedTargets.push('lovelace');
+                  }
+
+                  if (includedTargets.length === 0 && remaining.hasInput) {
+                    return AddInputResult.NO_NEED;
+                  }
+
+                  var onlyDefaultEntry = includedTargets.length === 1 && includedTargets.includes('lovelace');
+
+                  if (onlyDefaultEntry && excludeIfSmall) {
+                    var feeForInput = new _bignumber.default(txBuilder.fee_for_input(txAddr, txInput, txAmount).to_str());
+
+                    if (feeForInput.gt(input.value)) {
+                      return AddInputResult.TOO_SMALL;
+                    }
+                  }
+
+                  return skipOverflow();
+                };
+
+                var skipResult = skipInput();
+
+                if (skipResult !== AddInputResult.VALID) {
+                  return skipResult;
+                }
+
+                txBuilder.add_input(txAddr, txInput, txAmount);
+                return AddInputResult.VALID;
+              }
+            };
             /**
-             * Build Transaction
-             * @param {string} type transaction type
-             * @param {BigNumber} value ADA amount
-             * @param {string} toAddress to address
-             * @param {string} changeAddress change address
-             * @param {number} currentSlot network slot (needed for tx timeout calculation)
-             * @param {array} utxos addresses utxos
-             * @param {object} metadata transaction metadata
-             * @param {array} certificates delegation certificates
-             * @param {array} withdrawals rewards withdrawal
+             * Generate Policy ID and Script for pubkey
+             * @param {string} publicKey change address
              * @return {object}
              */
 
-
-            _this.txBuild = function (type, value, toAddress, changeAddress, currentSlot, utxos, metadata, certificates, withdrawals) {
+            _this.generatePolicyForPubkey = function (publicKeyBech32) {
               var Cardano = _this.Cardano;
+              var keyHash = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32).to_raw_key().hash();
+              var scriptPubKey = Cardano.NativeScript.new_script_pubkey(Cardano.ScriptPubkey.new(keyHash));
+              var scriptPubKeyHash = scriptPubKey.hash(Cardano.ScriptHashNamespace.NativeScript);
+              var scriptHash = Cardano.ScriptHash.from_bytes(scriptPubKeyHash.to_bytes());
+              var policyId = Buffer.from(scriptHash.to_bytes()).toString('hex');
+              var script = Buffer.from(scriptPubKey.to_bytes()).toString('hex');
+              return {
+                script: script,
+                policyId: policyId
+              };
+            };
+            /**
+             * Mint and Send All Assets to Address
+             * @param {string} toAddress receiver address
+             * @param {array} utxos addresses utxos
+             * @param {number} currentSlot network slot (needed for tx timeout calculation)
+             * @param {object} metadata transaction metadata
+             */
+
+
+            _this.txBuildMint = function (toAddress) {
+              var tokensToMint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+              var utxos = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+              var currentSlot = arguments.length > 3 ? arguments[3] : undefined;
+              var metadata = arguments.length > 4 ? arguments[4] : undefined;
+              var donate = arguments.length > 5 ? arguments[5] : undefined;
+              var Cardano = _this.Cardano,
+                  Utils = _this.Utils;
 
               try {
-                var isSend = type === 'send' || type === 'calculate'; // initial checks
-
-                if (isSend && _this.validateAddress(toAddress) !== 'base') {
-                  throw Errors('address_wrong');
-                }
-
-                if (isSend && new BigNumber(value).isNaN()) {
-                  throw Errors('ada_not_number');
-                }
-
-                if (isSend && new BigNumber(value).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
-                  throw Errors('ada_less_than_min');
-                }
-
-                if (isSend && new BigNumber(value).decimalPlaces() > 6) {
-                  throw Errors('ada_wrong_value');
+                if (_this.validateAddress(toAddress) !== 'base') {
+                  throw ErrorException(ErrorMessages.ADDRESS_WRONG);
                 } // create transaction
 
 
                 var txBuilder = Cardano.TransactionBuilder.new(Cardano.LinearFee.new(Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient), Cardano.BigNum.from_str(protocolParams.linearFeeConstant)), Cardano.BigNum.from_str(protocolParams.minimumUtxoVal), Cardano.BigNum.from_str(protocolParams.poolDeposit), Cardano.BigNum.from_str(protocolParams.keyDeposit)); // set ttl
 
-                txBuilder.set_ttl(currentSlot + settings.ttl); // add outputs
+                var ttl = currentSlot + settings.ttl;
+                txBuilder.set_ttl(ttl); // set metadata
 
-                if (toAddress) {
-                  txBuilder.add_output(Cardano.TransactionOutput.new(Cardano.Address.from_bech32(toAddress), Cardano.Value.new(Cardano.BigNum.from_str(new BigNumber(value).toFixed()))));
+                if (metadata !== undefined) {
+                  var transformedMetadata = Utils.metadata(metadata);
+                  txBuilder.set_metadata(transformedMetadata);
+                } // add inputs
+
+
+                utxos.forEach(function (utxo) {
+                  var added = Utils.addUtxoInput(txBuilder, undefined, utxo, false);
+
+                  if (added === AddInputResult.OVERFLOW) {
+                    throw ErrorException(ErrorMessages.ASSET_OVERFLOW);
+                  }
+                }); // set donate address
+
+                var donateSubtract = '0';
+
+                if (donate) {
+                  donateSubtract = donate.donateValue;
+                  txBuilder.add_output(Cardano.TransactionOutput.new(Cardano.Address.from_bech32(donate.donateAddress), Cardano.Value.new(Cardano.BigNum.from_str(donate.donateValue))));
+                } // manually calculcate output values depends on output fee
+
+
+                var mintValue = Utils.cardanoValueFromMint(protocolParams.minimumUtxoVal, tokensToMint);
+                var minimumAda = Cardano.min_ada_required(mintValue, Cardano.BigNum.from_str(protocolParams.minimumUtxoVal));
+                var tokensValue = Utils.cardanoValueFromMint(minimumAda.to_str(), tokensToMint);
+                var inputValue = txBuilder.get_explicit_input();
+                var minValueSubtract = Cardano.Value.new(Cardano.BigNum.from_str(tokensValue.coin().to_str()));
+                var mergedValue = inputValue.checked_add(tokensValue).checked_sub(minValueSubtract);
+                var outputTx = Cardano.TransactionOutput.new(Cardano.Address.from_bech32(toAddress), mergedValue);
+                var outputTxFee = txBuilder.fee_for_output(outputTx).to_str();
+                var currentFee = txBuilder.min_fee().to_str(); // TODO: as we can't set_mint() before txBuilder.build(), we can't calculate fee, that's why we should add compensation
+
+                var COMPENSATE = '50000';
+                var finalValue = mergedValue.checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(outputTxFee))).checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(currentFee))).checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(COMPENSATE))).checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(donateSubtract))); // add output
+
+                txBuilder.add_output(Cardano.TransactionOutput.new(Cardano.Address.from_bech32(toAddress), finalValue)); // add
+                // set fee
+
+                txBuilder.set_fee(Cardano.BigNum.from_str((parseInt(txBuilder.min_fee().to_str(), 10) + parseInt(COMPENSATE, 10)).toString())); // build
+
+                var txBody = txBuilder.build();
+                var mint = Utils.mint(tokensToMint);
+                txBody.set_mint(mint);
+                var outputs = txBody.outputs().len() > 0 ? Utils.parseOutputs(txBody) : [];
+                var txHash = Cardano.hash_transaction(txBody); // TODO: sign tx and calculate exact fee
+                // {
+                //   const fakeSignedTransaction = txSign(
+                //     { txBody, txHash, usedUtxos: utxos, metadata },
+                //     'xprv16z77fk24y90xgx24tz06sxa82kwme0rjezhe7kvtu8vtsm3lf3f34yzgf8qhvyx5txlxtg32jqm9jnv4a9qpy42nsa06uv4eu03zd4n4tqtnkp2nehy8anmf4gwtaa5e2vn4kwrw83xlrztzacv07cj45uum4023',
+                //     script,
+                //   )
+                //   const fakeTxFee = Cardano.min_fee(
+                //     Cardano.Transaction.from_bytes(Buffer.from(fakeSignedTransaction, 'hex')),
+                //     Cardano.LinearFee.new(
+                //       Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient),
+                //       Cardano.BigNum.from_str(protocolParams.linearFeeConstant),
+                //     )
+                //   )
+                //   console.log('fakeTxFee', fakeTxFee.to_str())
+                // }
+
+                var targetOutput = txBuilder.get_explicit_output().checked_add(Cardano.Value.new(txBuilder.get_deposit()));
+                return {
+                  data: {
+                    txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+                    txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
+                    minFee: txBuilder.min_fee().to_str(),
+                    fee: txBuilder.get_fee_if_set().to_str(),
+                    spending: {
+                      value: (parseInt(targetOutput.coin().to_str(), 10) + parseInt(txBuilder.get_fee_if_set().to_str(), 10)).toString(),
+                      send: targetOutput.coin().to_str(),
+                      tokens: Utils.parseTokenList(targetOutput.multiasset())
+                    },
+                    outputs: outputs,
+                    usedUtxos: utxos,
+                    usedUtxosChange: [],
+                    metadata: metadata,
+                    ttl: ttl
+                  }
+                };
+              } catch (error) {
+                errorHandler(error);
+                return {
+                  error: error
+                };
+              }
+            };
+            /**
+             * Send All Assets to Address
+             * @param {string} toAddress receiver address
+             * @param {array} utxos addresses utxos
+             * @param {number} currentSlot network slot (needed for tx timeout calculation)
+             * @param {object} metadata transaction metadata
+             */
+
+
+            _this.txBuildAll = function (toAddress) {
+              var utxos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+              var currentSlot = arguments.length > 2 ? arguments[2] : undefined;
+              var metadata = arguments.length > 3 ? arguments[3] : undefined;
+              var Cardano = _this.Cardano,
+                  Utils = _this.Utils;
+
+              try {
+                if (_this.validateAddress(toAddress) !== 'base') {
+                  throw ErrorException(ErrorMessages.ADDRESS_WRONG);
                 }
 
-                var hasCertificates = certificates.length > 0;
-                var hasWithdrawal = withdrawals.length > 0; // add certificates
+                var totalBalance = utxos.map(function (utxo) {
+                  return new _bignumber.default(utxo.value);
+                }).reduce(function (acc, value) {
+                  return acc.plus(value);
+                }, new _bignumber.default(0));
 
-                if (hasCertificates) {
+                if (totalBalance.isZero()) {
+                  throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                }
+
+                if (new _bignumber.default(totalBalance).lt(new _bignumber.default(protocolParams.minimumUtxoVal))) {
+                  throw ErrorException(ErrorMessages.ADA_LESS_THAN_MIN);
+                } // create transaction
+
+
+                var txBuilder = Cardano.TransactionBuilder.new(Cardano.LinearFee.new(Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient), Cardano.BigNum.from_str(protocolParams.linearFeeConstant)), Cardano.BigNum.from_str(protocolParams.minimumUtxoVal), Cardano.BigNum.from_str(protocolParams.poolDeposit), Cardano.BigNum.from_str(protocolParams.keyDeposit)); // set ttl
+
+                var ttl = currentSlot + settings.ttl;
+                txBuilder.set_ttl(ttl); // add inputs
+
+                utxos.forEach(function (utxo) {
+                  var added = Utils.addUtxoInput(txBuilder, undefined, utxo, false);
+
+                  if (added === AddInputResult.OVERFLOW) {
+                    throw ErrorException(ErrorMessages.ASSET_OVERFLOW);
+                  }
+                }); // set metadata
+
+                if (metadata !== undefined) {
+                  var transformedMetadata = Utils.metadata(metadata);
+                  txBuilder.set_metadata(transformedMetadata);
+                }
+
+                if (totalBalance.lt(txBuilder.min_fee().to_str())) {
+                  // not enough in inputs to even cover the cost of including themselves in a tx
+                  throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                } // semantically, sending all ADA to somebody
+                // is the same as if you're sending all the ADA as change to yourself
+                // (module the fact the address doesn't belong to you)
+
+
+                var changeAddress = Cardano.Address.from_bech32(toAddress);
+                var couldSendAmount = txBuilder.add_change_if_needed(changeAddress);
+
+                if (!couldSendAmount) {
+                  // if you couldn't send any amount,
+                  // it's because you couldn't cover the fee of adding an output
+                  throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                } // tx build
+
+
+                var txBody = txBuilder.build();
+                var txHash = Cardano.hash_transaction(txBody);
+                var outputs = txBody.outputs().len() > 0 ? Utils.parseOutputs(txBody) : [];
+                var targetOutput = txBuilder.get_explicit_output().checked_add(Cardano.Value.new(txBuilder.get_deposit()));
+                return {
+                  data: {
+                    txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+                    txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
+                    minFee: txBuilder.min_fee().to_str(),
+                    fee: txBuilder.get_fee_if_set().to_str(),
+                    spending: {
+                      value: (parseInt(targetOutput.coin().to_str(), 10) + parseInt(txBuilder.get_fee_if_set().to_str(), 10)).toString(),
+                      send: targetOutput.coin().to_str(),
+                      tokens: Utils.parseTokenList(targetOutput.multiasset())
+                    },
+                    outputs: outputs,
+                    usedUtxos: utxos,
+                    usedUtxosChange: [],
+                    metadata: metadata,
+                    ttl: ttl
+                  }
+                };
+              } catch (error) {
+                errorHandler(error);
+                return {
+                  error: error
+                };
+              }
+            };
+            /**
+             * Build Transaction
+             * @param {array} outputs outputs array
+             * @param {array} utxos addresses utxos
+             * @param {string} changeAddress change address
+             * @param {number} currentSlot network slot (needed for tx timeout calculation)
+             * @param {object} metadata transaction metadata
+             * @param {array} certificates delegation certificates
+             * @param {array} withdrawals rewards withdrawal
+             * @param {boolean} allowNoOutputs
+             * @return {object}
+             */
+
+
+            _this.txBuild = function () {
+              var outputs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+              var utxos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+              var changeAddress = arguments.length > 2 ? arguments[2] : undefined;
+              var currentSlot = arguments.length > 3 ? arguments[3] : undefined;
+              var metadata = arguments.length > 4 ? arguments[4] : undefined;
+              var certificates = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : [];
+              var withdrawals = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [];
+              var allowNoOutputs = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : false;
+              var Cardano = _this.Cardano,
+                  Utils = _this.Utils;
+
+              try {
+                // initial checks for errors
+                outputs.forEach(function (output) {
+                  if (_this.validateAddress(output.address) !== 'base') {
+                    throw ErrorException(ErrorMessages.ADDRESS_WRONG);
+                  }
+
+                  if (new _bignumber.default(output.value).isNaN()) {
+                    throw ErrorException(ErrorMessages.ADA_NOT_NUMBER);
+                  }
+
+                  if (new _bignumber.default(output.value).lt(new _bignumber.default(protocolParams.minimumUtxoVal))) {
+                    throw ErrorException(ErrorMessages.ADA_LESS_THAN_MIN);
+                  }
+
+                  if (new _bignumber.default(output.value).decimalPlaces() > 6) {
+                    throw ErrorException(ErrorMessages.ADA_WRONG_VALUE);
+                  }
+
+                  if (output.tokens) {
+                    output.tokens.forEach(function (token) {
+                      if (new _bignumber.default(token.quantity).lt(new _bignumber.default(1))) {
+                        throw ErrorException(ErrorMessages.TOKENS_NOT_ENOUGH);
+                      }
+                    });
+                  }
+                }); // allowNoOutputs in tx
+
+                var shouldForceChange = function shouldForceChange(assetsForChange) {
+                  var noOutputDisallowed = !allowNoOutputs && outputs.length === 0;
+
+                  if (noOutputDisallowed && changeAddress == null) {
+                    throw ErrorException(ErrorMessages.NO_OUTPUTS);
+                  }
+
+                  if (assetsForChange != null && assetsForChange.len() > 0) {
+                    return true;
+                  }
+
+                  return noOutputDisallowed;
+                };
+
+                var emptyAsset = Cardano.MultiAsset.new();
+                shouldForceChange(undefined); // create transaction
+
+                var txBuilder = Cardano.TransactionBuilder.new(Cardano.LinearFee.new(Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient), Cardano.BigNum.from_str(protocolParams.linearFeeConstant)), Cardano.BigNum.from_str(protocolParams.minimumUtxoVal), Cardano.BigNum.from_str(protocolParams.poolDeposit), Cardano.BigNum.from_str(protocolParams.keyDeposit)); // set ttl
+
+                var ttl = currentSlot + settings.ttl;
+                txBuilder.set_ttl(ttl); // add certificates
+
+                if (certificates.length > 0) {
                   var certsArray = certificates.reduce(function (certs, cert) {
                     certs.add(cert);
                     return certs;
@@ -20161,7 +20828,7 @@ var Crypto = function Crypto(pkg, settings) {
                 } // add withdrawal
 
 
-                if (hasWithdrawal) {
+                if (withdrawals.length > 0) {
                   var processed = withdrawals.map(function (withdrawal) {
                     var address = Cardano.Address.from_bech32(withdrawal.address);
                     return {
@@ -20174,68 +20841,171 @@ var Crypto = function Crypto(pkg, settings) {
                     return withs;
                   }, Cardano.Withdrawals.new());
                   txBuilder.set_withdrawals(withdrawalArray);
-                } // add inputs
+                } // add metadata
 
+
+                if (metadata !== undefined) {
+                  var transformedMetadata = Utils.metadata(metadata);
+                  txBuilder.set_metadata(transformedMetadata);
+                } // add outputs
+
+
+                outputs.forEach(function (output) {
+                  txBuilder.add_output(Cardano.TransactionOutput.new(Cardano.Address.from_bech32(output.address), Utils.cardanoValueFromTokens(output.value, output.tokens)));
+                }); // add inputs
+                // output excluding fee
+
+                var targetOutput = txBuilder.get_explicit_output().checked_add(Cardano.Value.new(txBuilder.get_deposit())); // used utxos for build transaction
 
                 var usedUtxos = [];
-                var targetOutput = txBuilder.get_explicit_output().checked_add(Cardano.Value.new(txBuilder.get_deposit()));
-                var implicitSum = txBuilder.get_implicit_input();
-                var stopIterations = false;
-                utxos.forEach(function (tx) {
-                  if (stopIterations) {
-                    return;
+                {
+                  // recall: we might have some implicit input to start with from deposit refunds
+                  var implicitSum = txBuilder.get_implicit_input(); // add utxos until we have enough to send the transaction
+
+                  utxos.forEach(function (utxo) {
+                    var _currentInputSum$mult, _output$multiasset;
+
+                    var currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum);
+                    var output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()));
+                    var remainingNeeded = output.clamped_sub(currentInputSum); // update amount required to make sure we have ADA required for change UTXO entry
+
+                    if (shouldForceChange((_currentInputSum$mult = currentInputSum.multiasset()) === null || _currentInputSum$mult === void 0 ? void 0 : _currentInputSum$mult.sub((_output$multiasset = output.multiasset()) !== null && _output$multiasset !== void 0 ? _output$multiasset : emptyAsset))) {
+                      if (changeAddress == null) throw ErrorException(ErrorMessages.NO_OUTPUTS);
+                      var difference = currentInputSum.clamped_sub(output);
+                      var minimumNeededForChange = Utils.minRequiredForChange(txBuilder, changeAddress, difference);
+                      var adaNeededLeftForChange = minimumNeededForChange.clamped_sub(difference.coin());
+
+                      if (remainingNeeded.coin().compare(adaNeededLeftForChange) < 0) {
+                        remainingNeeded.set_coin(adaNeededLeftForChange);
+                      }
+                    } // stop if we've added all the assets we needed
+
+
+                    {
+                      var remainingAssets = remainingNeeded.multiasset();
+
+                      if (remainingNeeded.coin().compare(Cardano.BigNum.from_str('0')) === 0 && (remainingAssets == null || remainingAssets.len() === 0) && usedUtxos.length > 0) {
+                        return;
+                      }
+                    } // push utxo if needed
+
+                    var added = Utils.addUtxoInput(txBuilder, {
+                      value: remainingNeeded,
+                      hasInput: usedUtxos.length > 0
+                    }, utxo, true);
+
+                    if (added !== AddInputResult.VALID) {
+                      return;
+                    }
+
+                    usedUtxos.push(utxo);
+                  });
+
+                  if (usedUtxos.length === 0) {
+                    throw ErrorException(ErrorMessages.NOT_ENOUGH);
                   }
 
-                  var currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum);
-                  var currentInputValueRaw = txBuilder.get_explicit_input();
-                  var output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()));
-                  var remainingNeeded = output.clamped_sub(currentInputValue);
-                  var checkSkip = remainingNeeded.coin().compare(Cardano.BigNum.from_str('0')) === 0;
+                  {
+                    var _currentInputSum$mult2, _output$multiasset2;
 
-                  if (hasWithdrawal) {
-                    var _compare = currentInputValueRaw.compare(output);
+                    // check to see if we have enough balance in the wallet to cover the transaction
+                    var currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum);
+                    var output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()));
+                    var compare = currentInputSum.compare(output);
+                    var enoughInput = compare != null && compare >= 0;
+                    var forceChange = shouldForceChange((_currentInputSum$mult2 = currentInputSum.multiasset()) === null || _currentInputSum$mult2 === void 0 ? void 0 : _currentInputSum$mult2.sub((_output$multiasset2 = output.multiasset()) !== null && _output$multiasset2 !== void 0 ? _output$multiasset2 : emptyAsset));
 
-                    checkSkip = _compare != null && _compare >= 0;
+                    if (forceChange) {
+                      if (changeAddress == null) throw ErrorException(ErrorMessages.NO_OUTPUTS);
+
+                      if (!enoughInput) {
+                        throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                      }
+
+                      var difference = currentInputSum.checked_sub(output);
+                      var minimumNeededForChange = Utils.minRequiredForChange(txBuilder, changeAddress, difference);
+
+                      if (difference.coin().compare(minimumNeededForChange) < 0) {
+                        throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                      }
+                    }
+
+                    if (!forceChange && !enoughInput) {
+                      throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                    }
+                  }
+                } // handle fees & change address if set
+
+                var usedUtxosChange = function () {
+                  var _difference$multiasse;
+
+                  var totalInput = txBuilder.get_explicit_input().checked_add(txBuilder.get_implicit_input());
+                  var difference = totalInput.checked_sub(targetOutput);
+                  var forceChange = shouldForceChange((_difference$multiasse = difference.multiasset()) !== null && _difference$multiasse !== void 0 ? _difference$multiasse : emptyAsset);
+
+                  if (changeAddress == null) {
+                    if (forceChange) {
+                      throw ErrorException(ErrorMessages.NO_OUTPUTS);
+                    }
+
+                    var minFee = txBuilder.min_fee();
+
+                    if (difference.coin().compare(minFee) < 0) {
+                      throw ErrorException(ErrorMessages.NOT_ENOUGH);
+                    } // recall: min fee assumes the largest fee possible
+                    // so no worries of cbor issue by including larger fee
+
+
+                    txBuilder.set_fee(Cardano.BigNum.from_str(difference.coin().to_str()));
+                    return [];
                   }
 
-                  if (checkSkip) {
-                    stopIterations = true;
-                    return;
+                  var outputBeforeChange = txBuilder.get_explicit_output();
+                  var calcChangeAddress = Cardano.Address.from_bech32(changeAddress);
+                  var changeWasAdded = txBuilder.add_change_if_needed(calcChangeAddress);
+
+                  if (forceChange && !changeWasAdded) {
+                    // note: this should never happened since it should have been handled by earlier code
+                    throw ErrorException(ErrorMessages.NO_CHANGE);
                   }
 
-                  usedUtxos.push(tx);
-                  txBuilder.add_input(Cardano.Address.from_bech32(tx.address), Cardano.TransactionInput.new(Cardano.TransactionHash.from_bytes(Buffer.from(tx.transaction.hash, 'hex')), tx.index), Cardano.Value.new(Cardano.BigNum.from_str(tx.value.toString())));
-                }); // check if inputs values enough
+                  var changeAda = txBuilder.get_explicit_output().checked_sub(outputBeforeChange).coin().to_str();
+                  var changeTokens = Utils.parseTokenList(txBuilder.get_explicit_output().checked_sub(outputBeforeChange).multiasset());
+                  return changeWasAdded ? [{
+                    address: changeAddress,
+                    value: changeAda,
+                    tokens: changeTokens
+                  }] : [];
+                }(); // tx build
 
-                var currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum);
-                var output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()));
-                var compare = currentInputValue.compare(output);
-                var isEnough = compare != null && compare >= 0;
-
-                if (!isEnough) {
-                  throw Errors('ada_not_enough');
-                } // add change address
-
-
-                txBuilder.add_change_if_needed(Cardano.Address.from_bech32(changeAddress)); // tx build
 
                 var txBody = txBuilder.build();
                 var txHash = Cardano.hash_transaction(txBody);
                 return {
-                  txBody: txBody,
-                  txHash: txHash,
-                  minFee: new BigNumber(txBuilder.min_fee().to_str()),
-                  fee: new BigNumber(txBuilder.get_fee_if_set().to_str()),
-                  toAddress: toAddress,
-                  value: new BigNumber(value).toFixed(),
-                  metadata: metadata,
-                  usedUtxos: usedUtxos,
-                  certificates: certificates,
-                  withdrawals: withdrawals
+                  data: {
+                    txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+                    txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
+                    minFee: txBuilder.min_fee().to_str(),
+                    fee: txBuilder.get_fee_if_set().to_str(),
+                    spending: {
+                      value: (parseInt(targetOutput.coin().to_str(), 10) + parseInt(txBuilder.get_fee_if_set().to_str(), 10)).toString(),
+                      send: targetOutput.coin().to_str(),
+                      tokens: Utils.parseTokenList(targetOutput.multiasset())
+                    },
+                    outputs: outputs,
+                    usedUtxos: usedUtxos,
+                    usedUtxosChange: usedUtxosChange,
+                    metadata: metadata,
+                    certificates: certificates,
+                    withdrawals: withdrawals,
+                    ttl: ttl
+                  }
                 };
               } catch (error) {
                 errorHandler(error);
-                return error;
+                return {
+                  error: error
+                };
               }
             };
             /**
@@ -20246,32 +21016,62 @@ var Crypto = function Crypto(pkg, settings) {
              */
 
 
-            _this.txSign = function (transaction, privateKey) {
-              var Cardano = _this.Cardano;
+            _this.txSign = function (transaction, privateKey, script) {
+              var Cardano = _this.Cardano,
+                  Utils = _this.Utils;
 
               try {
-                var txHash = transaction.txHash,
-                    txBody = transaction.txBody,
-                    metadata = transaction.metadata,
+                var txHashHex = transaction.txHashHex,
+                    txBodyHex = transaction.txBodyHex,
                     usedUtxos = transaction.usedUtxos,
+                    metadata = transaction.metadata,
                     certificates = transaction.certificates,
                     withdrawals = transaction.withdrawals;
+                var txHash = Cardano.TransactionHash.from_bytes(Buffer.from(txHashHex, 'hex'));
+                var txBody = Cardano.TransactionBody.from_bytes(Buffer.from(txBodyHex, 'hex'));
+                var witnesses = Cardano.TransactionWitnessSet.new();
                 var vkeyWitnesses = Cardano.Vkeywitnesses.new();
-                usedUtxos.forEach(function (utxo) {
+                var deduped = [];
+                var keyHashes = [];
+                usedUtxos.forEach(function (senderUtxo) {
+                  var keyAddress = Cardano.Address.from_bech32(senderUtxo.address);
+                  var keyHash = Cardano.BaseAddress.from_address(keyAddress).payment_cred().to_keyhash();
+                  var keyHex = Buffer.from(keyHash.to_bytes()).toString('hex');
+
+                  if (!keyHashes.includes(keyHex)) {
+                    keyHashes.push(keyHex);
+                    deduped.push(senderUtxo);
+                  }
+                });
+                deduped.forEach(function (utxo) {
                   var prvKey = Cardano.Bip32PrivateKey.from_bech32(privateKey).derive(utxo.addressing.type).derive(utxo.addressing.path).to_raw_key();
                   var vkeyWitness = Cardano.make_vkey_witness(txHash, prvKey);
                   vkeyWitnesses.add(vkeyWitness);
                 });
 
-                if (certificates.length > 0 || withdrawals.length > 0) {
+                if (certificates && certificates.length > 0 || withdrawals && withdrawals.length > 0) {
                   var prvKey = Cardano.Bip32PrivateKey.from_bech32(privateKey).derive(2).derive(0).to_raw_key();
                   var stakeKeyVitness = Cardano.make_vkey_witness(txHash, prvKey);
                   vkeyWitnesses.add(stakeKeyVitness);
                 }
 
-                var witnesses = Cardano.TransactionWitnessSet.new();
+                if (script) {
+                  var prvKey2 = Cardano.Bip32PrivateKey.from_bech32(privateKey).to_raw_key();
+
+                  var _stakeKeyVitness = Cardano.make_vkey_witness(txHash, prvKey2);
+
+                  vkeyWitnesses.add(_stakeKeyVitness);
+                }
+
+                if (script) {
+                  var nativeScripts = Cardano.NativeScripts.new();
+                  nativeScripts.add(Cardano.NativeScript.from_bytes(Buffer.from(script, 'hex')));
+                  witnesses.set_scripts(nativeScripts);
+                }
+
                 witnesses.set_vkeys(vkeyWitnesses);
-                var signedTxRaw = Cardano.Transaction.new(txBody, witnesses, metadata);
+                var transformedMetadata = metadata ? Utils.metadata(metadata) : undefined;
+                var signedTxRaw = Cardano.Transaction.new(txBody, witnesses, transformedMetadata);
                 var signedTx = Buffer.from(signedTxRaw.to_bytes()).toString('hex');
                 return signedTx;
               } catch (error) {
@@ -20310,10 +21110,33 @@ var Crypto = function Crypto(pkg, settings) {
                 return false;
               }
             };
+            /**
+             * Generate Deregistration Certificates
+             * @param {string} publicKeyBech32 publick key
+             * @return {array} certificates array
+             */
+
+
+            _this.generateDeregistrationCerts = function (publicKeyBech32) {
+              var Cardano = _this.Cardano;
+
+              try {
+                var publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32);
+                var stakeKey = publicKey.derive(2) // chimeric
+                .derive(0);
+                var certificates = [];
+                var deregistrationCertificate = Cardano.Certificate.new_stake_deregistration(Cardano.StakeDeregistration.new(Cardano.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash())));
+                certificates.push(deregistrationCertificate);
+                return certificates;
+              } catch (error) {
+                errorHandler(error);
+                return false;
+              }
+            };
 
             return _context.abrupt("return", _this);
 
-          case 20:
+          case 26:
           case "end":
             return _context.stop();
         }
@@ -20322,31 +21145,42 @@ var Crypto = function Crypto(pkg, settings) {
   }))();
 };
 
-module.exports = Crypto;
+var _default = Crypto;
+exports.default = _default;
 
 /***/ }),
 
 /***/ 1845:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 /* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
-var _slicedToArray = __webpack_require__(3038);
 
-var _toConsumableArray = __webpack_require__(319);
 
-var _regeneratorRuntime = __webpack_require__(7757);
+var _interopRequireDefault = __webpack_require__(5318);
 
-var _typeof = __webpack_require__(8);
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = void 0;
 
-var _asyncToGenerator = __webpack_require__(8926);
+var _regenerator = _interopRequireDefault(__webpack_require__(7757));
 
-var _defineProperty = __webpack_require__(9713);
+var _slicedToArray2 = _interopRequireDefault(__webpack_require__(3038));
+
+var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(319));
+
+var _typeof2 = _interopRequireDefault(__webpack_require__(8));
+
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(8926));
+
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(9713));
+
+var _axios = _interopRequireDefault(__webpack_require__(9669));
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-var axios = __webpack_require__(9669);
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var Explorer = function Explorer(pkg, settings) {
   var _this = this;
@@ -20354,21 +21188,21 @@ var Explorer = function Explorer(pkg, settings) {
   var Cardano = pkg;
   var BigNumber = Cardano.crypto.BigNumber;
 
-  var errorHandler = settings.errorHandler || function (error) {
-    return error.response ? error.response.data : {
-      errors: [{
-        name: error.name,
-        message: error.message
-      }]
-    };
+  var responseHandler = settings.responseHandler || function (response) {
+    return response;
   };
 
-  var client = axios.create({
+  var errorHandler = settings.errorHandler || function (error) {
+    return error;
+  };
+
+  var client = _axios.default.create({
     baseURL: settings.url,
     headers: _objectSpread({}, settings.headers)
   });
+
   client.interceptors.response.use(function (response) {
-    return response === null || response === void 0 ? void 0 : response.data;
+    return responseHandler(response);
   }, function (error) {
     return errorHandler(error);
   });
@@ -20384,17 +21218,17 @@ var Explorer = function Explorer(pkg, settings) {
   };
 
   this.fetchComplete = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee2(params) {
+    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(params) {
       var config, arraysDeepMerge, response, iteration, mergeDeep, _mergeDeep;
 
-      return _regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return _regenerator.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _mergeDeep = function _mergeDeep3() {
-                _mergeDeep = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee() {
+                _mergeDeep = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
                   var update, totalCount, currentPage, limitReason;
-                  return _regeneratorRuntime.wrap(function _callee$(_context) {
+                  return _regenerator.default.wrap(function _callee$(_context) {
                     while (1) {
                       switch (_context.prev = _context.next) {
                         case 0:
@@ -20406,9 +21240,9 @@ var Explorer = function Explorer(pkg, settings) {
 
                         case 2:
                           update = _context.sent;
-                          response = arraysDeepMerge(response, update);
+                          response = arraysDeepMerge(response, update.data);
 
-                          if (!update.errors) {
+                          if (!update.data.errors) {
                             _context.next = 6;
                             break;
                           }
@@ -20417,7 +21251,7 @@ var Explorer = function Explorer(pkg, settings) {
 
                         case 6:
                           iteration += 1;
-                          totalCount = Number(update.data[config.aggregateString].aggregate.count);
+                          totalCount = Number(update.data.data[config.aggregateString].aggregate.count);
                           currentPage = iteration * config.limit + config.offset;
                           limitReason = iteration < config.maxPages;
 
@@ -20461,7 +21295,7 @@ var Explorer = function Explorer(pkg, settings) {
                   var propA = a[prop];
                   var propB = b[prop];
 
-                  if (_typeof(propA) === _typeof(propB) && _typeof(propA) === 'object') {
+                  if ((0, _typeof2.default)(propA) === (0, _typeof2.default)(propB) && (0, _typeof2.default)(propA) === 'object') {
                     if (Array.isArray(propA)) {
                       ret[prop] = propA.concat(propB);
                     } else {
@@ -20563,7 +21397,7 @@ var Explorer = function Explorer(pkg, settings) {
   };
 
   this.getAccountStateByPublicKey = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee5(publicKey) {
+    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(publicKey) {
       var pageSize,
           maxShiftIndex,
           type,
@@ -20585,15 +21419,15 @@ var Explorer = function Explorer(pkg, settings) {
           assets,
           _args5 = arguments;
 
-      return _regeneratorRuntime.wrap(function _callee5$(_context5) {
+      return _regenerator.default.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
               _checkAddressesUTXOWithShift = function _checkAddressesUTXOWi2() {
-                _checkAddressesUTXOWithShift = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee4(checkType, checkPageSize, checkShift) {
+                _checkAddressesUTXOWithShift = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(checkType, checkPageSize, checkShift) {
                   var _yield$checkAddresses, _yield$checkAddresses2, adressesWithUTXOs, checkedAdresses;
 
-                  return _regeneratorRuntime.wrap(function _callee4$(_context4) {
+                  return _regenerator.default.wrap(function _callee4$(_context4) {
                     while (1) {
                       switch (_context4.prev = _context4.next) {
                         case 0:
@@ -20602,27 +21436,25 @@ var Explorer = function Explorer(pkg, settings) {
 
                         case 2:
                           _yield$checkAddresses = _context4.sent;
-                          _yield$checkAddresses2 = _slicedToArray(_yield$checkAddresses, 2);
+                          _yield$checkAddresses2 = (0, _slicedToArray2.default)(_yield$checkAddresses, 2);
                           adressesWithUTXOs = _yield$checkAddresses2[0];
                           checkedAdresses = _yield$checkAddresses2[1];
-                          adressesArray.push.apply(adressesArray, _toConsumableArray(checkedAdresses));
+                          adressesArray.push.apply(adressesArray, (0, _toConsumableArray2.default)(checkedAdresses));
 
-                          if (!(checkShift < maxShiftIndex)) {
-                            _context4.next = 13;
-                            break;
+                          if (adressesWithUTXOs.length) {
+                            utxos.push.apply(utxos, (0, _toConsumableArray2.default)(adressesWithUTXOs));
                           }
 
-                          if (!adressesWithUTXOs.length) {
-                            _context4.next = 13;
+                          if (!(checkShift < maxShiftIndex)) {
+                            _context4.next = 12;
                             break;
                           }
 
                           checkShift += 1;
-                          utxos.push.apply(utxos, _toConsumableArray(adressesWithUTXOs));
-                          _context4.next = 13;
+                          _context4.next = 12;
                           return checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift);
 
-                        case 13:
+                        case 12:
                         case "end":
                           return _context4.stop();
                       }
@@ -20637,19 +21469,21 @@ var Explorer = function Explorer(pkg, settings) {
               };
 
               _checkAddressesUTXO = function _checkAddressesUTXO3() {
-                _checkAddressesUTXO = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee3(checkType, checkPageSize, checkShift) {
+                _checkAddressesUTXO = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(checkType, checkPageSize, checkShift) {
                   var tmpAddresses, checkedAdresses, _yield$Cardano$explor4, tmpAddresssesUTXO, adressesWithUTXOs;
 
-                  return _regeneratorRuntime.wrap(function _callee3$(_context3) {
+                  return _regenerator.default.wrap(function _callee3$(_context3) {
                     while (1) {
                       switch (_context3.prev = _context3.next) {
                         case 0:
                           _context3.next = 2;
-                          return Cardano.crypto.getAccountAddresses(publicKey, checkType, checkPageSize, checkShift);
+                          return Cardano.crypto.getAccountAddresses(publicKey, checkPageSize, checkType, checkShift);
 
                         case 2:
                           tmpAddresses = _context3.sent;
-                          checkedAdresses = tmpAddresses.addresses;
+                          checkedAdresses = tmpAddresses.map(function (addr) {
+                            return addr.address;
+                          });
                           _context3.next = 6;
                           return Cardano.explorer.getAddressesUTXO(checkedAdresses);
 
@@ -20657,8 +21491,14 @@ var Explorer = function Explorer(pkg, settings) {
                           _yield$Cardano$explor4 = _context3.sent;
                           tmpAddresssesUTXO = _yield$Cardano$explor4.data;
                           adressesWithUTXOs = tmpAddresssesUTXO.utxos ? tmpAddresssesUTXO.utxos.map(function (utxo) {
+                            var filteredUtxo = tmpAddresses.filter(function (addr) {
+                              return addr.address === utxo.address;
+                            })[0];
                             return _objectSpread(_objectSpread({}, utxo), {}, {
-                              addressing: tmpAddresses.paths[utxo.address]
+                              addressing: {
+                                type: filteredUtxo.type,
+                                path: filteredUtxo.path
+                              }
                             });
                           }) : [];
                           return _context3.abrupt("return", [adressesWithUTXOs, checkedAdresses]);
@@ -20679,7 +21519,7 @@ var Explorer = function Explorer(pkg, settings) {
 
               pageSize = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 20;
               maxShiftIndex = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : 10;
-              type = _args5.length > 3 && _args5[3] !== undefined ? _args5[3] : 'all';
+              type = _args5.length > 3 && _args5[3] !== undefined ? _args5[3] : [0];
               // check addresses utxos with shift until next pack will be with zero utxos
               utxos = [];
               adressesArray = [];
@@ -20699,7 +21539,7 @@ var Explorer = function Explorer(pkg, settings) {
             case 17:
               _yield$Cardano$explor2 = _context5.sent;
               rawTxOutputs = _yield$Cardano$explor2.data;
-              rawTransactions = [].concat(_toConsumableArray((rawTxInputs === null || rawTxInputs === void 0 ? void 0 : rawTxInputs.transactions) || []), _toConsumableArray((rawTxOutputs === null || rawTxOutputs === void 0 ? void 0 : rawTxOutputs.transactions) || []));
+              rawTransactions = [].concat((0, _toConsumableArray2.default)((rawTxInputs === null || rawTxInputs === void 0 ? void 0 : rawTxInputs.transactions) || []), (0, _toConsumableArray2.default)((rawTxOutputs === null || rawTxOutputs === void 0 ? void 0 : rawTxOutputs.transactions) || []));
               _context5.next = 22;
               return Cardano.explorer.getTxByHash(rawTransactions.map(function (tx) {
                 return tx.hash;
@@ -20709,12 +21549,13 @@ var Explorer = function Explorer(pkg, settings) {
               _yield$Cardano$explor3 = _context5.sent;
               transactionsInputsOutputs = _yield$Cardano$explor3.data;
               transactions = ((transactionsInputsOutputs === null || transactionsInputsOutputs === void 0 ? void 0 : transactionsInputsOutputs.transactions) || []).map(function (tx) {
-                var inputAmount = new BigNumber(0);
-                var outputAmount = new BigNumber(0);
+                // let inputAmount = new BigNumber(0)
+                // let outputAmount = new BigNumber(0)
+                var amount = new BigNumber(0);
                 var tokens = {};
                 tx.inputs.forEach(function (input) {
-                  if (adressesArray.includes(input.address)) {
-                    inputAmount = inputAmount.plus(input.value);
+                  if (input && adressesArray.includes(input.address)) {
+                    amount = amount.minus(input.value);
                     input.tokens.forEach(function (token) {
                       var asset = token.asset,
                           quantity = token.quantity;
@@ -20734,8 +21575,8 @@ var Explorer = function Explorer(pkg, settings) {
                   }
                 });
                 tx.outputs.forEach(function (output) {
-                  if (adressesArray.includes(output.address)) {
-                    outputAmount = outputAmount.plus(output.value);
+                  if (output && adressesArray.includes(output.address)) {
+                    amount = amount.plus(output.value);
                     output.tokens.forEach(function (token) {
                       var asset = token.asset,
                           quantity = token.quantity;
@@ -20755,10 +21596,12 @@ var Explorer = function Explorer(pkg, settings) {
                   }
                 });
                 return _objectSpread(_objectSpread({}, tx), {}, {
-                  type: new BigNumber(inputAmount).isZero() ? 'receive' : 'send',
-                  value: new BigNumber(outputAmount).minus(inputAmount),
+                  type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
+                  value: new BigNumber(amount).abs(),
                   tokens: Object.keys(tokens).map(function (key) {
-                    return tokens[key];
+                    return _objectSpread(_objectSpread({}, tokens[key]), {}, {
+                      quantity: tokens[key].quantity.abs()
+                    });
                   })
                 });
               }); // get account assets summary from utxos
@@ -20830,112 +21673,8 @@ var Explorer = function Explorer(pkg, settings) {
   };
 };
 
-module.exports = Explorer;
-
-/***/ }),
-
-/***/ 5501:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var _typeof = __webpack_require__(8);
-
-var _regeneratorRuntime = __webpack_require__(7757);
-
-var _asyncToGenerator = __webpack_require__(8926);
-
-var _defineProperty = __webpack_require__(9713);
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-var _require = __webpack_require__(306),
-    version = _require.version;
-
-var Crypto = __webpack_require__(2094);
-
-var Explorer = __webpack_require__(1845);
-
-var Contract = __webpack_require__(4825);
-
-var CardanoWeb3 = function CardanoWeb3() {
-  var _this = this;
-
-  var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  this.version = version;
-  this.initialized = false;
-  this.settings = {
-    crypto: _objectSpread({
-      protocolParams: {
-        linearFeeCoefficient: '44',
-        linearFeeConstant: '155381',
-        minimumUtxoVal: '1000000',
-        poolDeposit: '500000000',
-        keyDeposit: '2000000'
-      },
-      harden: 0x80000000,
-      ttl: 7200
-    }, settings.crypto),
-    explorer: _objectSpread({}, settings.explorer),
-    contract: _objectSpread({}, settings.contract)
-  };
-  var tmpProviders = [];
-
-  this.addProvider = function provider(name, Provider) {
-    if (this.initialized) {
-      this[name] = new Provider(this);
-    } else {
-      tmpProviders.push({
-        name: name,
-        Provider: Provider
-      });
-    }
-  };
-
-  this.init = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee() {
-    return _regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return new Crypto(_this, _this.settings.crypto);
-
-          case 2:
-            _this.crypto = _context.sent;
-
-            if (_this.settings.explorer.url) {
-              _this.explorer = new Explorer(_this, _this.settings.explorer);
-            }
-
-            if (_this.settings.contract.url) {
-              _this.contract = new Contract(_this, _this.settings.contract);
-            }
-
-            _this.initialized = true;
-            tmpProviders.forEach(function (i) {
-              _this[i.name] = new i.Provider(_this);
-            });
-            return _context.abrupt("return", _this);
-
-          case 8:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-  return this;
-};
-
-CardanoWeb3.version = version;
-
-if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
-  if (!window.CardanoWeb3) {
-    window.CardanoWeb3 = CardanoWeb3;
-  }
-}
-
-module.exports = CardanoWeb3;
+var _default = Explorer;
+exports.default = _default;
 
 /***/ }),
 
@@ -21101,10 +21840,9 @@ function fromByteArray (uint8) {
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-var __webpack_unused_export__;
 
-__webpack_unused_export__ = ({ value: true });
-__webpack_unused_export__ = exports.gW = void 0;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.bech32m = exports.bech32 = void 0;
 const ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 const ALPHABET_MAP = {};
 for (let z = 0; z < ALPHABET.length; z++) {
@@ -21270,8 +22008,8 @@ function getLibraryFromEncoding(encoding) {
         fromWords,
     };
 }
-exports.gW = getLibraryFromEncoding('bech32');
-__webpack_unused_export__ = getLibraryFromEncoding('bech32m');
+exports.bech32 = getLibraryFromEncoding('bech32');
+exports.bech32m = getLibraryFromEncoding('bech32m');
 
 
 /***/ }),
@@ -66888,12 +67626,121 @@ module.exports = JSON.parse('{"name":"cardano-web3.js","version":"0.1.0","author
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(5501);
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+var exports = __webpack_exports__;
+
+
+var _interopRequireDefault = __webpack_require__(5318);
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = void 0;
+
+var _regenerator = _interopRequireDefault(__webpack_require__(7757));
+
+var _typeof2 = _interopRequireDefault(__webpack_require__(8));
+
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(8926));
+
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(9713));
+
+var _crypto = _interopRequireDefault(__webpack_require__(2094));
+
+var _explorer = _interopRequireDefault(__webpack_require__(1845));
+
+var _contract = _interopRequireDefault(__webpack_require__(4825));
+
+var _package = __webpack_require__(306);
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var CardanoWeb3 = function CardanoWeb3() {
+  var _this = this;
+
+  var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  this.version = _package.version;
+  this.initialized = false;
+  this.settings = {
+    crypto: _objectSpread({
+      protocolParams: {
+        linearFeeCoefficient: '44',
+        linearFeeConstant: '155381',
+        minimumUtxoVal: '1000000',
+        poolDeposit: '500000000',
+        keyDeposit: '2000000'
+      },
+      harden: 0x80000000,
+      ttl: 7200
+    }, settings.crypto),
+    explorer: _objectSpread({}, settings.explorer),
+    contract: _objectSpread({}, settings.contract)
+  };
+  var tmpProviders = [];
+
+  this.addProvider = function provider(name, Provider) {
+    if (this.initialized) {
+      this[name] = new Provider(this);
+    } else {
+      tmpProviders.push({
+        name: name,
+        Provider: Provider
+      });
+    }
+  };
+
+  this.init = /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+    return _regenerator.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return new _crypto.default(_this, _this.settings.crypto);
+
+          case 2:
+            _this.crypto = _context.sent;
+
+            if (_this.settings.explorer.url) {
+              _this.explorer = new _explorer.default(_this, _this.settings.explorer);
+            }
+
+            if (_this.settings.contract.url) {
+              _this.contract = new _contract.default(_this, _this.settings.contract);
+            }
+
+            _this.initialized = true;
+            tmpProviders.forEach(function (i) {
+              _this[i.name] = new i.Provider(_this);
+            });
+            return _context.abrupt("return", _this);
+
+          case 8:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return this;
+};
+
+CardanoWeb3.version = _package.version;
+
+if ((typeof window === "undefined" ? "undefined" : (0, _typeof2.default)(window)) === 'object') {
+  if (!window.CardanoWeb3) {
+    window.CardanoWeb3 = CardanoWeb3;
+  }
+}
+
+var _default = CardanoWeb3;
+exports.default = _default;
+})();
+
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;

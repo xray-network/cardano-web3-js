@@ -29,17 +29,17 @@
         <div class="mb-5">
           <h2><strong>Cardano-Web3.js</strong> <small>by Ray Network</small></h2>
           <a href="https://github.com/ray-network/cardano-web3.js" class="pe-2">
-            <i class="bi bi-github pe-1"></i> GitHub (Documentation)
+            <i class="bi bi-github pe-1"></i> Github & Documentation
           </a>
           <a href="https://github.com/ray-network/cardano-web3.js/examples/" class="pe-2">
-            API Examples
+            Code Examples
           </a>
-          <a href="https://x.rraayy.com" class="pe-2">XRAY Token</a>
           <a href="https://rraayy.com" class="pe-2">Ray Network</a>
           <a href="https://raywallet.io" class="pe-2">Ray Wallet</a>
+          <a href="https://x.rraayy.com" class="pe-2">XRAY Token</a>
         </div>
         <div class="mb-3">
-          <label for="mnemonic" class="form-label">Mnemonic Generation (24 Words)</label>
+          <label for="mnemonic" class="form-label">Seed Phrase (24 Words Mnemonic)</label>
           <div class="input-group">
             <input class="form-control" id="mnemonic" autocomplete="off" />
             <button class="btn btn-primary" id="generateMnemonic">Generate</button>
@@ -123,7 +123,7 @@
           const accountKeys = Cardano.crypto.getAccountKeys(this.mnemonic)
           document.getElementById('prvkey').value = accountKeys.privateKey
           document.getElementById('pubkey').value = accountKeys.publicKey
-          document.getElementById('accountId').value = accountKeys.accountId
+          document.getElementById('accountId').value = accountKeys.accountIdFull
           document.getElementById('rewardAddr').value = accountKeys.rewardAddress
         }
 
