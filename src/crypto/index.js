@@ -40,8 +40,9 @@ const Crypto = function Crypto(pkg, settings) {
     this.BigNumber = BigNumber
 
     /**
-     * Cardano Serialization Lib
+     * Get Current Network
      */
+
     this.Network =
       settings.network === 'mainnet'
         ? this.Cardano.NetworkInfo.mainnet().network_id()
@@ -332,7 +333,7 @@ const Crypto = function Crypto(pkg, settings) {
         const assets = Cardano.MultiAsset.new()
         tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
-          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
           const asset = assets.get(policyId) ?? Cardano.Assets.new()
@@ -361,7 +362,7 @@ const Crypto = function Crypto(pkg, settings) {
         const assets = Cardano.MultiAsset.new()
         tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
-          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || ''))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
           const asset = assets.get(policyId) ?? Cardano.Assets.new()
@@ -391,7 +392,7 @@ const Crypto = function Crypto(pkg, settings) {
 
         utxo.tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
-          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
           const policyContent = assets.get(policyId) ?? Cardano.Assets.new()
@@ -417,7 +418,7 @@ const Crypto = function Crypto(pkg, settings) {
           const scriptHash = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
           const mintAssets = mint.get(scriptHash) ?? Cardano.MintAssets.new()
           mintAssets.insert(
-            Cardano.AssetName.new(Buffer.from(token.asset.assetName)),
+            Cardano.AssetName.new(Buffer.from(token.asset.assetName || '')),
             Cardano.Int.new_i32(token.quantity),
           )
           mint.insert(scriptHash, mintAssets)
@@ -441,19 +442,19 @@ const Crypto = function Crypto(pkg, settings) {
         const getMetadataObject = (data) => {
           const result = {}
           const type = typeof data
-          if (type == 'number') {
+          if (type === 'number') {
             result[MetadateTypesEnum.Number] = data
-          } else if (type == 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
+          } else if (type === 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
             result[MetadateTypesEnum.String] = data
           } else if (Buffer.isBuffer(data) && Buffer.byteLength(data, 'hex') <= 64) {
             result[MetadateTypesEnum.Bytes] = data.toString('hex')
-          } else if (type == 'boolean') {
+          } else if (type === 'boolean') {
             result[MetadateTypesEnum.String] = data.toString()
-          } else if (type == 'undefined') {
+          } else if (type === 'undefined') {
             result[MetadateTypesEnum.String] = 'undefined'
           } else if (Array.isArray(data)) {
             result[MetadateTypesEnum.List] = data.map((a) => getMetadataObject(a))
-          } else if (type == 'object') {
+          } else if (type === 'object') {
             if (data) {
               result[MetadateTypesEnum.Map] = Object.keys(data).map((k) => {
                 return {
@@ -469,21 +470,21 @@ const Crypto = function Crypto(pkg, settings) {
         }
 
         const constructMetadata = (data) => {
-          let metadata = {}
+          const metadata = {}
 
           if (Array.isArray(data)) {
-            //eslint-disbale-next-line
+            // eslint-disable-next-line
             for (let i = 0; i < data.length; i++) {
               const value = data[i]
               metadata[i] = getMetadataObject(value)
             }
           } else {
-            let keys = Object.keys(data)
-            //eslint-disbale-next-line
+            const keys = Object.keys(data)
+            // eslint-disable-next-line
             for (let i = 0; i < keys.length; i++) {
               const key = keys[i]
               if (Number.isInteger(Number(key))) {
-                let index = parseInt(key)
+                const index = parseInt(key, 10)
                 metadata[index] = getMetadataObject(data[key])
               }
             }
@@ -492,32 +493,34 @@ const Crypto = function Crypto(pkg, settings) {
         }
 
         const getTransactionMetadatum = (value) => {
-          if (value.hasOwnProperty(MetadateTypesEnum.Number)) {
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Number)) {
             return Cardano.TransactionMetadatum.new_int(
-              Int.new_i32(value[MetadateTypesEnum.Number]),
+              Cardano.Int.new_i32(value[MetadateTypesEnum.Number]),
             )
           }
-          if (value.hasOwnProperty(MetadateTypesEnum.String)) {
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.String)) {
             return Cardano.TransactionMetadatum.new_text(value[MetadateTypesEnum.String])
           }
-          if (value.hasOwnProperty(MetadateTypesEnum.Bytes)) {
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Bytes)) {
             return Cardano.TransactionMetadatum.new_bytes(
               Buffer.from(value[MetadateTypesEnum.Bytes], 'hex'),
             )
           }
-          if (value.hasOwnProperty(MetadateTypesEnum.List)) {
-            let list = value[MetadateTypesEnum.List]
-            let metalist = Cardano.MetadataList.new()
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.List)) {
+            const list = value[MetadateTypesEnum.List]
+            const metalist = Cardano.MetadataList.new()
+            // eslint-disable-next-line
             for (let i = 0; i < list.length; i++) {
               metalist.add(getTransactionMetadatum(list[i]))
             }
             return Cardano.TransactionMetadatum.new_list(metalist)
           }
-          if (value.hasOwnProperty(MetadateTypesEnum.Map)) {
-            let map = value[MetadateTypesEnum.Map]
-            let metamap = Cardano.MetadataMap.new()
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Map)) {
+            const map = value[MetadateTypesEnum.Map]
+            const metamap = Cardano.MetadataMap.new()
+            // eslint-disable-next-line
             for (let i = 0; i < map.length; i++) {
-              let { k, v } = map[i]
+              const { k, v } = map[i]
               metamap.insert(getTransactionMetadatum(k), getTransactionMetadatum(v))
             }
             return Cardano.TransactionMetadatum.new_map(metamap)
@@ -526,7 +529,7 @@ const Crypto = function Crypto(pkg, settings) {
 
         const metadata = constructMetadata(metadataInput)
         const generalMetatada = Cardano.GeneralTransactionMetadata.new()
-        //eslint-disable-next-line
+        // eslint-disable-next-line
         for (const key in metadata) {
           const value = metadata[key]
           generalMetatada.insert(Cardano.BigNum.from_str(key), getTransactionMetadatum(value))

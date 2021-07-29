@@ -20,6 +20,7 @@
   "main": "src/index.js",
   "scripts": {
     "serve": "webpack serve --mode development",
+    "start": "npm run serve",
     "prettier": "prettier --write \"src/**/*.{js,ts}\"",
     "eslint": "eslint --ext .js,jsx src",
     "build": "node ./scripts/build && node ./scripts/webpack && webpack",

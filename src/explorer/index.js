@@ -50,7 +50,7 @@ const Explorer = function Explorer(pkg, settings) {
 
     const config = {
       aggregateString: '',
-      limit: 2500,
+      limit: 100,
       maxPages: 100,
       offset: 0,
       query: () => '',
@@ -60,7 +60,7 @@ const Explorer = function Explorer(pkg, settings) {
 
     // objects deep concat
 
-    const arraysDeepMerge = (a, b) => {
+    const objectDeepMerge = (a, b) => {
       const ret = Object.keys(a).length === 0 ? b : a
       Object.keys(b).forEach((prop) => {
         const propA = a[prop]
@@ -70,7 +70,7 @@ const Explorer = function Explorer(pkg, settings) {
           if (Array.isArray(propA)) {
             ret[prop] = propA.concat(propB)
           } else {
-            ret[prop] = arraysDeepMerge(propA, propB)
+            ret[prop] = objectDeepMerge(propA, propB)
           }
         } else if (propB) {
           ret[prop] = propB
@@ -90,12 +90,12 @@ const Explorer = function Explorer(pkg, settings) {
         ),
         variables: config.variables,
       })
-      response = arraysDeepMerge(response, update.data)
+      response = objectDeepMerge(response, update)
       if (update.data.errors) {
         return
       }
       iteration += 1
-      const totalCount = Number(update.data.data[config.aggregateString].aggregate.count)
+      const totalCount = Number(update?.data?.data[config.aggregateString]?.aggregate?.count)
       const currentPage = iteration * config.limit + config.offset
       const limitReason = iteration < config.maxPages
       if (currentPage < totalCount && limitReason) {
@@ -360,28 +360,108 @@ const Explorer = function Explorer(pkg, settings) {
       )
 
       const checkedAdresses = tmpAddresses.map((addr) => addr.address)
-      const { data: tmpAddresssesUTXO } = await Cardano.explorer.getAddressesUTXO(checkedAdresses)
+      const {
+        data: { data: tmpAddresssesUTXO },
+      } = await Cardano.explorer.getAddressesUTXO(checkedAdresses)
 
       const adressesWithUTXOs = tmpAddresssesUTXO.utxos
         ? tmpAddresssesUTXO.utxos.map((utxo) => {
-            const filteredUtxo = tmpAddresses.filter((addr) => addr.address === utxo.address)[0]
-            return {
-              ...utxo,
-              addressing: {
-                type: filteredUtxo.type,
-                path: filteredUtxo.path,
-              },
-            }
-          })
+          const filteredUtxo = tmpAddresses.filter((addr) => addr.address === utxo.address)[0]
+          return {
+            ...utxo,
+            addressing: {
+              type: filteredUtxo.type,
+              path: filteredUtxo.path,
+            },
+          }
+        })
         : []
 
       return [adressesWithUTXOs, checkedAdresses]
     }
 
+
+    // get transactions by hashes and transform to readable object
+
+    async function getTransactions(addressesArray) {
+
+      const getTxHashFromInputs = await Cardano.explorer.getTxHashFromInputs(addressesArray)
+      const getTxHashFromOutputs = await Cardano.explorer.getTxHashFromOutputs(addressesArray)
+      const rawTransactions = [
+        ...(getTxHashFromInputs?.data?.data?.transactions || []),
+        ...(getTxHashFromOutputs?.data?.data?.transactions || []),
+      ]
+
+      const getTxByHash = await Cardano.explorer.getTxByHash(rawTransactions.map((tx) => tx.hash))
+      const transactions = (getTxByHash?.data?.data?.transactions || []).map((tx) => {
+        // let inputAmount = new BigNumber(0)
+        // let outputAmount = new BigNumber(0)
+        let amount = new BigNumber(0)
+        const tokens = {}
+
+        tx.inputs.forEach((input) => {
+          if (input && addressesArray.includes(input.address)) {
+            amount = amount.minus(input.value)
+            input.tokens.forEach((token) => {
+              const { asset, quantity } = token
+              const { assetId } = asset
+              if (!tokens[assetId]) {
+                tokens[assetId] = {
+                  quantity: new BigNumber(0),
+                }
+              }
+              tokens[assetId] = {
+                ...tokens[assetId],
+                ...asset,
+                ticker:
+                  asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+                quantity: new BigNumber(tokens[assetId].quantity).minus(quantity),
+              }
+            })
+          }
+        })
+        tx.outputs.forEach((output) => {
+          if (output && addressesArray.includes(output.address)) {
+            amount = amount.plus(output.value)
+            output.tokens.forEach((token) => {
+              const { asset, quantity } = token
+              const { assetId } = asset
+              if (!tokens[assetId]) {
+                tokens[assetId] = {
+                  quantity: new BigNumber(0),
+                }
+              }
+              tokens[assetId] = {
+                ...tokens[assetId],
+                ...asset,
+                ticker:
+                  asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+                quantity: new BigNumber(tokens[assetId].quantity).plus(quantity),
+              }
+            })
+          }
+        })
+
+        return {
+          ...tx,
+          type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
+          value: new BigNumber(amount).abs(),
+          tokens: Object.keys(tokens).map((key) => {
+            return {
+              ...tokens[key],
+              quantity: tokens[key].quantity.abs(),
+            }
+          }),
+        }
+      })
+
+      return transactions
+    }
+
     // check addresses utxos with shift until next pack will be with zero utxos
 
     const utxos = []
-    const adressesArray = []
+    const transactions = []
 
     async function checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift) {
       const [adressesWithUTXOs, checkedAdresses] = await checkAddressesUTXO(
@@ -390,92 +470,19 @@ const Explorer = function Explorer(pkg, settings) {
         checkShift,
       )
 
-      adressesArray.push(...checkedAdresses)
-      if (adressesWithUTXOs.length) {
-        utxos.push(...adressesWithUTXOs)
-      }
-      if (checkShift < maxShiftIndex) {
-        checkShift += 1
-        await checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift)
+      const txs = await getTransactions(checkedAdresses)
+      transactions.push(...txs)
+
+      if (checkShift <= maxShiftIndex) {
+        if (adressesWithUTXOs.length) {
+          utxos.push(...adressesWithUTXOs)
+          checkShift += 1
+          await checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift)
+        }
       }
     }
 
     await checkAddressesUTXOWithShift(type, pageSize, 0)
-
-    // get transactions by hashes and transform to readable object
-
-    const { data: rawTxInputs } = await Cardano.explorer.getTxHashFromInputs(adressesArray)
-    const { data: rawTxOutputs } = await Cardano.explorer.getTxHashFromOutputs(adressesArray)
-    const rawTransactions = [
-      ...(rawTxInputs?.transactions || []),
-      ...(rawTxOutputs?.transactions || []),
-    ]
-
-    const { data: transactionsInputsOutputs } = await Cardano.explorer.getTxByHash(
-      rawTransactions.map((tx) => tx.hash),
-    )
-
-    const transactions = (transactionsInputsOutputs?.transactions || []).map((tx) => {
-      // let inputAmount = new BigNumber(0)
-      // let outputAmount = new BigNumber(0)
-      let amount = new BigNumber(0)
-      const tokens = {}
-
-      tx.inputs.forEach((input) => {
-        if (input && adressesArray.includes(input.address)) {
-          amount = amount.minus(input.value)
-          input.tokens.forEach((token) => {
-            const { asset, quantity } = token
-            const { assetId } = asset
-            if (!tokens[assetId]) {
-              tokens[assetId] = {
-                quantity: new BigNumber(0),
-              }
-            }
-            tokens[assetId] = {
-              ...tokens[assetId],
-              ...asset,
-              ticker:
-                asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-              quantity: new BigNumber(tokens[assetId].quantity).minus(quantity),
-            }
-          })
-        }
-      })
-      tx.outputs.forEach((output) => {
-        if (output && adressesArray.includes(output.address)) {
-          amount = amount.plus(output.value)
-          output.tokens.forEach((token) => {
-            const { asset, quantity } = token
-            const { assetId } = asset
-            if (!tokens[assetId]) {
-              tokens[assetId] = {
-                quantity: BigInt(0),
-              }
-            }
-            tokens[assetId] = {
-              ...tokens[assetId],
-              ...asset,
-              ticker:
-                asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-              quantity: new BigNumber(tokens[assetId].quantity).plus(quantity),
-            }
-          })
-        }
-      })
-
-      return {
-        ...tx,
-        type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
-        value: new BigNumber(amount).abs(),
-        tokens: Object.keys(tokens).map((key) => {
-          return {
-            ...tokens[key],
-            quantity: tokens[key].quantity.abs(),
-          }
-        }),
-      }
-    })
 
     // get account assets summary from utxos
 

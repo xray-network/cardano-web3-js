@@ -176,10 +176,10 @@
       // INIT WEB3
       const Cardano = new CardanoWeb3({
         crypto: {
-          network: 'testnet',
+          network: 'mainnet',
         },
         explorer: {
-          url: 'https://graphql-testnet.rraayy.com/',
+          url: 'https://graphql.rraayy.com/',
         }
       })
 
@@ -316,10 +316,10 @@
         el('policyId').addEventListener('click', (e) => processCopy(e, this.appPolicyId))
 
         // SET MINTING CONFIG
-        this.toAddress = "addr_test1qracwxsrckgz6e4yjdy3h9h4ze8e8xzsl568dljm883gvf0gl9lhqelxxjhgxrlxzuhv52d7uxj05z2mw0fsqwt3pz4sz0c6yu"
+        this.toAddress = "addr_test1qzd2ulz7jx0zn3t90vep26f7gl9wkj03lx0w5ca0vhnl5u6nfathe437695m4cwzlgn959uswtm56dkkmvxjx6h6mfssh7t4zy"
         this.tokensToMint = [
           {
-            quantity: "1",
+            quantity: "3",
             asset: {
               assetName: "XDIAMOND",
               policyId: this.appPolicyId,
@@ -329,11 +329,17 @@
 
         this.metadata = {
           721: {
-            "XDIAMOND": {
-              name: "XRAY Diamond",
-              image: "ipfs://QmTyMArd461uFKepHfZm3uUjTX462ShKRdL9qu3VEaGXeR",
+            [this.appPolicyId]: {
+              "XDIAMOND": {
+                "name": "Ray Diamond",
+                "image": "ipfs://QmaYWWWmrUJkWiKAaHRiYwLaSCNGT8he4ZpuQd5TddvRVJ",
+                "ticker": "XDIAMOND",
+              },
             },
-
+            "description": "Oh, are those really diamonds?!",
+            "publisher": "https://minterr.io",
+            "url": "https://raywallet.io",
+            "twitter": "https://twitter.com/RayWallet",
           }
         }
 
@@ -370,10 +376,10 @@
             this.appAddressState.utxos,
             this.appTip,
             this.metadata,
-            {
-              donateAddress: this.donateAddress,
-              donateValue: this.donateValue,
-            },
+            // {
+            //   donateAddress: this.donateAddress,
+            //   donateValue: this.donateValue,
+            // },
           )
 
           console.log('transaction', transaction)

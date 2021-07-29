@@ -1,10 +1,10 @@
 import Crypto from './crypto'
 import Explorer from './explorer'
 import Contract from './contract'
-import { version } from '../package.json'
+import packageInfo from '../package.json'
 
 const CardanoWeb3 = function CardanoWeb3(settings = {}) {
-  this.version = version
+  this.version = packageInfo.version
   this.initialized = false
   this.settings = {
     crypto: {
@@ -59,7 +59,7 @@ const CardanoWeb3 = function CardanoWeb3(settings = {}) {
   return this
 }
 
-CardanoWeb3.version = version
+CardanoWeb3.version = packageInfo.version
 
 if (typeof window === 'object') {
   if (!window.CardanoWeb3) {

@@ -19940,7 +19940,7 @@ var Crypto = function Crypto(pkg, settings) {
             _this.Bip39 = _bip39Light.default;
             _this.BigNumber = _bignumber.default;
             /**
-             * Cardano Serialization Lib
+             * Get Current Network
              */
 
             _this.Network = settings.network === 'mainnet' ? _this.Cardano.NetworkInfo.mainnet().network_id() : _this.Cardano.NetworkInfo.testnet().network_id();
@@ -20221,7 +20221,7 @@ var Crypto = function Crypto(pkg, settings) {
                   var _assets$get;
 
                   var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
-                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'));
                   var quantity = Cardano.BigNum.from_str(token.quantity);
                   var asset = (_assets$get = assets.get(policyId)) !== null && _assets$get !== void 0 ? _assets$get : Cardano.Assets.new();
                   asset.insert(assetName, quantity);
@@ -20249,7 +20249,7 @@ var Crypto = function Crypto(pkg, settings) {
                   var _assets$get2;
 
                   var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
-                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || ''));
                   var quantity = Cardano.BigNum.from_str(token.quantity);
                   var asset = (_assets$get2 = assets.get(policyId)) !== null && _assets$get2 !== void 0 ? _assets$get2 : Cardano.Assets.new();
                   asset.insert(assetName, quantity);
@@ -20276,7 +20276,7 @@ var Crypto = function Crypto(pkg, settings) {
                   var _assets$get3;
 
                   var policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
-                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'));
+                  var assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'));
                   var quantity = Cardano.BigNum.from_str(token.quantity);
                   var policyContent = (_assets$get3 = assets.get(policyId)) !== null && _assets$get3 !== void 0 ? _assets$get3 : Cardano.Assets.new();
                   policyContent.insert(assetName, quantity);
@@ -20298,7 +20298,7 @@ var Crypto = function Crypto(pkg, settings) {
 
                   var scriptHash = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'));
                   var mintAssets = (_mint$get = mint.get(scriptHash)) !== null && _mint$get !== void 0 ? _mint$get : Cardano.MintAssets.new();
-                  mintAssets.insert(Cardano.AssetName.new(Buffer.from(token.asset.assetName)), Cardano.Int.new_i32(token.quantity));
+                  mintAssets.insert(Cardano.AssetName.new(Buffer.from(token.asset.assetName || '')), Cardano.Int.new_i32(token.quantity));
                   mint.insert(scriptHash, mintAssets);
                 });
                 return mint;
@@ -20318,21 +20318,21 @@ var Crypto = function Crypto(pkg, settings) {
                   var result = {};
                   var type = (0, _typeof2.default)(data);
 
-                  if (type == 'number') {
+                  if (type === 'number') {
                     result[MetadateTypesEnum.Number] = data;
-                  } else if (type == 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
+                  } else if (type === 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
                     result[MetadateTypesEnum.String] = data;
                   } else if (Buffer.isBuffer(data) && Buffer.byteLength(data, 'hex') <= 64) {
                     result[MetadateTypesEnum.Bytes] = data.toString('hex');
-                  } else if (type == 'boolean') {
+                  } else if (type === 'boolean') {
                     result[MetadateTypesEnum.String] = data.toString();
-                  } else if (type == 'undefined') {
+                  } else if (type === 'undefined') {
                     result[MetadateTypesEnum.String] = 'undefined';
                   } else if (Array.isArray(data)) {
                     result[MetadateTypesEnum.List] = data.map(function (a) {
                       return getMetadataObject(a);
                     });
-                  } else if (type == 'object') {
+                  } else if (type === 'object') {
                     if (data) {
                       result[MetadateTypesEnum.Map] = Object.keys(data).map(function (k) {
                         return {
@@ -20352,19 +20352,19 @@ var Crypto = function Crypto(pkg, settings) {
                   var metadata = {};
 
                   if (Array.isArray(data)) {
-                    //eslint-disbale-next-line
+                    // eslint-disable-next-line
                     for (var i = 0; i < data.length; i++) {
                       var value = data[i];
                       metadata[i] = getMetadataObject(value);
                     }
                   } else {
-                    var keys = Object.keys(data); //eslint-disbale-next-line
+                    var keys = Object.keys(data); // eslint-disable-next-line
 
                     for (var _i = 0; _i < keys.length; _i++) {
                       var key = keys[_i];
 
                       if (Number.isInteger(Number(key))) {
-                        var index = parseInt(key);
+                        var index = parseInt(key, 10);
                         metadata[index] = getMetadataObject(data[key]);
                       }
                     }
@@ -20374,21 +20374,21 @@ var Crypto = function Crypto(pkg, settings) {
                 };
 
                 var getTransactionMetadatum = function getTransactionMetadatum(value) {
-                  if (value.hasOwnProperty(MetadateTypesEnum.Number)) {
-                    return Cardano.TransactionMetadatum.new_int(Int.new_i32(value[MetadateTypesEnum.Number]));
+                  if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Number)) {
+                    return Cardano.TransactionMetadatum.new_int(Cardano.Int.new_i32(value[MetadateTypesEnum.Number]));
                   }
 
-                  if (value.hasOwnProperty(MetadateTypesEnum.String)) {
+                  if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.String)) {
                     return Cardano.TransactionMetadatum.new_text(value[MetadateTypesEnum.String]);
                   }
 
-                  if (value.hasOwnProperty(MetadateTypesEnum.Bytes)) {
+                  if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Bytes)) {
                     return Cardano.TransactionMetadatum.new_bytes(Buffer.from(value[MetadateTypesEnum.Bytes], 'hex'));
                   }
 
-                  if (value.hasOwnProperty(MetadateTypesEnum.List)) {
+                  if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.List)) {
                     var list = value[MetadateTypesEnum.List];
-                    var metalist = Cardano.MetadataList.new();
+                    var metalist = Cardano.MetadataList.new(); // eslint-disable-next-line
 
                     for (var i = 0; i < list.length; i++) {
                       metalist.add(getTransactionMetadatum(list[i]));
@@ -20397,9 +20397,9 @@ var Crypto = function Crypto(pkg, settings) {
                     return Cardano.TransactionMetadatum.new_list(metalist);
                   }
 
-                  if (value.hasOwnProperty(MetadateTypesEnum.Map)) {
+                  if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Map)) {
                     var map = value[MetadateTypesEnum.Map];
-                    var metamap = Cardano.MetadataMap.new();
+                    var metamap = Cardano.MetadataMap.new(); // eslint-disable-next-line
 
                     for (var _i2 = 0; _i2 < map.length; _i2++) {
                       var _map$_i = map[_i2],
@@ -20413,7 +20413,7 @@ var Crypto = function Crypto(pkg, settings) {
                 };
 
                 var metadata = constructMetadata(metadataInput);
-                var generalMetatada = Cardano.GeneralTransactionMetadata.new(); //eslint-disable-next-line
+                var generalMetatada = Cardano.GeneralTransactionMetadata.new(); // eslint-disable-next-line
 
                 for (var key in metadata) {
                   var value = metadata[key];
@@ -21219,7 +21219,7 @@ var Explorer = function Explorer(pkg, settings) {
 
   this.fetchComplete = /*#__PURE__*/function () {
     var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(params) {
-      var config, arraysDeepMerge, response, iteration, mergeDeep, _mergeDeep;
+      var config, objectDeepMerge, response, iteration, mergeDeep, _mergeDeep;
 
       return _regenerator.default.wrap(function _callee2$(_context2) {
         while (1) {
@@ -21227,6 +21227,8 @@ var Explorer = function Explorer(pkg, settings) {
             case 0:
               _mergeDeep = function _mergeDeep3() {
                 _mergeDeep = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+                  var _update$data, _update$data$data$con, _update$data$data$con2;
+
                   var update, totalCount, currentPage, limitReason;
                   return _regenerator.default.wrap(function _callee$(_context) {
                     while (1) {
@@ -21240,7 +21242,7 @@ var Explorer = function Explorer(pkg, settings) {
 
                         case 2:
                           update = _context.sent;
-                          response = arraysDeepMerge(response, update.data);
+                          response = objectDeepMerge(response, update);
 
                           if (!update.data.errors) {
                             _context.next = 6;
@@ -21251,7 +21253,7 @@ var Explorer = function Explorer(pkg, settings) {
 
                         case 6:
                           iteration += 1;
-                          totalCount = Number(update.data.data[config.aggregateString].aggregate.count);
+                          totalCount = Number(update === null || update === void 0 ? void 0 : (_update$data = update.data) === null || _update$data === void 0 ? void 0 : (_update$data$data$con = _update$data.data[config.aggregateString]) === null || _update$data$data$con === void 0 ? void 0 : (_update$data$data$con2 = _update$data$data$con.aggregate) === null || _update$data$data$con2 === void 0 ? void 0 : _update$data$data$con2.count);
                           currentPage = iteration * config.limit + config.offset;
                           limitReason = iteration < config.maxPages;
 
@@ -21280,7 +21282,7 @@ var Explorer = function Explorer(pkg, settings) {
               // init config
               config = _objectSpread({
                 aggregateString: '',
-                limit: 2500,
+                limit: 100,
                 maxPages: 100,
                 offset: 0,
                 query: function query() {
@@ -21289,7 +21291,7 @@ var Explorer = function Explorer(pkg, settings) {
                 variables: {}
               }, params); // objects deep concat
 
-              arraysDeepMerge = function arraysDeepMerge(a, b) {
+              objectDeepMerge = function objectDeepMerge(a, b) {
                 var ret = Object.keys(a).length === 0 ? b : a;
                 Object.keys(b).forEach(function (prop) {
                   var propA = a[prop];
@@ -21299,7 +21301,7 @@ var Explorer = function Explorer(pkg, settings) {
                     if (Array.isArray(propA)) {
                       ret[prop] = propA.concat(propB);
                     } else {
-                      ret[prop] = arraysDeepMerge(propA, propB);
+                      ret[prop] = objectDeepMerge(propA, propB);
                     }
                   } else if (propB) {
                     ret[prop] = propB;
@@ -21397,62 +21399,163 @@ var Explorer = function Explorer(pkg, settings) {
   };
 
   this.getAccountStateByPublicKey = /*#__PURE__*/function () {
-    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(publicKey) {
+    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(publicKey) {
       var pageSize,
           maxShiftIndex,
           type,
           checkAddressesUTXO,
           _checkAddressesUTXO,
+          getTransactions,
+          _getTransactions,
           utxos,
-          adressesArray,
+          transactions,
           checkAddressesUTXOWithShift,
           _checkAddressesUTXOWithShift,
-          _yield$Cardano$explor,
-          rawTxInputs,
-          _yield$Cardano$explor2,
-          rawTxOutputs,
-          rawTransactions,
-          _yield$Cardano$explor3,
-          transactionsInputsOutputs,
-          transactions,
           getAssetsSummary,
           assets,
-          _args5 = arguments;
+          _args6 = arguments;
 
-      return _regenerator.default.wrap(function _callee5$(_context5) {
+      return _regenerator.default.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               _checkAddressesUTXOWithShift = function _checkAddressesUTXOWi2() {
-                _checkAddressesUTXOWithShift = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(checkType, checkPageSize, checkShift) {
-                  var _yield$checkAddresses, _yield$checkAddresses2, adressesWithUTXOs, checkedAdresses;
+                _checkAddressesUTXOWithShift = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(checkType, checkPageSize, checkShift) {
+                  var _yield$checkAddresses, _yield$checkAddresses2, adressesWithUTXOs, checkedAdresses, txs;
 
+                  return _regenerator.default.wrap(function _callee5$(_context5) {
+                    while (1) {
+                      switch (_context5.prev = _context5.next) {
+                        case 0:
+                          _context5.next = 2;
+                          return checkAddressesUTXO(checkType, checkPageSize, checkShift);
+
+                        case 2:
+                          _yield$checkAddresses = _context5.sent;
+                          _yield$checkAddresses2 = (0, _slicedToArray2.default)(_yield$checkAddresses, 2);
+                          adressesWithUTXOs = _yield$checkAddresses2[0];
+                          checkedAdresses = _yield$checkAddresses2[1];
+                          _context5.next = 8;
+                          return getTransactions(checkedAdresses);
+
+                        case 8:
+                          txs = _context5.sent;
+                          transactions.push.apply(transactions, (0, _toConsumableArray2.default)(txs));
+
+                          if (!(checkShift <= maxShiftIndex)) {
+                            _context5.next = 16;
+                            break;
+                          }
+
+                          if (!adressesWithUTXOs.length) {
+                            _context5.next = 16;
+                            break;
+                          }
+
+                          utxos.push.apply(utxos, (0, _toConsumableArray2.default)(adressesWithUTXOs));
+                          checkShift += 1;
+                          _context5.next = 16;
+                          return checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift);
+
+                        case 16:
+                        case "end":
+                          return _context5.stop();
+                      }
+                    }
+                  }, _callee5);
+                }));
+                return _checkAddressesUTXOWithShift.apply(this, arguments);
+              };
+
+              checkAddressesUTXOWithShift = function _checkAddressesUTXOWi(_x7, _x8, _x9) {
+                return _checkAddressesUTXOWithShift.apply(this, arguments);
+              };
+
+              _getTransactions = function _getTransactions3() {
+                _getTransactions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(addressesArray) {
+                  var _getTxHashFromInputs$, _getTxHashFromInputs$2, _getTxHashFromOutputs, _getTxHashFromOutputs2, _getTxByHash$data, _getTxByHash$data$dat;
+
+                  var getTxHashFromInputs, getTxHashFromOutputs, rawTransactions, getTxByHash, transactions;
                   return _regenerator.default.wrap(function _callee4$(_context4) {
                     while (1) {
                       switch (_context4.prev = _context4.next) {
                         case 0:
                           _context4.next = 2;
-                          return checkAddressesUTXO(checkType, checkPageSize, checkShift);
+                          return Cardano.explorer.getTxHashFromInputs(addressesArray);
 
                         case 2:
-                          _yield$checkAddresses = _context4.sent;
-                          _yield$checkAddresses2 = (0, _slicedToArray2.default)(_yield$checkAddresses, 2);
-                          adressesWithUTXOs = _yield$checkAddresses2[0];
-                          checkedAdresses = _yield$checkAddresses2[1];
-                          adressesArray.push.apply(adressesArray, (0, _toConsumableArray2.default)(checkedAdresses));
+                          getTxHashFromInputs = _context4.sent;
+                          _context4.next = 5;
+                          return Cardano.explorer.getTxHashFromOutputs(addressesArray);
 
-                          if (adressesWithUTXOs.length) {
-                            utxos.push.apply(utxos, (0, _toConsumableArray2.default)(adressesWithUTXOs));
-                          }
+                        case 5:
+                          getTxHashFromOutputs = _context4.sent;
+                          rawTransactions = [].concat((0, _toConsumableArray2.default)((getTxHashFromInputs === null || getTxHashFromInputs === void 0 ? void 0 : (_getTxHashFromInputs$ = getTxHashFromInputs.data) === null || _getTxHashFromInputs$ === void 0 ? void 0 : (_getTxHashFromInputs$2 = _getTxHashFromInputs$.data) === null || _getTxHashFromInputs$2 === void 0 ? void 0 : _getTxHashFromInputs$2.transactions) || []), (0, _toConsumableArray2.default)((getTxHashFromOutputs === null || getTxHashFromOutputs === void 0 ? void 0 : (_getTxHashFromOutputs = getTxHashFromOutputs.data) === null || _getTxHashFromOutputs === void 0 ? void 0 : (_getTxHashFromOutputs2 = _getTxHashFromOutputs.data) === null || _getTxHashFromOutputs2 === void 0 ? void 0 : _getTxHashFromOutputs2.transactions) || []));
+                          _context4.next = 9;
+                          return Cardano.explorer.getTxByHash(rawTransactions.map(function (tx) {
+                            return tx.hash;
+                          }));
 
-                          if (!(checkShift < maxShiftIndex)) {
-                            _context4.next = 12;
-                            break;
-                          }
+                        case 9:
+                          getTxByHash = _context4.sent;
+                          transactions = ((getTxByHash === null || getTxByHash === void 0 ? void 0 : (_getTxByHash$data = getTxByHash.data) === null || _getTxByHash$data === void 0 ? void 0 : (_getTxByHash$data$dat = _getTxByHash$data.data) === null || _getTxByHash$data$dat === void 0 ? void 0 : _getTxByHash$data$dat.transactions) || []).map(function (tx) {
+                            // let inputAmount = new BigNumber(0)
+                            // let outputAmount = new BigNumber(0)
+                            var amount = new BigNumber(0);
+                            var tokens = {};
+                            tx.inputs.forEach(function (input) {
+                              if (input && addressesArray.includes(input.address)) {
+                                amount = amount.minus(input.value);
+                                input.tokens.forEach(function (token) {
+                                  var asset = token.asset,
+                                      quantity = token.quantity;
+                                  var assetId = asset.assetId;
 
-                          checkShift += 1;
-                          _context4.next = 12;
-                          return checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift);
+                                  if (!tokens[assetId]) {
+                                    tokens[assetId] = {
+                                      quantity: new BigNumber(0)
+                                    };
+                                  }
+
+                                  tokens[assetId] = _objectSpread(_objectSpread(_objectSpread({}, tokens[assetId]), asset), {}, {
+                                    ticker: asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+                                    quantity: new BigNumber(tokens[assetId].quantity).minus(quantity)
+                                  });
+                                });
+                              }
+                            });
+                            tx.outputs.forEach(function (output) {
+                              if (output && addressesArray.includes(output.address)) {
+                                amount = amount.plus(output.value);
+                                output.tokens.forEach(function (token) {
+                                  var asset = token.asset,
+                                      quantity = token.quantity;
+                                  var assetId = asset.assetId;
+
+                                  if (!tokens[assetId]) {
+                                    tokens[assetId] = {
+                                      quantity: new BigNumber(0)
+                                    };
+                                  }
+
+                                  tokens[assetId] = _objectSpread(_objectSpread(_objectSpread({}, tokens[assetId]), asset), {}, {
+                                    ticker: asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+                                    quantity: new BigNumber(tokens[assetId].quantity).plus(quantity)
+                                  });
+                                });
+                              }
+                            });
+                            return _objectSpread(_objectSpread({}, tx), {}, {
+                              type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
+                              value: new BigNumber(amount).abs(),
+                              tokens: Object.keys(tokens).map(function (key) {
+                                return _objectSpread(_objectSpread({}, tokens[key]), {}, {
+                                  quantity: tokens[key].quantity.abs()
+                                });
+                              })
+                            });
+                          });
+                          return _context4.abrupt("return", transactions);
 
                         case 12:
                         case "end":
@@ -21461,16 +21564,16 @@ var Explorer = function Explorer(pkg, settings) {
                     }
                   }, _callee4);
                 }));
-                return _checkAddressesUTXOWithShift.apply(this, arguments);
+                return _getTransactions.apply(this, arguments);
               };
 
-              checkAddressesUTXOWithShift = function _checkAddressesUTXOWi(_x6, _x7, _x8) {
-                return _checkAddressesUTXOWithShift.apply(this, arguments);
+              getTransactions = function _getTransactions2(_x6) {
+                return _getTransactions.apply(this, arguments);
               };
 
               _checkAddressesUTXO = function _checkAddressesUTXO3() {
                 _checkAddressesUTXO = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(checkType, checkPageSize, checkShift) {
-                  var tmpAddresses, checkedAdresses, _yield$Cardano$explor4, tmpAddresssesUTXO, adressesWithUTXOs;
+                  var tmpAddresses, checkedAdresses, _yield$Cardano$explor, tmpAddresssesUTXO, adressesWithUTXOs;
 
                   return _regenerator.default.wrap(function _callee3$(_context3) {
                     while (1) {
@@ -21488,8 +21591,8 @@ var Explorer = function Explorer(pkg, settings) {
                           return Cardano.explorer.getAddressesUTXO(checkedAdresses);
 
                         case 6:
-                          _yield$Cardano$explor4 = _context3.sent;
-                          tmpAddresssesUTXO = _yield$Cardano$explor4.data;
+                          _yield$Cardano$explor = _context3.sent;
+                          tmpAddresssesUTXO = _yield$Cardano$explor.data.data;
                           adressesWithUTXOs = tmpAddresssesUTXO.utxos ? tmpAddresssesUTXO.utxos.map(function (utxo) {
                             var filteredUtxo = tmpAddresses.filter(function (addr) {
                               return addr.address === utxo.address;
@@ -21517,95 +21620,17 @@ var Explorer = function Explorer(pkg, settings) {
                 return _checkAddressesUTXO.apply(this, arguments);
               };
 
-              pageSize = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 20;
-              maxShiftIndex = _args5.length > 2 && _args5[2] !== undefined ? _args5[2] : 10;
-              type = _args5.length > 3 && _args5[3] !== undefined ? _args5[3] : [0];
+              pageSize = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : 20;
+              maxShiftIndex = _args6.length > 2 && _args6[2] !== undefined ? _args6[2] : 10;
+              type = _args6.length > 3 && _args6[3] !== undefined ? _args6[3] : [0];
               // check addresses utxos with shift until next pack will be with zero utxos
               utxos = [];
-              adressesArray = [];
-              _context5.next = 11;
+              transactions = [];
+              _context6.next = 13;
               return checkAddressesUTXOWithShift(type, pageSize, 0);
 
-            case 11:
-              _context5.next = 13;
-              return Cardano.explorer.getTxHashFromInputs(adressesArray);
-
             case 13:
-              _yield$Cardano$explor = _context5.sent;
-              rawTxInputs = _yield$Cardano$explor.data;
-              _context5.next = 17;
-              return Cardano.explorer.getTxHashFromOutputs(adressesArray);
-
-            case 17:
-              _yield$Cardano$explor2 = _context5.sent;
-              rawTxOutputs = _yield$Cardano$explor2.data;
-              rawTransactions = [].concat((0, _toConsumableArray2.default)((rawTxInputs === null || rawTxInputs === void 0 ? void 0 : rawTxInputs.transactions) || []), (0, _toConsumableArray2.default)((rawTxOutputs === null || rawTxOutputs === void 0 ? void 0 : rawTxOutputs.transactions) || []));
-              _context5.next = 22;
-              return Cardano.explorer.getTxByHash(rawTransactions.map(function (tx) {
-                return tx.hash;
-              }));
-
-            case 22:
-              _yield$Cardano$explor3 = _context5.sent;
-              transactionsInputsOutputs = _yield$Cardano$explor3.data;
-              transactions = ((transactionsInputsOutputs === null || transactionsInputsOutputs === void 0 ? void 0 : transactionsInputsOutputs.transactions) || []).map(function (tx) {
-                // let inputAmount = new BigNumber(0)
-                // let outputAmount = new BigNumber(0)
-                var amount = new BigNumber(0);
-                var tokens = {};
-                tx.inputs.forEach(function (input) {
-                  if (input && adressesArray.includes(input.address)) {
-                    amount = amount.minus(input.value);
-                    input.tokens.forEach(function (token) {
-                      var asset = token.asset,
-                          quantity = token.quantity;
-                      var assetId = asset.assetId;
-
-                      if (!tokens[assetId]) {
-                        tokens[assetId] = {
-                          quantity: new BigNumber(0)
-                        };
-                      }
-
-                      tokens[assetId] = _objectSpread(_objectSpread(_objectSpread({}, tokens[assetId]), asset), {}, {
-                        ticker: asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-                        quantity: new BigNumber(tokens[assetId].quantity).minus(quantity)
-                      });
-                    });
-                  }
-                });
-                tx.outputs.forEach(function (output) {
-                  if (output && adressesArray.includes(output.address)) {
-                    amount = amount.plus(output.value);
-                    output.tokens.forEach(function (token) {
-                      var asset = token.asset,
-                          quantity = token.quantity;
-                      var assetId = asset.assetId;
-
-                      if (!tokens[assetId]) {
-                        tokens[assetId] = {
-                          quantity: BigInt(0)
-                        };
-                      }
-
-                      tokens[assetId] = _objectSpread(_objectSpread(_objectSpread({}, tokens[assetId]), asset), {}, {
-                        ticker: asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-                        quantity: new BigNumber(tokens[assetId].quantity).plus(quantity)
-                      });
-                    });
-                  }
-                });
-                return _objectSpread(_objectSpread({}, tx), {}, {
-                  type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
-                  value: new BigNumber(amount).abs(),
-                  tokens: Object.keys(tokens).map(function (key) {
-                    return _objectSpread(_objectSpread({}, tokens[key]), {}, {
-                      quantity: tokens[key].quantity.abs()
-                    });
-                  })
-                });
-              }); // get account assets summary from utxos
-
+              // get account assets summary from utxos
               getAssetsSummary = function getAssetsSummary(processAddresses) {
                 var assetsSummary = {
                   value: new BigNumber(0),
@@ -21644,18 +21669,18 @@ var Explorer = function Explorer(pkg, settings) {
 
               assets = getAssetsSummary(utxos); // return account state object
 
-              return _context5.abrupt("return", {
+              return _context6.abrupt("return", {
                 assets: assets,
                 transactions: transactions,
                 utxos: utxos
               });
 
-            case 28:
+            case 16:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5);
+      }, _callee6);
     }));
 
     return function (_x2) {
@@ -67352,7 +67377,7 @@ module.exports = function whichTypedArray(value) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"cardano-web3.js","version":"0.1.0","author":"Ray Network","description":"Cardano Web3 JavaScript API","license":"MIT","homepage":"https://github.com/ray-network/cardano-web3.js","repository":{"type":"git","url":"https://github.com/ray-network/cardano-web3.js.git"},"bugs":{"url":"https://github.com/ray-network/cardano-web3.js/issues"},"keywords":["Cardano","JavaScript","API"],"main":"src/index.js","scripts":{"serve":"webpack serve --mode development","prettier":"prettier --write \\"src/**/*.{js,ts}\\"","eslint":"eslint --ext .js,jsx src","build":"node ./scripts/build && node ./scripts/webpack && webpack","publish:browser":"cd ./publish/browser && npm publish --access public","publish:nodejs":"cd ./publish/nodejs && npm publish --access public","publish:asmjs":"cd ./publish/asmjs && npm publish --access public","publish:gh-pages":"git subtree push --prefix dist origin gh-pages"},"husky":{"hooks":{"pre-commit":"lint-staged"}},"lint-staged":{"src/**/*.{js,ts}":["npm run prettier","npm run eslint","git add"]},"devDependencies":{"@babel/cli":"^7.12.1","@babel/core":"^7.12.3","@babel/plugin-proposal-class-properties":"^7.12.1","@babel/plugin-transform-modules-commonjs":"^7.12.1","@babel/plugin-transform-runtime":"^7.12.1","@babel/preset-env":"^7.12.1","@babel/runtime":"^7.12.1","babel-loader":"^8.1.0","eslint":"^7.28.0","html-webpack-plugin":"^5.3.2","husky":"4.3.8","lint-staged":"^11.0.0","node-polyfill-webpack-plugin":"^1.1.2","prettier":"^2.3.1","webpack":"^5.38.1","webpack-cli":"^4.7.0","webpack-dev-server":"^3.11.2"},"dependencies":{"@emurgo/cardano-serialization-lib-browser":"^7.1.0","@emurgo/cardano-serialization-lib-nodejs":"^7.1.0","@emurgo/cardano-serialization-lib-asmjs":"^7.1.0","axios":"^0.21.1","bech32":"^2.0.0","bignumber.js":"^9.0.1","bip39-light":"^1.0.7"}}');
+module.exports = JSON.parse('{"name":"cardano-web3.js","version":"0.1.0","author":"Ray Network","description":"Cardano Web3 JavaScript API","license":"MIT","homepage":"https://github.com/ray-network/cardano-web3.js","repository":{"type":"git","url":"https://github.com/ray-network/cardano-web3.js.git"},"bugs":{"url":"https://github.com/ray-network/cardano-web3.js/issues"},"keywords":["Cardano","JavaScript","API"],"main":"src/index.js","scripts":{"serve":"webpack serve --mode development","start":"npm run serve","prettier":"prettier --write \\"src/**/*.{js,ts}\\"","eslint":"eslint --ext .js,jsx src","build":"node ./scripts/build && node ./scripts/webpack && webpack","publish:browser":"cd ./publish/browser && npm publish --access public","publish:nodejs":"cd ./publish/nodejs && npm publish --access public","publish:asmjs":"cd ./publish/asmjs && npm publish --access public","publish:gh-pages":"git subtree push --prefix dist origin gh-pages"},"husky":{"hooks":{"pre-commit":"lint-staged"}},"lint-staged":{"src/**/*.{js,ts}":["npm run prettier","npm run eslint","git add"]},"devDependencies":{"@babel/cli":"^7.12.1","@babel/core":"^7.12.3","@babel/plugin-proposal-class-properties":"^7.12.1","@babel/plugin-transform-modules-commonjs":"^7.12.1","@babel/plugin-transform-runtime":"^7.12.1","@babel/preset-env":"^7.12.1","@babel/runtime":"^7.12.1","babel-loader":"^8.1.0","eslint":"^7.28.0","html-webpack-plugin":"^5.3.2","husky":"4.3.8","lint-staged":"^11.0.0","node-polyfill-webpack-plugin":"^1.1.2","prettier":"^2.3.1","webpack":"^5.38.1","webpack-cli":"^4.7.0","webpack-dev-server":"^3.11.2"},"dependencies":{"@emurgo/cardano-serialization-lib-browser":"^7.1.0","@emurgo/cardano-serialization-lib-nodejs":"^7.1.0","@emurgo/cardano-serialization-lib-asmjs":"^7.1.0","axios":"^0.21.1","bech32":"^2.0.0","bignumber.js":"^9.0.1","bip39-light":"^1.0.7"}}');
 
 /***/ }),
 
@@ -67654,7 +67679,7 @@ var _explorer = _interopRequireDefault(__webpack_require__(1845));
 
 var _contract = _interopRequireDefault(__webpack_require__(4825));
 
-var _package = __webpack_require__(306);
+var _package = _interopRequireDefault(__webpack_require__(306));
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -67664,7 +67689,7 @@ var CardanoWeb3 = function CardanoWeb3() {
   var _this = this;
 
   var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  this.version = _package.version;
+  this.version = _package.default.version;
   this.initialized = false;
   this.settings = {
     crypto: _objectSpread({
@@ -67729,7 +67754,7 @@ var CardanoWeb3 = function CardanoWeb3() {
   return this;
 };
 
-CardanoWeb3.version = _package.version;
+CardanoWeb3.version = _package.default.version;
 
 if ((typeof window === "undefined" ? "undefined" : (0, _typeof2.default)(window)) === 'object') {
   if (!window.CardanoWeb3) {
