@@ -1,5 +1,5 @@
 # cardano-web3.js
-Cardano javascript API with fetching network data via cardano-graphql
+Cardano Web3 JavaScript Library with Crypto, Explorer, Websockets, Contract, Connector modules
 
 Demo: https://ray-network.github.io/cardano-web3.js/
 
@@ -8,6 +8,12 @@ Demo: https://ray-network.github.io/cardano-web3.js/
 ```
 
 # API Reference
+
+### To Do
+— [x] MVP
+— [ ] Production Version
+— [ ] Types
+— [ ] Tests
 
 ### Initialization (Simple Demo)
 ```JS
@@ -91,7 +97,7 @@ Cardano.explorer.txSend(transaction) // send build transaction (hex format)
 ...
 ```
 
-### connector (Web3 Events & Listeners)
+### Connector (Web3 Events & Listeners)
 ```JS
 ...
 ```
