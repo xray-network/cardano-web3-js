@@ -10,10 +10,10 @@ Demo: https://ray-network.github.io/cardano-web3.js/
 # API Reference
 
 ### To Do
-— [x] MVP
-— [ ] Production Version
-— [ ] Types
-— [ ] Tests
+- [x] MVP
+- [ ] Production Version
+- [ ] Types
+- [ ] Tests
 
 ### Initialization (Simple Demo)
 ```JS
