@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>
+    Minterr | Cardano NFT Tokens Minter
+  </title>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <style>
+    .app {
+      margin: 0 auto;
+      max-width: 900px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .cursor {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app py-5">
+    <div class="container-fluid">
+      <div>
+        <div class="mb-4">
+          <h2><strong>Minterr <sup>MVP</sup></strong> <small>by Ray Network</small></h2>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="mb-2">
+              <span class="pe-2">Your Session Mnemonic</span>
+              <span id="toggleEnterLables">
+                <a href="javascript: void(0)" class="pe-2" id="generateNewButton">Generate New</a>
+                <a href="javascript: void(0)" class="pe-2" id="toggleNewButton">Restore</a>
+              </span>
+              <span id="toggleEnterCancel" class="d-none">
+                <a href="javascript: void(0)" id="toggleNewCancel">Cancel</a>
+              </span>
+            </div>
+            <div id="toggleEnterMnemonic">
+              <h5>
+                <strong class="cursor" id="mnemonic" data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="Copy to clipboard">—</strong>
+              </h5>
+              <div class="form-text">
+                Make sure you write down this mnemonic if you send funds to the address below!
+              </div>
+            </div>
+            <div id="toggleEnterInput" class="d-none">
+              <div class="input-group pt-2">
+                <input class="form-control" placeholder="24 word mnemonic" id="enterMnemonicInput" autocomplete="off" />
+                <button class="btn btn-primary" id="enterMnemonicButton">Restore</button>
+              </div>
+              <div id="wrongMnemonic" class="form-text text-danger d-none">
+                Wrong mnemonic
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4 d-none">
+          <div class="col-12">
+            <div class="mb-2">
+              Policy ID
+            </div>
+            <h5>
+              <strong class="cursor" id="policyId" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Copy to clipboard">
+                —
+              </strong>
+            </h5>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-6">
+            <div class="mb-2">Address</div>
+            <h5>
+              <strong class="cursor" id="address" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Copy to clipboard">
+                —
+              </strong>
+            </h5>
+          </div>
+          <div class="col-6">
+            <div class="mb-2">
+              <span class="pe-2">
+                Address Balance
+              </span>
+              <span id="refresh" class="pe-2 d-none">
+                <a href="javascript: void(0)" id="toggleNewCancel">Refresh</a>
+              </span>
+              <div class="spinner-border spinner-border-sm" role="status" id="loader">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <h5><strong><span id="amount">0.000000</span> ADA</strong></h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div class="mb-2">To Address</div>
+            <input class="form-control" id="mintToAddress" autocomplete="off" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8 mb-4">
+            <div class="mb-2">Donate Address</div>
+            <input class="form-control" id="mintDonateAddress" autocomplete="off" />
+          </div>
+          <div class="col-4 mb-4">
+            <div class="mb-2">Donate Value (Lovelace)</div>
+            <input class="form-control" id="mintDonateValue" autocomplete="off" />
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-12 mb-4">
+            <div class="mb-2">Mint Tokens (JSON)</div>
+            <textarea class="form-control" id="mintTokensToMint" rows="8"></textarea>
+          </div>
+          <div class="col-12 mb-4">
+            <div class="mb-2">Metadata (JSON)</div>
+            <textarea class="form-control" id="mintMetadata" rows="8"></textarea>
+          </div>
+        </div>
+        <button class="btn btn-primary px-5" id="build">Mint it!</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    function copyToClipboard(str) {
+      const el = document.createElement('textarea')
+      el.value = str
+      el.setAttribute('readonly', '')
+      el.style.position = 'absolute'
+      el.style.left = '-9999px'
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+    }
+
+    function processCopy(e, str) {
+      const target = e.target
+      target.setAttribute('data-bs-original-title', 'Copied!')
+      bootstrap.Tooltip.getInstance(target).show()
+      target.setAttribute('data-bs-original-title', 'Copy to clipboard')
+      copyToClipboard(str)
+    }
+
+    function el(id) {
+      return document.getElementById(id)
+    }
+
+    // MINTERR MAIN CODE
+    window.addEventListener('load', function () {
+      runApp()
+    })
+
+    function runApp() {
+
+      // INIT WEB3
+      const Cardano = new CardanoWeb3({
+        crypto: {
+          network: 'mainnet',
+        },
+        explorer: {
+          url: 'https://graphql.rraayy.com/',
+        }
+      })
+
+
+      // LOAD APP ON INIT
+      Cardano.init().then(() => {
+
+        // INITIAL CONFIG
+        this.appMnemonic = localStorage.getItem('minterr:seed') || Cardano.crypto.generateMnemonic()
+        // this.appMnemonic = Cardano.crypto.generateMnemonic()
+        this.appAddress = ''
+        this.appPolicyId = ''
+        this.appScript = ''
+        this.appTip = 0
+        this.appAddressState = {}
+        this.isMnemonicValid = false
+        this.appTx = ''
+        this.toAddress = ''
+        this.tokensToMint = []
+        this.metadata = {}
+        this.setInterval
+
+
+        // GET NETWORK, ADDRES & UTXO INFO
+        async function getMinterData(pubkey) {
+          el('loader').classList.remove('d-none')
+          el('refresh').classList.add('d-none')
+          const network = await Cardano.explorer.getNetworkInfo()
+          const tip = network?.data?.data?.cardano?.tip?.slotNo
+          if (!tip) {
+            alert('Unable to load network data. Please check your connection.')
+            return false
+          }
+          const addressState = await Cardano.explorer.getAccountStateByPublicKey(pubkey, 1, 0)
+          if (addressState) {
+            this.appTip = tip
+            this.appAddressState = addressState
+            el('amount').innerHTML = parseInt(addressState.assets.value / 1000000, 10).toFixed(6)
+          }
+          el('loader').classList.add('d-none')
+          el('refresh').classList.remove('d-none')
+          clearInterval(this.interval)
+          this.interval = setInterval(() => {
+            getMinterData(this.appPubKey)
+          }, 1000 * 30)
+        }
+
+
+        // LOAD MINTER
+        const loadMinter = (mnemonic) => {
+          const accountKeys = Cardano.crypto.getAccountKeys(mnemonic)
+          const [{ address }] = Cardano.crypto.getAccountAddresses(accountKeys.publicKey, 1, [0])
+          const { policyId, script } = Cardano.crypto.generatePolicyForPubkey(accountKeys.publicKey)
+          el('mnemonic').innerHTML = mnemonic
+          el('policyId').innerHTML = policyId
+          el('address').innerHTML = `${address.slice(0, 8)}...${address.slice(-12)}`
+          el('amount').innerHTML = '0.000000'
+          this.appAddress = address
+          this.appMnemonic = mnemonic
+          this.appPubKey = accountKeys.publicKey
+          this.appPrvKey = accountKeys.privateKey
+          this.appPolicyId = policyId
+          this.appScript = script
+          getMinterData(accountKeys.publicKey)
+          localStorage.setItem('minterr:seed', mnemonic)
+        }
+
+
+        // LOAD MINTER ON INIT
+        loadMinter(this.appMnemonic)
+
+
+        // UPDATE MINTER
+        const updateMinter = (mnemonic) => {
+          if (this.appMnemonic) {
+            if (!confirm('Proceed with caution!\nThis will replace the current mnemonic with the new one. Click Cancel and write down the old mnemonic if you want to keep it.')) {
+              return
+            }
+          }
+          loadMinter(mnemonic)
+        }
+
+        // UPDATE ADDRESS STATE BY INTERVAL
+        el('refresh').addEventListener('click', () => getMinterData(this.appPubKey))
+
+        // GENERATE NEW MNEMONIC
+        el('generateNewButton').addEventListener('click', () => {
+          const mnemonic = Cardano.crypto.generateMnemonic()
+          updateMinter(mnemonic)
+        })
+
+
+        // TOGGLE RESTORE INPUT
+        const toggleNewMnemonic = () => {
+          el('toggleEnterMnemonic').classList.toggle('d-none')
+          el('toggleEnterCancel').classList.toggle('d-none')
+          el('toggleEnterLables').classList.toggle('d-none')
+          el('toggleEnterInput').classList.toggle('d-none')
+        }
+        el('toggleNewButton').addEventListener('click', () => { toggleNewMnemonic() })
+        el('toggleNewCancel').addEventListener('click', () => { toggleNewMnemonic() })
+
+
+        // UPDATE MINTER FROM RESTORE INPUT
+        el('enterMnemonicButton').addEventListener('click', () => {
+          const mnemonic = el('enterMnemonicInput').value
+          if (this.isMnemonicValid) {
+            updateMinter(mnemonic)
+            toggleNewMnemonic()
+            el('enterMnemonicInput').value = ''
+            this.isMnemonicValid = false
+          }
+        })
+
+        // VALIDATE MNEMONIC ON INPUT TYPE
+        el('enterMnemonicInput').addEventListener('keyup', () => {
+          const enteredMnemonic = el('enterMnemonicInput').value
+          if (Cardano.crypto.validateMnemonic(enteredMnemonic)) {
+            el('wrongMnemonic').classList.add('d-none')
+            this.isMnemonicValid = true
+          } else {
+            el('wrongMnemonic').classList.remove('d-none')
+            this.isMnemonicValid = false
+          }
+          if (enteredMnemonic.length === 0) {
+            el('wrongMnemonic').classList.add('d-none')
+            this.isMnemonicValid = false
+          }
+        })
+
+        // COPY CLICK LISTENERS
+        el('address').addEventListener('click', (e) => processCopy(e, this.appAddress))
+        el('mnemonic').addEventListener('click', (e) => processCopy(e, this.appMnemonic))
+        el('policyId').addEventListener('click', (e) => processCopy(e, this.appPolicyId))
+
+        // SET MINTING CONFIG
+        this.toAddress = "addr_test1qzd2ulz7jx0zn3t90vep26f7gl9wkj03lx0w5ca0vhnl5u6nfathe437695m4cwzlgn959uswtm56dkkmvxjx6h6mfssh7t4zy"
+        this.tokensToMint = [
+          {
+            quantity: "3",
+            asset: {
+              assetName: "XDIAMOND",
+              policyId: this.appPolicyId,
+            }
+          },
+        ]
+
+        this.metadata = {
+          721: {
+            [this.appPolicyId]: {
+              "XDIAMOND": {
+                "name": "Ray Diamond",
+                "image": "ipfs://QmaYWWWmrUJkWiKAaHRiYwLaSCNGT8he4ZpuQd5TddvRVJ",
+                "ticker": "XDIAMOND",
+              },
+            },
+            "description": "Oh, are those really diamonds?!",
+            "publisher": "https://minterr.io",
+            "url": "https://raywallet.io",
+            "twitter": "https://twitter.com/RayWallet",
+          }
+        }
+
+        this.donateAddress = 'addr_test1qzd2ulz7jx0zn3t90vep26f7gl9wkj03lx0w5ca0vhnl5u6nfathe437695m4cwzlgn959uswtm56dkkmvxjx6h6mfssh7t4zy'
+        this.donateValue = '1000000'
+
+        el('mintToAddress').value = this.toAddress
+        el('mintTokensToMint').value = JSON.stringify(this.tokensToMint, null, 4)
+        el('mintMetadata').value = JSON.stringify(this.metadata, null, 4)
+        el('mintDonateAddress').value = donateAddress
+        el('mintDonateValue').value = donateValue
+
+        el('mintToAddress').addEventListener('keyup', (e) => {
+          this.toAddress = e.target.value
+        })
+        el('mintTokensToMint').addEventListener('keyup', (e) => {
+          this.tokensToMint = e.target.value ? JSON.parse(e.target.value) : undefined
+        })
+        el('mintMetadata').addEventListener('keyup', (e) => {
+          this.metadata = e.target.value ? JSON.parse(e.target.value) : undefined
+        })
+        el('mintDonateAddress').addEventListener('keyup', (e) => {
+          this.metadata = e.target.value
+        })
+        el('mintDonateValue').addEventListener('keyup', (e) => {
+          this.metadata = e.target.value
+        })
+
+        // BUILD MINT TX
+        el('build').addEventListener('click', () => {
+          const transaction = Cardano.crypto.txBuildMint(
+            this.toAddress,
+            this.tokensToMint,
+            this.appAddressState.utxos,
+            this.appTip,
+            this.metadata,
+            // {
+            //   donateAddress: this.donateAddress,
+            //   donateValue: this.donateValue,
+            // },
+          )
+
+          console.log('transaction', transaction)
+
+          if (transaction.data) {
+            const signed = Cardano.crypto.txSign(
+              transaction.data,
+              this.appPrvKey,
+              this.appScript,
+            )
+
+            if (signed) {
+              Cardano.explorer.txSend(signed).then((result) => {
+                console.log('result', result.data)
+              })
+            }
+          }
+        })
+
+      })
+    }
+  </script>
+</body>
+
+</html>

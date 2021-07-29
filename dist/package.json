@@ -1,0 +1,21 @@
+{
+  "name": "cardano-web3.js",
+  "version": "0.1.0",
+  "author": "Ray Network",
+  "description": "Cardano Web3 JavaScript API",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ray-network/cardano-web3.js.git"
+  },
+  "homepage": "https://github.com/ray-network/cardano-web3.js",
+  "bugs": {
+    "url": "https://github.com/ray-network/cardano-web3.js/issues"
+  },
+  "keywords": [
+    "Cardano",
+    "JavaScript",
+    "API"
+  ],
+  "main": "cardano-web3.js"
+}

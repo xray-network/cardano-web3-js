@@ -1,5 +1,8 @@
 module.exports = {
-  env: {
-    es2020: true,
+  "env": {
+    "es2020": true,
   },
+  "parserOptions": {
+    "sourceType": "module",
+  }
 }
