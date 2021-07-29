@@ -1,5 +1,6 @@
 # cardano-web3.js
 Cardano javascript API with fetching network data via cardano-graphql
+
 Demo: https://ray-network.github.io/cardano-web3.js/
 
 ```
@@ -40,10 +41,6 @@ Cardano.init().then(() => {
   getAccountState()
 })
 ```
-
-### Examples
-— /test/web3.html
-— /test/minterr.html
 
 ### Lib state
 ```JS
