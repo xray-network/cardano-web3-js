@@ -1,72 +1,47 @@
 {
-  "name": "cardano-web3.js",
-  "version": "0.1.0",
-  "author": "Ray Network",
-  "description": "Cardano Web3 JavaScript API",
+  "name": "cardano-web3-js",
+  "version": "2.0.85-alpha",
+  "author": "XRAY/Network <hello@xray.app>",
+  "description": "Cardano Web3 JavaScript SDK",
   "license": "MIT",
-  "homepage": "https://github.com/ray-network/cardano-web3.js",
+  "homepage": "https://xray.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ray-network/cardano-web3.js.git"
+    "url": "git+https://github.com/xray-network/cardano-web3-js.git"
   },
   "bugs": {
-    "url": "https://github.com/ray-network/cardano-web3.js/issues"
+    "url": "https://github.com/xray-network/cardano-web3-js/issues"
   },
   "keywords": [
     "Cardano",
     "JavaScript",
     "API"
   ],
-  "main": "src/index.js",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
   "scripts": {
-    "serve": "webpack serve --mode development",
-    "start": "npm run serve",
-    "prettier": "prettier --write \"src/**/*.{js,ts}\"",
-    "eslint": "eslint --ext .js,jsx src",
-    "build": "node ./scripts/build && node ./scripts/webpack && webpack",
-    "publish:browser": "cd ./publish/browser && npm publish --access public",
-    "publish:nodejs": "cd ./publish/nodejs && npm publish --access public",
-    "publish:asmjs": "cd ./publish/asmjs && npm publish --access public",
-    "publish:gh-pages": "git subtree push --prefix dist origin gh-pages"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,ts}": [
-      "npm run prettier",
-      "npm run eslint",
-      "git add"
-    ]
+    "build": "rm -rf ./dist && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && tsx scripts/post-build.ts",
+    "format": "prettier --write \"**/*.{js,ts}\"",
+    "test": "tsx test/test.ts"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
-    "@babel/runtime": "^7.12.1",
-    "babel-loader": "^8.1.0",
-    "eslint": "^7.28.0",
-    "html-webpack-plugin": "^5.3.2",
-    "husky": "4.3.8",
-    "lint-staged": "^11.0.0",
-    "node-polyfill-webpack-plugin": "^1.1.2",
-    "prettier": "^2.3.1",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^3.11.2"
+    "@types/node": "^20.12.7",
+    "prettier": "^3.2.5",
+    "tsx": "^4.8.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
   },
   "dependencies": {
-    "@emurgo/cardano-serialization-lib-browser": "^7.1.0",
-    "@emurgo/cardano-serialization-lib-nodejs": "^7.1.0",
-    "@emurgo/cardano-serialization-lib-asmjs": "^7.1.0",
-    "axios": "^0.21.1",
+    "@cardano-ogmios/schema": "^6.2.0",
+    "@dcspark/cardano-multiplatform-lib-nodejs": "^5.3.1",
+    "@emurgo/cardano-message-signing-nodejs": "^1.0.1",
+    "@emurgo/cip14-js": "^3.0.1",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.1",
-    "bip39-light": "^1.0.7"
+    "bip39": "^3.1.0",
+    "cardano-koios-client": "^1.0.2",
+    "cardano-nftcdn-client": "^1.0.2",
+    "cardano-pricing-client": "^1.0.2"
   }
 }

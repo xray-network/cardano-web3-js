@@ -1,13 +1,8 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "printWidth": 100,
-  "tabWidth": 2,
+  "endOfLine": "lf",
   "semi": false,
-  "overrides": [
-    {
-      "files": ".prettierrc",
-      "options": { "parser": "babylon" }
-    }
-  ]
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 120
 }

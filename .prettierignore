@@ -1,1 +1,7 @@
 /node_modules
+.cache
+package.json
+package-lock.json
+dist
+src/misc/lucid
+src/misc/uplc

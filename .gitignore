@@ -10,6 +10,7 @@
 # production
 /build
 /publish
+/dist
 
 # misc
 .DS_Store
@@ -24,3 +25,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 node_modules
+test/mnemonic.ts
+test/test.ts
