@@ -1,6 +1,6 @@
 {
   "name": "cardano-web3-js",
-  "version": "2.0.85-alpha",
+  "version": "2.0.86-alpha",
   "author": "XRAY/Network <hello@xray.app>",
   "description": "Cardano Web3 JavaScript SDK",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && tsx scripts/post-build.ts",
     "format": "prettier --write \"**/*.{js,ts}\"",
-    "test": "tsx test/test.ts"
+    "test": "vitest --run"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",

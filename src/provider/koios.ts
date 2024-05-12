@@ -14,12 +14,11 @@ export class KoiosProvider implements T.Provider {
     const response = await this.client.GET("/epoch_params", {
       params: {
         query: {
-          _epoch_no: "",
-          limit: 1,
+          _epoch_no: undefined,
+          limit: "1",
         },
       },
     })
-
     if (response.data) {
       const params = response.data[0]
       return {
