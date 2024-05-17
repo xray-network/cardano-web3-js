@@ -43,8 +43,8 @@ export interface Provider {
   getUtxosByPaymentCred(paymentCred: string): Promise<Utxo[]>
   getDelegation(stakingAddress: string): Promise<AccountDelegation>
   getDatumByHash(datumHash: string): Promise<string | undefined>
-  getScriptByHash(scriptHash: string): Promise<string | undefined>
-  observeTx(txHash: string, checkInterval: number, maxTime: number): Promise<boolean>
+  getScriptByHash(scriptHash: string): Promise<Script | undefined>
+  observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
   submitTx(tx: string): Promise<string>
 }
 
@@ -109,6 +109,10 @@ export type NetworkConfig = {
 }
 export type CostModels = Record<PlutusVersion, number[]>
 export type PlutusVersion = "PlutusV1" | "PlutusV2"
+export type Script = {
+  language: PlutusVersion | "timelock" | "multisig" | "native"
+  script: string
+}
 export type ProtocolParameters = {
   minFeeA: number
   minFeeB: number
@@ -147,8 +151,7 @@ export type Utxo = {
   value: Lovelace
   assets: Asset[]
   datumHash?: string
-  inlineDatum?: string
-  scriptRef?: string
+  scriptHash?: string
 }
 export type DerivationScheme = {
   purpose: {

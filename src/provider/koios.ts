@@ -77,19 +77,27 @@ export class KoiosProvider implements T.Provider {
       },
     })
     if (response.data) {
-      return response.data[0]?.bytes || undefined
+      return response.data[0]?.bytes
     }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
-  getScriptByHash = async (scriptHash: string): Promise<string | undefined> => {
+  getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
     const response = await this.client.POST("/script_info", {
       body: {
         _script_hashes: [scriptHash],
       },
     })
     if (response.data) {
-      return response.data[0]?.bytes || undefined
+      return {
+        language:
+          response.data[0]?.type === "plutusV1"
+            ? "PlutusV1"
+            : response.data[0]?.type === "plutusV2"
+              ? "PlutusV2"
+              : response.data[0]?.type,
+        script: response.data[0]?.bytes,
+      }
     }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
@@ -101,20 +109,17 @@ export class KoiosProvider implements T.Provider {
           _tx_hashes: [txHash],
         },
       })
-      if (response.data && response.data[0]) {
-        clearInterval(interval)
-        return true
-      }
-      if (response.error) {
-        return false
-      }
+      return response.data && response.data[0].num_confirmations > 0
     }
     return new Promise(async (res) => {
       const resolve = await checkTx()
       if (resolve) return res(true)
       const confirm = setInterval(async () => {
         const resolve = await checkTx(confirm)
-        return res(resolve)
+        if (resolve) {
+          clearInterval(confirm)
+          return res(true)
+        }
       }, checkInterval)
       setTimeout(() => {
         clearInterval(confirm)
@@ -130,9 +135,11 @@ export class KoiosProvider implements T.Provider {
       },
       body: tx,
     })
-    console.log(response.error)
     if (response.data) {
       return response.data
+    }
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
     }
     throw new Error("Error: KoiosProvider.submitTx")
   }
@@ -148,9 +155,8 @@ const koiosUtxoToUtxo = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]) 
       address: utxo.address,
       value: BigInt(utxo.value),
       assets: koiosAssetsToAssets(utxo.asset_list || []),
-      datumHash: utxo.datum_hash || undefined,
-      inlineDatum: utxo.inline_datum?.bytes || undefined,
-      scriptRef: utxo.reference_script?.bytes || undefined,
+      datumHash: utxo.datum_hash || null,
+      scriptHash: utxo.reference_script?.hash || null,
     }
   })
 }

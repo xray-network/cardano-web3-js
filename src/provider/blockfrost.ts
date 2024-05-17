@@ -24,7 +24,7 @@ export class BlockfrostProvider implements T.Provider {
     throw new Error("Not implemented: BlockfrostProvider.getDatumByhash")
   }
 
-  getScriptByHash = async (scriptHash: string): Promise<string | undefined> => {
+  getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
     throw new Error("Error: BlockfrostProvider.getDatumByhash")
   }
 
