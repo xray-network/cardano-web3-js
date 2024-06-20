@@ -1,51 +1,77 @@
-/** Ogmios types */
-import type * as Ogmios from "@cardano-ogmios/schema"
-export type * as Ogmios from "@cardano-ogmios/schema"
-
 /** Core lib types */
-import type { CML, MSL } from "../core/loader"
-import type { C, M } from "../core/loader"
-export type { C, M } from "../core/loader"
-export type C = Awaited<ReturnType<typeof CML>>
-export type M = Awaited<ReturnType<typeof MSL>>
+export type * as CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+export type * as MSL from "@emurgo/cardano-message-signing-nodejs"
+export type * as UPLC from "uplc-node"
 import type { CardanoWeb3 } from "../core/cw3"
 export type { CardanoWeb3 } from "../core/cw3"
-
-/** Misc types */
-export type Headers = {
-  [key: string]: string
-}
+import type { Data } from "../utils/data"
+export type { Data } from "../utils/data"
 
 /** Account types */
 export type { Account } from "../core/account"
+export type AccountType = "xprv" | "xpub" | "connector" | "ledger" | "trezor"
 export type AccountConfig = {
+  configVersion: number
+  type: AccountType
+  checksumImage: string | undefined
+  checksumId: string | undefined
   xpubKey: string
-  derivationPath: AccountDerivationPath | undefined
-  changeAddress: string
+  xprvKey: string | undefined
+  xprvKeyIsEncoded: boolean
+  accountPath: AccountDerivationPath | undefined
+  addressPath: AddressDerivationPath | undefined
+  paymentAddress: string
   paymentCred: string
-  stakingCred: string
-  stakingAddress: string
+  stakingAddress: string | undefined
+  stakingCred: string | undefined
+  connector: Connector | undefined
+}
+export type AccountExportV1 = {
+  configVersion: number
+  type: AccountType
+  checksumId: string
+  xpubKey: string
+  xprvKey: string | undefined
+  xprvKeyIsEncoded: boolean
+  accountPath: AccountDerivationPath | undefined
+  addressPath: AddressDerivationPath | undefined
 }
 export type AccountState = {
   utxos: Utxo[]
   balance: Balance
-  delegation: string | undefined
+  delegation: string | null
   rewards: bigint
 }
 export type AccountDelegation = {
   delegation: string
   rewards: bigint
 }
+export type AccountAddressDerivation = {
+  address: string
+  path: AddressDerivationPath
+}
+export type AccountMultiAddressing = {
+  isMulti: boolean
+  utxos: Utxo[]
+  derivation: AccountAddressDerivation[]
+}
 
 /** Provider types */
-export interface Provider {
+export type Provider = {
+  getTip(): Promise<Tip>
   getProtocolParameters(): Promise<ProtocolParameters>
-  getUtxosByPaymentCred(paymentCred: string): Promise<Utxo[]>
-  getDelegation(stakingAddress: string): Promise<AccountDelegation>
+  getUtxosByAddresses(address: string[]): Promise<Utxo[]>
+  getUtxosByAddress(address: string): Promise<Utxo[]>
+  getUtxoByOutputRef(txHash: string, index: number): Promise<Utxo>
+  resolveUtxoDatumAndScript(utxo: Utxo): Promise<Utxo>
+  resolveUtxosDatumAndScript(utxos: Utxo[]): Promise<Utxo[]>
   getDatumByHash(datumHash: string): Promise<string | undefined>
   getScriptByHash(scriptHash: string): Promise<Script | undefined>
+  getDelegation(stakingAddress: string): Promise<AccountDelegation>
+  evaluateTx(tx: string): Promise<RedeemerCost[]>
   observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
   submitTx(tx: string): Promise<string>
+  submitAndObserveTx(tx: string, checkInterval?: number, maxTime?: number): Promise<boolean>
 }
 
 /** Explorer types */
@@ -58,7 +84,7 @@ export type PricingClient = ReturnType<typeof PricingClientInstance>
 export type Explorer = {
   koios: KoiosClient
   nftcdn: NftcdnClient
-  price: PricingClient
+  pricing: PricingClient
 }
 
 /** Connector types */
@@ -70,17 +96,11 @@ export type ConnectorPaginate = {
 }
 
 /** CardanoWeb3 types */
-export type Config = {
-  network: NetworkConfig
-  ttl: number
-  remoteTxEvaluate?: boolean
-  remoteProtocolParams?: boolean
-}
 export type InitConfig = {
   network?: NetworkName
+  protocolParams?: ProtocolParameters
+  slotConfig?: SlotConfig
   ttl?: number
-  remoteTxEvaluate?: boolean
-  remoteProtocolParams?: boolean
   provider?: Provider
   explorer?: {
     koios: {
@@ -107,12 +127,46 @@ export type NetworkConfig = {
   type: NetworkType
   id: NetworkId
 }
+export type Tip = {
+  hash: string
+  epochNo: number
+  absSlot: number
+  epochSlot: number
+  blockNo: number
+  blockTime: number
+}
+export type SlotConfig = {
+  zeroTime: number
+  zeroSlot: number
+  slotDuration: number
+}
 export type CostModels = Record<PlutusVersion, number[]>
-export type PlutusVersion = "PlutusV1" | "PlutusV2"
+export type PlutusVersion = "PlutusV1" | "PlutusV2" | "PlutusV3"
 export type Script = {
-  language: PlutusVersion | "timelock" | "multisig" | "native"
+  language: PlutusVersion | "Native"
   script: string
 }
+export type NativeScript = {
+  type: "sig" | "all" | "any" | "before" | "atLeast" | "after"
+  keyHash?: string
+  required?: number
+  slot?: number
+  scripts?: NativeScript[]
+}
+export type NativeConfig =
+  | { type: "sig"; keyHash: string }
+  | { type: "before"; slot: number }
+  | { type: "after"; slot: number }
+  | { type: "all"; scripts: ReadonlyArray<NativeConfig> }
+  | { type: "any"; scripts: ReadonlyArray<NativeConfig> }
+  | { type: "atLeast"; required: number; scripts: ReadonlyArray<NativeConfig> }
+export type NativeScriptType =
+  | { ScriptPubkey: { ed25519_key_hash: string } }
+  | { ScriptInvalidBefore: { before: number } }
+  | { ScriptInvalidHereafter: { after: number } }
+  | { ScriptAll: { native_scripts: ReadonlyArray<NativeScriptType> } }
+  | { ScriptAny: { native_scripts: ReadonlyArray<NativeScriptType> } }
+  | { ScriptNOfK: { n: number; native_scripts: ReadonlyArray<NativeScriptType> } }
 export type ProtocolParameters = {
   minFeeA: number
   minFeeB: number
@@ -131,16 +185,44 @@ export type ProtocolParameters = {
 }
 export type AccountDerivationPath = [number, number, number]
 export type AddressDerivationPath = [number, number]
+export type AddressType = "base" | "pointer" | "enterprise" | "reward" | "byron"
+export type AddressCredentialType = "key" | "script"
+export type AddressPublicCredentials = {
+  type: AddressType
+  paymentCred: {
+    type: AddressCredentialType
+    hash: string
+  }
+  stakingCred: {
+    type: AddressCredentialType
+    hash: string
+  }
+}
+export type Redeemer = string
+export type RedeemerCost = {
+  validator: string
+  budget: {
+    memory: number
+    cpu: number
+  }
+}
+export type Datum = string
+export type DatumType = "inline" | "witness"
+export type DatumOutput = {
+  type: DatumType | "hash"
+  datum: Datum
+}
 export type Lovelace = bigint
 export type Asset = {
   policyId: string
   assetName: string
-  fingerprint: string
   quantity: bigint
 }
 export type Balance = {
   lovelace: Lovelace
-  assets: Asset[]
+  assets: (Asset & {
+    fingerprint: string
+  })[]
 }
 export type Utxo = {
   transaction: {
@@ -150,8 +232,39 @@ export type Utxo = {
   address: string
   value: Lovelace
   assets: Asset[]
-  datumHash?: string
-  scriptHash?: string
+  datumHash: string | null
+  datumType: DatumType | null
+  scriptHash: string | null
+  datum?: Datum | null
+  script?: Script | null
+}
+export type Output = {
+  address: string
+  value?: Lovelace
+  assets?: Asset[]
+}
+export type CollateralConfig = {
+  utxo: Utxo | undefined
+  auto: boolean
+  excludeFromInputs: boolean
+}
+export type PoolConfig = {
+  poolId: string
+  vrfKeyHash: string
+  pledge: bigint
+  cost: bigint
+  margin: [bigint, bigint]
+  rewardAddress: string
+  owners: Array<string>
+  relays: Array<RelayConfig>
+  metadataUrl?: string
+}
+export type RelayConfig = {
+  type: "SingleHostIp" | "SingleHostDomainName" | "MultiHost"
+  ipV4?: string
+  ipV6?: string
+  port?: number
+  domainName?: string
 }
 export type DerivationScheme = {
   purpose: {
@@ -174,4 +287,13 @@ export type DerivationScheme = {
   index: {
     first: 0
   }
+}
+
+/** Misc types */
+export type Json = any
+export type OmitFirstArg<F> = F extends (arg1: any, ...args: infer P) => infer R ? (...args: P) => R : never
+export type Exact<T> = T extends infer U ? U : never
+export type SignedMessage = { signature: string; key: string }
+export type Headers = {
+  [key: string]: string
 }

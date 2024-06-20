@@ -5,11 +5,7 @@
   
 # 🛠 Cardano Web3 JavaScript SDK
 
-> [!WARNING]
-> CardanoWeb3js is in active development: createTx() will be added soon. Stay tuned to https://twitter.com/xray_network for updates
-
-> [!NOTE]
-> CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain. It supports both Node.js and browser environments, streamlining transaction creation, smart contract deployment, and data exploration. Ideal for developers, this toolkit simplifies Cardano cryptographic operations and API interactions
+CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain. It supports both Node.js and browser environments, streamlining transaction creation, smart contract deployment, and data exploration. Ideal for developers, this toolkit simplifies Cardano cryptographic operations and API interactions
 
 ## Installation
 
@@ -25,7 +21,15 @@ To install with NPM, run:
 npm i cardano-web3-js
 ```
 
+## Documentation
+
+* Playground: [https://xray.app/graph/cardano-web3-js](https://xray.app/graph/cardano-web3-js)
+* Typedoc: [https://cardano-web3-js.github.io](https://cardano-web3-js.github.io/)
+
 ## Basic Usage
+
+Check [test](/test) folder for detailed usage examples. Or read the documentation to learn how to create a transaction of any complexity
+
 ``` ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
@@ -34,13 +38,29 @@ const app = async () => {
 
   const mnemonic = web3.utils.keys.mnemonicGenerate()
   const account = web3.account.fromMnemonic(mnemonic)
+  await account.updateState() // update balance & delegation info
+  const { utxos } = account.__state
 
-  await account.fetchAndUpdateState() // update balance & delegation info
-
+  console.log(mnemonic) // generated mnemonic
   console.log(account.__config) // account info (xpub, changeAddress, creds, etc)
   console.log(account.__state) // balance & delegation info
 
-  const tx = web3.createTx() // TODO: will be available soon
+  const tx = await web3
+    .createTx()
+    .addInputs(utxos)
+    .addOutput(
+      {
+        address: "addr1qxpm2aqmn48he8dtp9p8hk9gtew6cypy6ra3mgs8xkn86qmd3vtjzheq22w8mmfhm8agpmywnlu2rsxgkdrctv7mcc3s9anhjz",
+        value: 2000000n,
+      },
+    )
+    .applyAndBuild()
+
+  const tx_hash = await tx_unsigned
+    .signWithAccount(account)
+    .applyAndSubmit()
+
+  console.log(tx_hash)
 }
 
 app()
@@ -66,8 +86,6 @@ const app = async () => {
   const web3 = await CardanoWeb3.init({
     network: "preprod", // "mainnet" | "preprod" | "preview" | "custom"
     ttl: 900, // 900 secs = 15 minutes
-    remoteTxEvaluate: true, // evaluate validator cost remotely on tx.build()
-    remoteProtocolParams: true, // get protocol parameters remotely on createTx()
     provider: new KoiosProvider("https://api.koios.rest/api/v1", providerHeaders),
     explorer: {
       koios: {
@@ -85,234 +103,10 @@ const app = async () => {
     }
   })
 
-  const { data, error } = await web3.explorer.koios.GET("/tip")
-  console.log(data?.[0].epoch_no) // current epoch number
-
-  console.log(web3.network) // configured network
-  console.log(web3.remoteProtocolParams) // configured remoteProtocolParams
-  console.log(web3.remoteTxEvaluate) // configured remoteTxEvaluate
-  console.log(web3.ttl) // configured ttl
-}
-
-app()
-```
-</details>
-
-## Create Account
-
-<details>
-  <summary>Create account with derivation path from Mnemonic</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  const mnemonic = web3.utils.keys.mnemonicGenerate() // generate mnemonic
-  const account = web3.account.fromMnemonic(mnemonic, [1852, 1815, 1]) // create account #1 from mnemonic
-}
-
-app()
-```
-</details>
-
-<details>
-  <summary>Create account from Connector (Browser Extension)</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  const wallets = await web3.connector.list() // list of available wallets
-  const connector = await web3.connector.init("eternl") // enable eternl wallet
-  const account = await web3.account.fromConnector(connector) // create account from connected wallet
-}
-
-app()
-```
-</details>
-
-<details>
-  <summary>Create account from XPRV private key</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  const xprvKey = web3.utils.keys.xprvKeyGenerate() // generate XPRV key
-  const account = web3.account.fromXprvKey(xprvKey) // account from XPRV key
-
-  const account2 = web3.account.fromXpubKey("xprv...") // create account2 direct from XPRV key
-}
-
-app()
-```
-</details>
-
-<details>
-  <summary>Create account from XPUB public key</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  const xprvKey = web3.utils.keys.xprvKeyGenerate() // generate XPRV key
-  const xpubKey = web3.utils.keys.xpubKeyFromXprvKey(xprvKey) // XPRV key to XPUB key
-  const account = web3.account.fromXpubKey(xpubKey) // create account from XPUB key
-
-  const account2 = web3.account.fromXpubKey("xpub...") // create account2 direct from XPUB key
-}
-
-app()
-```
-</details>
-
-<details>
-  <summary>Create account from XVK public key</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  const account = web3.account.fromXvkKey("xvk....") // create account direct from XVK key
-}
-
-app()
-```
-</details>
-
-## Create, Sign and Submit TX
-
-<details>
-  <summary>Create TX * soon</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  // TODO
-}
-
-app()
-```
-</details>
-
-<details>
-  <summary>Create TX from Account (Auto Build) * soon</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-  // TODO
-}
-
-app()
-```
-</details>
-
-## Provider API
-
-<details>
-  <summary>Provider Methods</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-
-  const datum = await web3.provider.getDatumByHash("hash...") // get datum by hash
-  const script = await web3.provider.getScriptByHash("script...") // 
-  const delegation = await web3.provider.getDelegation("stake1...") // get delegation by stake address
-  const utxos = await web3.provider.getUtxosByPaymentCred("paymentcred...") // get utxos by payment cred
-  const hash = await web3.provider.submitTx("cbor...") // submit tx to blockchain
-  const protocolParameters = await web3.provider.getProtocolParameters() // get protocol parameters
-  await web3.provider.observeTx("txhash...", 1_000, 60_000) // check tx is in presented in blockchain every 1s, max 60s
-    .then((status: boolean) => {
-      console.log(status)
-    })
-}
-
-app()
-```
-</details>
-
-## Explorer APIs (Typed Clients)
-
-<details>
-  <summary>Koios, Nftcdn, Price APIs Usage & Query Params</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-
-  // Koios API
-  const latest10Blocks = await web3.explorer.koios.GET("/blocks", {
-    params: {
-      query: {
-        limit: 10,
-        offset: 0,
-      }
-    }
-  })
-  console.log(latest10Blocks.data)
-
-  // Nftcdn API
-  const assetMetadata = await web3.explorer.nftcdn.GET("/metadata/{fingerprint}", {
-    params: {
-      path: {
-        fingerprint: "asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx",
-      },
-    },
-  })
-  console.log(assetMetadata.data)
-
-  // Price API
-  const dexsOrders = await web3.explorer.price.GET("/orders")
-  console.log(dexsOrders.data)
-}
-
-app()
-```
-</details>
-
-## Utils
-
-<details>
-  <summary>Examples of some utilities</summary>
-  
-``` ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
-
-  const mnemonic = web3.utils.keys.mnemonicGenerate() // generate 24-word (default) mnemonic
-  const mnemonic12 = web3.utils.keys.mnemonicGenerate(12) // generate 12-word mnemonic
-  const mnemonic15 = web3.utils.keys.mnemonicGenerate(15) // generate 15-word mnemonic
-  const mnemonic24 = web3.utils.keys.mnemonicGenerate(24) // generate 24-word mnemonic
-  const isMnemonicValid = web3.utils.keys.mnemonicValidate(mnemonic) // is valid
-
-  const xprvKey = web3.utils.keys.xprvKeyGenerate() // generate XPRV key
-  const isXprvValid = web3.utils.keys.xprvKeyValidate(mnemonic) // is valid
-
-  const xpubKey = web3.utils.keys.xpubKeyFromXprvKey(xprvKey) // XPUB key from XPRV key
-  const isXpubValid = web3.utils.keys.xpubKeyValidate(xpubKey) // is valid
-
-  const address_0_1 = web3.utils.address.deriveBase(xpubKey, [0, 1]) // derive base address from XPUB key
-
-  const { changeAddress, paymentCred, stakingCred, stakingAddress } = web3.utils.account.getDetailsFromXpub(xpubKey) // account base info
-
-  // etc
+  console.log(web3.network)
+  console.log(web3.protocolParams)
+  console.log(web3.slotConfig)
+  console.log(web3.ttl)
 }
 
 app()

@@ -1,6 +1,13 @@
 import * as T from "../types"
 
-export const TTL = 900 // 15 minutes, 1 slot = 1 second
+export const SLOT_CONFIG_NETWORK: Record<T.NetworkName, T.SlotConfig> = {
+  mainnet: { zeroTime: 1596059091000, zeroSlot: 4492800, slotDuration: 1000 },
+  preview: { zeroTime: 1666656000000, zeroSlot: 0, slotDuration: 1000 },
+  preprod: { zeroTime: 1654041600000 + 1728000000, zeroSlot: 86400, slotDuration: 1000 },
+  custom: { zeroTime: 0, zeroSlot: 0, slotDuration: 0 },
+}
+
+export const TTL = 900 // 900 seconds = 15 minutes (1 slot = 1 second)
 
 export const DERIVATION_SCHEME: T.DerivationScheme = {
   purpose: {
@@ -72,5 +79,6 @@ export const DEFAULT_PROTOCOL_PARAMETERS: T.ProtocolParameters = {
       205665, 812, 1, 1, 41182, 32, 212342, 32, 31220, 32, 32696, 32, 43357, 32, 32247, 32, 38314, 32, 35892428, 10,
       57996947, 18975, 10, 38887044, 32947, 10,
     ],
+    PlutusV3: [],
   },
 }

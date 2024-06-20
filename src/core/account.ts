@@ -2,39 +2,77 @@ import * as T from "../types"
 
 export class Account {
   private cw3: T.CardanoWeb3
+  __config: T.AccountConfig = {
+    configVersion: 1,
+    type: undefined,
+    checksumImage: undefined,
+    checksumId: undefined,
+    xpubKey: undefined,
+    xprvKey: undefined,
+    xprvKeyIsEncoded: false,
+    accountPath: undefined,
+    addressPath: undefined,
+    paymentAddress: undefined,
+    paymentCred: undefined,
+    stakingAddress: undefined,
+    stakingCred: undefined,
+    connector: undefined,
+  }
   __state: T.AccountState = {
     utxos: [],
     balance: {
       lovelace: 0n,
       assets: [],
     },
-    delegation: undefined,
+    delegation: null,
     rewards: 0n,
   }
-  __config: T.AccountConfig = {
-    xpubKey: undefined,
-    derivationPath: undefined,
-    changeAddress: undefined,
-    paymentCred: undefined,
-    stakingCred: undefined,
-    stakingAddress: undefined,
+
+  /**
+   * Create a new account from mnemonic
+   * @param cw3 CardanoWeb3 instance
+   * @param mnemonic 24-word mnemonic
+   * @param accountPath Account derivation path (e.g. [1852, 1815, 0])
+   * @param addressPath Address derivation path (e.g. [0, 0])
+   * @returns Account instance
+   */
+  static fromMnemonic = (
+    cw3: T.CardanoWeb3,
+    mnemonic: string,
+    accountPath: T.AccountDerivationPath,
+    addressPath: T.AddressDerivationPath
+  ) => {
+    const xprvKey = cw3.utils.keys.mnemonicToXprvKey(mnemonic)
+    return this.fromXprvKey(cw3, xprvKey, accountPath, addressPath)
   }
 
-  static fromXprvKey = (cw3: T.CardanoWeb3, xprvKey: string, path: T.AccountDerivationPath) => {
+  /**
+   * Create a new account from xprv key
+   * @param cw3 CardanoWeb3 instance
+   * @param xprvKey Extended private key
+   * @param accountPath Account derivation path (e.g. [1852, 1815, 0])
+   * @param addressPath Address derivation path (e.g. [0, 0])
+   * @returns Account instance
+   */
+  static fromXprvKey = (
+    cw3: T.CardanoWeb3,
+    xprvKey: string,
+    accountPath: T.AccountDerivationPath,
+    addressPath: T.AddressDerivationPath
+  ) => {
     const account = new Account()
-    const { C, utils } = cw3
-
-    const xpubKey = C.Bip32PrivateKey.from_bech32(xprvKey)
-      .derive(utils.misc.harden(path[0]))
-      .derive(utils.misc.harden(path[1]))
-      .derive(utils.misc.harden(path[2]))
-      .to_public()
-      .to_bech32()
-    const accountDetails = utils.account.getDetailsFromXpub(xpubKey)
+    const xpubKey = cw3.utils.keys.xprvKeyToXpubKey(xprvKey, accountPath)
+    const checksum = cw3.utils.account.checksum(xpubKey)
+    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath)
 
     account.cw3 = cw3
-    account.__config.derivationPath = path
+    account.__config.accountPath = accountPath
+    account.__config.addressPath = addressPath
     account.__config.xpubKey = xpubKey
+    account.__config.xprvKey = xprvKey
+    account.__config.type = "xprv"
+    account.__config.checksumImage = checksum.checksumImage
+    account.__config.checksumId = checksum.checksumId
     account.__config = {
       ...account.__config,
       ...accountDetails,
@@ -43,21 +81,27 @@ export class Account {
     return account
   }
 
-  static fromMnemonic = (cw3: T.CardanoWeb3, mnemonic: string, path: T.AccountDerivationPath) => {
-    const xprvKey = cw3.utils.keys.xprvKeyFromMnemonic(mnemonic)
-    return this.fromXprvKey(cw3, xprvKey, path)
-  }
-
-  static fromXpubKey = (cw3: T.CardanoWeb3, xpubKey: string) => {
+  /**
+   * Create a new account from xpub key (limited functionality)
+   * @param cw3 CardanoWeb3 instance
+   * @param xpubKey Extended public key
+   * @param addressPath Address derivation path (e.g. [0, 0])
+   * @returns Account instance
+   */
+  static fromXpubKey = (cw3: T.CardanoWeb3, xpubKey: string, addressPath: T.AddressDerivationPath) => {
+    if (!cw3.utils.keys.xpubKeyValidate(xpubKey)) throw new Error("Invalid public key")
     const account = new Account()
-    const { C, utils } = cw3
-
-    if (!utils.keys.xpubKeyValidate(xpubKey)) throw new Error("Invalid public key")
-    const accountDetails = utils.account.getDetailsFromXpub(xpubKey)
+    const checksum = cw3.utils.account.checksum(xpubKey)
+    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath)
 
     account.cw3 = cw3
-    account.__config.derivationPath = undefined
+    account.__config.accountPath = undefined
+    account.__config.addressPath = addressPath
     account.__config.xpubKey = xpubKey
+    account.__config.xprvKey = undefined
+    account.__config.type = "xpub"
+    account.__config.checksumImage = checksum.checksumImage
+    account.__config.checksumId = checksum.checksumId
     account.__config = {
       ...account.__config,
       ...accountDetails,
@@ -66,71 +110,191 @@ export class Account {
     return account
   }
 
-  static fromXvkKey = (cw3: T.CardanoWeb3, xvkKey: string) => {
-    const xpubKey = cw3.utils.keys.xpubKeyFromXvkKey(xvkKey)
-    return this.fromXpubKey(cw3, xpubKey)
-  }
-
+  /**
+   * Create a new account from connector
+   * @param cw3 CardanoWeb3 instance
+   * @param connector Connector instance
+   * @returns Account instance
+   */
   static fromConnector = async (cw3: T.CardanoWeb3, connector: T.Connector) => {
+    const connectorNetwork = await connector.getNetworkId()
+    if (connectorNetwork !== cw3.network.id) throw new Error("Connector network mismatch")
+
     const account = new Account()
+    const mainAddress = (await connector.getUsedAddresses())?.[0] || (await connector.getUnusedAddresses())?.[0]
+    const paymentAddress = cw3.CML.Address.from_hex(mainAddress).to_bech32()
+    const { paymentCred, stakingCred } = cw3.utils.address.getPublicCredentials(paymentAddress)
+    const stakingAddress = cw3.CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
 
     account.cw3 = cw3
-    account.__config.derivationPath = undefined
+    account.__config.accountPath = undefined
+    account.__config.addressPath = undefined
     account.__config.xpubKey = undefined
-
-    const changeAddress = await connector.getChangeAddress()
-    const paymentCreds = cw3.utils.address.getCredentials(changeAddress)
-    const stakingAddress = (await connector.getRewardAddresses())[0]
-
-    account.__config.changeAddress = await connector.getChangeAddress()
-    account.__config.paymentCred = paymentCreds.paymentCred
-    account.__config.stakingCred = paymentCreds.stakingCred
+    account.__config.xprvKey = undefined
+    account.__config.type = "connector"
+    account.__config.checksumImage = undefined
+    account.__config.checksumId = undefined
+    account.__config.paymentAddress = paymentAddress
+    account.__config.paymentCred = paymentCred.hash
+    account.__config.stakingCred = stakingCred.hash
     account.__config.stakingAddress = stakingAddress
+    account.__config.connector = connector
 
     return account
   }
 
-  static fromLedgerHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
-    throw new Error("Not implemented: fromLedgerHW")
-    // if (typeof window === "undefined") throw new Error("fromLedgerHW is only available in the browser")
-    // const account = new Account()
+  // static fromLedgerHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
+  //   throw new Error("Not implemented: fromLedgerHW")
+  //   if (typeof window === "undefined") throw new Error("fromLedgerHW is only available in the browser")
+  //   const account = new Account()
 
-    // account.__config.source = "ledger"
-    // account.cw3 = cw3
+  //   account.cw3 = cw3
+  //   account.__config.type = "ledger"
 
-    // return account
+  //   return account
+  // }
+
+  // static fromTrezorHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
+  //   throw new Error("Not implemented: fromLedgerHW")
+  //   if (typeof window === "undefined") throw new Error("fromTrezorHW is only available in the browser")
+  //   const account = new Account()
+
+  //   account.cw3 = cw3
+  //   account.__config.type = "trezor"
+
+  //   return account
+  // }
+
+  /**
+   * Import an account from configuration
+   * @param cw3 CardanoWeb3 instance
+   * @param config Account configuration
+   * @returns Account instance
+   */
+  static importAccount = (cw3: T.CardanoWeb3, config: T.AccountExportV1) => {
+    if (config.configVersion === 1) {
+      if (config.type === "xprv") {
+        const account = new Account()
+        const xpubConfig = this.fromXpubKey(cw3, config.xpubKey, config.addressPath)
+
+        account.cw3 = cw3
+        account.__config = {
+          ...xpubConfig.__config,
+          type: config.type,
+          xprvKey: config.xprvKey,
+          xprvKeyIsEncoded: config.xprvKeyIsEncoded,
+          accountPath: config.accountPath,
+          addressPath: config.addressPath,
+        }
+        return account
+      }
+      if (config.type === "xpub") {
+        return this.fromXpubKey(cw3, config.xpubKey, config.addressPath)
+      }
+    }
+    throw new Error("Wrong account type for import")
   }
 
-  static fromTrezorHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
-    throw new Error("Not implemented: fromLedgerHW")
-    // if (typeof window === "undefined") throw new Error("fromTrezorHW is only available in the browser")
-    // const account = new Account()
-
-    // account.__state.source = "trezor"
-    // account.cw3 = cw3
-
-    // return account
-  }
-
-  setChangeAddress = (address: string) => {
-    this.__config.changeAddress = address
-  }
-
-  fetchAndUpdateState = async () => {
-    const utxos = await this.cw3.provider.getUtxosByPaymentCred(this.__config.paymentCred)
-    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
-    const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)
-
-    this.__state.utxos = utxos
-    this.__state.balance = balance
-    this.__state.delegation = delegation?.delegation
-    this.__state.rewards = delegation?.rewards
+  /**
+   * Export account configuration
+   * @returns Account configuration
+   * @throws Error if account type is not exportable
+   */
+  exportAccount = (): T.AccountExportV1 => {
+    if (this.__config.type === "connector" || this.__config.type === "ledger" || this.__config.type === "trezor")
+      throw new Error(`Account with $"{this.__config.type}" type is not exportable`)
 
     return {
-      utxos,
-      balance,
-      delegation: delegation?.delegation,
-      rewards: delegation?.rewards,
+      configVersion: this.__config.configVersion,
+      type: this.__config.type,
+      checksumId: this.__config.checksumId,
+      xpubKey: this.__config.xpubKey,
+      xprvKey: this.__config.xprvKey,
+      xprvKeyIsEncoded: this.__config.xprvKeyIsEncoded,
+      accountPath: this.__config.accountPath,
+      addressPath: this.__config.addressPath,
     }
   }
+
+  /**
+   * Encode key to encrypted state
+   * @param password Password to encrypt the key
+   * @throws Error if account type is wrong or xprv key is not found
+   * @throws Error if account is already encrypted
+   * @returns Encoded xprv key
+   */
+  encodeXprvKey = (password: string) => {
+    if (!this.__config.xprvKey) throw new Error("Wrong account type. No xprv key found")
+    if (this.__config.xprvKeyIsEncoded) throw new Error("Account is already encrypted")
+    const xprvKey = this.cw3.utils.misc.encryptDataWithPass(this.__config.xprvKey, password)
+    return xprvKey
+  }
+
+  /**
+   * Encode key to encrypted state and update internal state
+   * @param password Password to encrypt the key
+   * @returns Encoded xprv key
+   */
+  encodeAndUpdateXprvKey = (password: string) => {
+    const xprvKey = this.encodeXprvKey(password)
+    this.__config.xprvKey = xprvKey
+    this.__config.xprvKeyIsEncoded = true
+    return xprvKey
+  }
+
+  /**
+   * Decode key from encrypted state
+   * @param password Password to decrypt the key
+   * @returns Decoded xprv key
+   * @throws Error if account is not encrypted or account type is wrong
+   */
+  decodeXprvKey = (password: string) => {
+    if (!this.__config.xprvKey || !this.__config.xprvKeyIsEncoded)
+      throw new Error("Account is not encrypted or account type is wrong")
+    const xprvKey = this.cw3.utils.misc.decryptDataWithPass(this.__config.xprvKey, password)
+    return xprvKey
+  }
+
+  /**
+   * Decode key from encrypted state and update internal state
+   * @param password Password to decrypt the key
+   * @returns Decoded xprv key
+   */
+  decodeAndUpdateXprvKey = (password: string) => {
+    const xprvKey = this.decodeXprvKey(password)
+    this.__config.xprvKey = xprvKey
+    this.__config.xprvKeyIsEncoded = false
+    return xprvKey
+  }
+
+  /**
+   * Get account state and update internal state
+   * @returns Account state
+   */
+  updateState = async (): Promise<T.AccountState> => {
+    // TODO: Get utxos & balance from connector if account type is connector
+    const utxos = await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
+    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
+    const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)
+    this.__state = {
+      utxos,
+      balance,
+      delegation: delegation?.delegation || null,
+      rewards: delegation?.rewards,
+    }
+    return this.__state
+  }
+
+  // detectMultiAddressing = async (): Promise<T.AccountMultiAddressing> => {
+  //   return {
+  //     isMulti: false,
+  //     utxos: [],
+  //     derivation: [
+  //       {
+  //         address: "",
+  //         path: [0, 0],
+  //       },
+  //     ],
+  //   }
+  // }
 }
