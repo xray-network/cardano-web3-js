@@ -28,7 +28,7 @@ npm i cardano-web3-js
 
 ## Basic Usage
 
-Check [test](/test) folder for detailed usage examples. Or read the documentation to learn how to create a transaction of any complexity
+Check [/test](/test) folder for detailed usage examples. Or read the documentation to learn how to create a transaction of any complexity
 
 ``` ts
 import { CardanoWeb3 } from "cardano-web3-js"
@@ -115,7 +115,7 @@ app()
 
 ## Test
 
-Check [test/index.spec.ts](test/index.spec.ts) for available test
+Check [/test](/test) folder for available tests
 
 ```TypeScript
 yarn test
