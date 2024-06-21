@@ -7,14 +7,13 @@ export class TxBuilder {
   private protocolParams: T.ProtocolParameters
   private changeAddress: string
   private queue: (() => unknown)[] = []
-  private scripts: Map<string, T.Script> = new Map()
   private inputs: Map<string, T.Utxo> = new Map()
   private readInputs: Map<string, T.Utxo> = new Map()
   private collectInputs: Map<string, T.Utxo> = new Map()
   private collaterals: Map<string, T.Utxo> = new Map()
   private remoteProtocolParams: boolean = false
   private remoteTxEvaluate: boolean = false
-  private coinSelection: number = 2
+  private coinSelection: number = 2 // Default: LargestFirstMultiAsset
   __txBuilder: T.CML.TransactionBuilder
 
   constructor(cw3: T.CardanoWeb3) {
@@ -31,9 +30,6 @@ export class TxBuilder {
       for (const utxoUnresolved of utxos) {
         const utxo = await this.cw3.provider.resolveUtxoDatumAndScript(utxoUnresolved)
         this.readInputs.set(`${utxo.transaction.id}@${utxo.index.toString()}`, utxo)
-        if (utxo.script) {
-          this.scripts.set(this.cw3.utils.script.scriptToScriptRef(utxo.script).hash().to_hex(), utxo.script)
-        }
         const input = this.cw3.utils.tx.utxoToCore(utxo)
         this.__txBuilder.add_reference_input(input)
       }
@@ -51,13 +47,12 @@ export class TxBuilder {
     this.queue.push(async () => {
       for (const utxoUnresolved of utxos) {
         const utxo = await this.cw3.provider.resolveUtxoDatumAndScript(utxoUnresolved)
-        this.collectInputs.set(`${utxo.transaction.id}@${utxo.index.toString()}`, utxo)
-        const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
-        const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         if (!utxo.script) {
           throw new Error("Address must have a script to collect from it")
         }
-        this.scripts.set(this.cw3.utils.script.scriptToScriptRef(utxo.script).hash().to_hex(), utxo.script)
+        this.collectInputs.set(`${utxo.transaction.id}@${utxo.index.toString()}`, utxo)
+        const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
+        const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         switch (utxo.script.language) {
           case "Native":
             this.__txBuilder.add_input(
@@ -69,7 +64,9 @@ export class TxBuilder {
             break
           case "PlutusV1":
             if (!redeemer) {
-              throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+              throw new Error(
+                "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+              )
             }
             this.__txBuilder.add_input(
               inputBuilder.plutus_script(
@@ -84,7 +81,9 @@ export class TxBuilder {
             break
           case "PlutusV2":
             if (!redeemer) {
-              throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+              throw new Error(
+                "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+              )
             }
             this.__txBuilder.add_input(
               inputBuilder.plutus_script_inline_datum(
@@ -105,84 +104,17 @@ export class TxBuilder {
   }
 
   /**
-   * Add Output to pay to address with data
-   * @param output Output to pay to
-   * @param datum Datum to attach
-   * @param script Script to attach (optional)
-   * @returns TxBuilder instance
-   */
-  payToAddressWithData = (output: T.Output, datum?: T.DatumOutput, script?: T.Script) => {
-    this.queue.push(async () => {
-      const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
-      let outputBuilder: T.CML.TransactionOutputBuilder
-
-      if (datum) {
-        if (datum.type === "hash") {
-          const data = datum.datum
-          const datumOption = this.cw3.CML.DatumOption.new_hash(this.cw3.CML.DatumHash.from_hex(data))
-          outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address).with_data(datumOption)
-        }
-        if (datum.type === "inline") {
-          const data = this.cw3.CML.PlutusData.from_cbor_hex(datum.datum)
-          const datumOption = this.cw3.CML.DatumOption.new_datum(data)
-          outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address).with_data(datumOption)
-        }
-        if (datum.type === "witness") {
-          // TODO: Check if this is correct
-          const data = this.cw3.CML.PlutusData.from_cbor_hex(datum.datum)
-          // // const datumOption = this.cw3.CML.DatumOption.new_hash(this.cw3.CML.hash_plutus_data(data))
-          outputBuilder = this.cw3.CML.TransactionOutputBuilder.new()
-            .with_address(address)
-            .with_communication_data(data)
-        }
-      } else {
-        outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address)
-      }
-
-      if (script) {
-        this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
-        outputBuilder.with_reference_script(this.cw3.utils.script.scriptToScriptRef(script))
-      }
-
-      const amountBuilder = outputBuilder.next()
-
-      if (output.value > 0n) {
-        this.__txBuilder.add_output(
-          amountBuilder.with_value(this.cw3.utils.tx.assetsToValue(output.value, output.assets)).build()
-        )
-      } else {
-        this.__txBuilder.add_output(
-          amountBuilder
-            .with_asset_and_min_required_coin(
-              this.cw3.utils.tx.assetsToValue(output.value, output.assets).multi_asset(),
-              this.protocolParams.coinsPerUtxoByte
-            )
-            .build()
-        )
-      }
-    })
-    return this
-  }
-
-  /**
-   * Add Output to pay to contract
-   * @param output Output to pay to
-   * @param datum Datum to attach
-   * @param script Script to attach (optional)
-   * @returns TxBuilder instance
-   */
-  payToContract = (output: T.Output, datum: T.DatumOutput, script?: T.Script) => {
-    this.payToAddressWithData(output, datum, script)
-    return this
-  }
-
-  /**
    * Add UTXO to spend from
    * @param utxo UTXO to spend from
    * @returns TxBuilder instance
    */
   addInput = (utxo: T.Utxo) => {
-    this.inputs.set(`${utxo.transaction.id}@${utxo.index.toString()}`, utxo)
+    this.queue.push(async () => {
+      this.inputs.set(`${utxo.transaction.id}@${utxo.index.toString()}`, utxo)
+      const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
+      const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
+      this.__txBuilder.add_input(inputBuilder.payment_key())
+    })
     return this
   }
 
@@ -198,41 +130,70 @@ export class TxBuilder {
     return this
   }
 
-  /**
-   * Add Output to pay to address
-   * @param output Output to pay to
-   * @returns TxBuilder instance
-   */
-  addOutput = (output: T.Output) => {
+  private payTo = (output: T.Output, datum?: T.DatumOutput, script?: T.Script) => {
     this.queue.push(async () => {
-      const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
-      const amountBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address).next()
-      if (output.value > 0n) {
-        this.__txBuilder.add_output(
-          amountBuilder.with_value(this.cw3.utils.tx.assetsToValue(output.value, output.assets)).build()
-        )
-      } else {
-        this.__txBuilder.add_output(
-          amountBuilder
-            .with_asset_and_min_required_coin(
-              this.cw3.utils.tx.assetsToValue(output.value, output.assets).multi_asset(),
-              this.protocolParams.coinsPerUtxoByte
-            )
-            .build()
-        )
-      }
+      const outputBuilder = this.cw3.utils.tx.outputToTransactionOutputBuilder(output, datum, script)
+      const outputBuilderResult =
+        output.value > 0n
+          ? outputBuilder.next().with_value(this.cw3.utils.tx.assetsToValue(output.value, output.assets)).build()
+          : outputBuilder
+              .next()
+              .with_asset_and_min_required_coin(
+                this.cw3.utils.tx.assetsToValue(output.value, output.assets).multi_asset(),
+                this.protocolParams.coinsPerUtxoByte
+              )
+              .build()
+      this.__txBuilder.add_output(outputBuilderResult)
     })
     return this
   }
 
   /**
-   * Add Outputs to pay to addresses
+   * Add Output with aux data to pay to any address
+   * @param output Output to pay to
+   * @param datum Datum to attach
+   * @param script Script to attach (optional)
+   * @returns TxBuilder instance
+   */
+  payToAddressWithData = (output: T.Output, datum: T.DatumOutput, script?: T.Script) => {
+    this.payTo(output, datum, script)
+    return this
+  }
+
+  /**
+   * Add Output with aux data to pay to contract with address check
+   * @param output Output to pay to
+   * @param datum Datum to attach
+   * @param script Script to attach
+   * @returns TxBuilder instance
+   */
+  payToContract = (output: T.Output, datum: T.DatumOutput, script: T.Script) => {
+    const { paymentCred } = this.cw3.utils.address.getPublicCredentials(output.address)
+    if (!paymentCred || paymentCred.type !== "script") {
+      throw new Error("Invalid address for contract")
+    }
+    this.payTo(output, datum, script)
+    return this
+  }
+
+  /**
+   * Add Output (without Datums/Scripts) to pay to address
+   * @param output Output to pay to
+   * @returns TxBuilder instance
+   */
+  addOutput = (output: T.Output) => {
+    this.payTo(output)
+    return this
+  }
+
+  /**
+   * Add Outputs (without Datums/Scripts) to pay to addresses
    * @param outputs Outputs to pay to
    * @returns TxBuilder instance
    */
   addOutputs = (outputs: T.Output[]) => {
     for (const output of outputs) {
-      this.addOutput(output)
+      this.payTo(output)
     }
     return this
   }
@@ -306,7 +267,7 @@ export class TxBuilder {
    * @param address Address of required signer
    * @returns TxBuilder instance
    */
-  addRequiredSigner = (address: string) => {
+  addRequiredSignerByAddress = (address: string) => {
     this.queue.push(() => {
       const { paymentCred, stakingCred, type } = this.cw3.utils.address.getPublicCredentials(address)
       if (!paymentCred && !stakingCred) {
@@ -314,7 +275,7 @@ export class TxBuilder {
       }
       const credential = type == "reward" ? stakingCred : paymentCred
       if (credential.type === "script") {
-        throw new Error("Only key hash is allowed for required signer")
+        throw new Error("Only key hash (not script) is allowed for required signer")
       }
       this.__txBuilder.add_required_signer(this.cw3.CML.Ed25519KeyHash.from_hex(credential.hash))
     })
@@ -326,7 +287,7 @@ export class TxBuilder {
    * @param keyHash Key hash of required signer
    * @returns TxBuilder instance
    */
-  addRequiredSignerKey = (keyHash: string) => {
+  addRequiredSignerByKey = (keyHash: string) => {
     this.queue.push(() => {
       this.__txBuilder.add_required_signer(this.cw3.CML.Ed25519KeyHash.from_hex(keyHash))
     })
@@ -334,13 +295,40 @@ export class TxBuilder {
   }
 
   /**
-   * Add script to transaction
+   * Add script to transaction aux data
    * @param script Script to attach
    * @returns TxBuilder instance
    */
   addScript = (script: T.Script) => {
     this.queue.push(async () => {
-      this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
+      if (script.language === "Native") {
+        const nativeScriptList = this.cw3.CML.NativeScriptList.new()
+        nativeScriptList.add(this.cw3.CML.NativeScript.from_cbor_hex(script.script))
+        const aux = this.cw3.CML.AuxiliaryData.new()
+        aux.add_native_scripts(nativeScriptList)
+        this.__txBuilder.add_auxiliary_data(aux)
+      }
+      if (script.language === "PlutusV1") {
+        const doubleEncodedScript = this.cw3.utils.script.applyDoubleCborEncoding(script)
+        const plutusScript = this.cw3.CML.PlutusV1Script.from_cbor_hex(doubleEncodedScript)
+        const plutusScriptList = this.cw3.CML.PlutusV1ScriptList.new()
+        plutusScriptList.add(plutusScript)
+        const aux = this.cw3.CML.AuxiliaryData.new()
+        aux.add_plutus_v1_scripts(plutusScriptList)
+        this.__txBuilder.add_auxiliary_data(aux)
+      }
+      if (script.language === "PlutusV2") {
+        const doubleEncodedScript = this.cw3.utils.script.applyDoubleCborEncoding(script)
+        const plutusScript = this.cw3.CML.PlutusV2Script.from_cbor_hex(doubleEncodedScript)
+        const plutusScriptList = this.cw3.CML.PlutusV2ScriptList.new()
+        plutusScriptList.add(plutusScript)
+        const aux = this.cw3.CML.AuxiliaryData.new()
+        aux.add_plutus_v2_scripts(plutusScriptList)
+        this.__txBuilder.add_auxiliary_data(aux)
+      }
+      if (script.language === "PlutusV3") {
+        throw new Error("PlutusV3 scripts are not supported yet")
+      }
     })
     return this
   }
@@ -352,7 +340,7 @@ export class TxBuilder {
    * @param redeemer Redeemer to use (optional)
    * @returns TxBuilder instance
    */
-  mintAssets = (assets: T.Asset[], script?: T.Script, redeemer?: string) => {
+  addMint = (assets: T.Asset[], script: T.Script, redeemer?: string) => {
     this.queue.push(async () => {
       const policyId = assets[0].policyId
       const mintAssets = this.cw3.CML.MapAssetNameToNonZeroInt64.new()
@@ -361,31 +349,28 @@ export class TxBuilder {
         mintAssets.insert(this.cw3.CML.AssetName.from_str(asset.assetName || ""), asset.quantity)
       }
       const mintBuilder = this.cw3.CML.SingleMintBuilder.new(mintAssets)
-      if (script) {
-        this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
+      if (!script) {
+        throw new Error("Native or Plutus script is required to mint assets")
       }
-      const selectedScript = this.scripts.get(policyId)
-      if (!selectedScript) {
-        throw new Error("Script not found. Provide script or add using addScript() method")
-      }
-      switch (selectedScript.language) {
+      switch (script.language) {
         case "Native":
           this.__txBuilder.add_mint(
             mintBuilder.native_script(
-              this.cw3.CML.NativeScript.from_cbor_hex(selectedScript.script),
+              this.cw3.CML.NativeScript.from_cbor_hex(script.script),
               this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
             )
           )
           break
         case "PlutusV1":
         case "PlutusV2":
-          if (!redeemer) throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+          if (!redeemer) {
+            throw new Error(
+              "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            )
+          }
           this.__txBuilder.add_mint(
             mintBuilder.plutus_script(
-              this.cw3.utils.script.partialPlutusWitness(
-                this.cw3.utils.script.scriptToPlutusScript(selectedScript),
-                redeemer
-              ),
+              this.cw3.utils.script.partialPlutusWitness(this.cw3.utils.script.scriptToPlutusScript(script), redeemer),
               this.cw3.CML.Ed25519KeyHashList.new()
             )
           )
@@ -403,7 +388,7 @@ export class TxBuilder {
    * @param metadata Metadata to attach
    * @returns TxBuilder instance
    */
-  addMetadata = (label: number, metadata: T.Json) => {
+  addMetadataString = (label: number, metadata: T.Json) => {
     this.queue.push(async () => {
       const metadatum = this.cw3.CML.TransactionMetadatum.new_text(JSON.stringify(metadata))
       const metadataBuilder = this.cw3.CML.Metadata.new()
@@ -457,20 +442,15 @@ export class TxBuilder {
         }
         case "script": {
           if (!redeemer) {
-            throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+            throw new Error(
+              "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            )
           }
-          if (script) {
-            this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
-          }
-          const selectedScript = this.scripts.get(stakingCred.hash)
-          if (!selectedScript) {
-            throw new Error("Script not found. Provide script or add using addScript() method")
-          }
-          switch (selectedScript.language) {
+          switch (script.language) {
             case "Native":
               this.__txBuilder.add_withdrawal(
                 withdrawBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(selectedScript.script),
+                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
                   this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
@@ -479,7 +459,7 @@ export class TxBuilder {
               this.__txBuilder.add_withdrawal(
                 withdrawBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(selectedScript),
+                    this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
                   this.cw3.CML.Ed25519KeyHashList.new()
@@ -519,24 +499,22 @@ export class TxBuilder {
         }
         case "script": {
           if (!redeemer) {
-            throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+            throw new Error(
+              "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            )
           }
-          if (script) {
-            this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
-          }
-          const selectedScript = this.scripts.get(stakingCred.hash)
-          if (!selectedScript) {
-            throw new Error("Script not found. Provide script or add using addScript() method")
+          if (!script) {
+            throw new Error("Native or Plutus script is required for script staking delegation")
           }
           const credential = this.cw3.CML.Credential.new_script(this.cw3.CML.ScriptHash.from_hex(stakingCred.hash))
           const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
             this.cw3.CML.Certificate.new_stake_delegation(credential, this.cw3.CML.Ed25519KeyHash.from_bech32(poolId))
           )
-          switch (selectedScript.language) {
+          switch (script.language) {
             case "Native":
               this.__txBuilder.add_cert(
                 certificateBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(selectedScript.script),
+                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
                   this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
@@ -545,7 +523,7 @@ export class TxBuilder {
               this.__txBuilder.add_cert(
                 certificateBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(selectedScript),
+                    this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
                   this.cw3.CML.Ed25519KeyHashList.new()
@@ -605,24 +583,22 @@ export class TxBuilder {
         }
         case "script": {
           if (!redeemer) {
-            throw new Error("Redeemer is required. Use Data.void() if script doesn't require a redeemer")
+            throw new Error(
+              "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            )
           }
-          if (script) {
-            this.scripts.set(this.cw3.utils.script.scriptToScriptRef(script).hash().to_hex(), script)
-          }
-          const selectedScript = this.scripts.get(stakingCred.hash)
-          if (!selectedScript) {
-            throw new Error("Script not found. Provide script or add using addScript() method")
+          if (!script) {
+            throw new Error("Native or Plutus script is required for script staking deregistration")
           }
           const credential = this.cw3.CML.Credential.new_script(this.cw3.CML.ScriptHash.from_hex(stakingCred.hash))
           const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
             this.cw3.CML.Certificate.new_stake_deregistration(credential)
           )
-          switch (selectedScript.language) {
+          switch (script.language) {
             case "Native":
               this.__txBuilder.add_cert(
                 certificateBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(selectedScript.script),
+                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
                   this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
@@ -631,7 +607,7 @@ export class TxBuilder {
               this.__txBuilder.add_cert(
                 certificateBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(selectedScript),
+                    this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
                   this.cw3.CML.Ed25519KeyHashList.new()
@@ -713,52 +689,16 @@ export class TxBuilder {
       this.__txBuilder.set_ttl(BigInt(this.cw3.utils.time.unixTimeToSlot(Date.now() + TTL * 1000, this.cw3.slotConfig)))
     }
 
-    // Add Inputs
-    for (const utxo of this.inputs.values()) {
-      const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
-      const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
-      this.__txBuilder.add_input(inputBuilder.payment_key())
-    }
-
-    // Add Scripts
-    for (const script of this.scripts.values()) {
-      if (script.language === "Native") {
-        const nativeScriptList = this.cw3.CML.NativeScriptList.new()
-        nativeScriptList.add(this.cw3.CML.NativeScript.from_cbor_hex(script.script))
-        const aux = this.cw3.CML.AuxiliaryData.new()
-        aux.add_native_scripts(nativeScriptList)
-        this.__txBuilder.add_auxiliary_data(aux)
-      }
-      if (script.language === "PlutusV1") {
-        const doubleEncodedScript = this.cw3.utils.script.applyDoubleCborEncoding(script)
-        const plutusScript = this.cw3.CML.PlutusV1Script.from_cbor_hex(doubleEncodedScript)
-        const plutusScriptList = this.cw3.CML.PlutusV1ScriptList.new()
-        plutusScriptList.add(plutusScript)
-        const aux = this.cw3.CML.AuxiliaryData.new()
-        aux.add_plutus_v1_scripts(plutusScriptList)
-        this.__txBuilder.add_auxiliary_data(aux)
-      }
-      if (script.language === "PlutusV2") {
-        const doubleEncodedScript = this.cw3.utils.script.applyDoubleCborEncoding(script)
-        const plutusScript = this.cw3.CML.PlutusV2Script.from_cbor_hex(doubleEncodedScript)
-        const plutusScriptList = this.cw3.CML.PlutusV2ScriptList.new()
-        plutusScriptList.add(plutusScript)
-        const aux = this.cw3.CML.AuxiliaryData.new()
-        aux.add_plutus_v2_scripts(plutusScriptList)
-        this.__txBuilder.add_auxiliary_data(aux)
-      }
-      if (script.language === "PlutusV3") {
-        throw new Error("PlutusV3 scripts are not supported yet")
-      }
-    }
-
     // Execute queue tasks
     for (const task of this.queue) {
       await task()
     }
 
     // Set Collateral
-    if (this.scripts.size > 0) {
+    if (
+      this.__txBuilder.get_auxiliary_data().plutus_v1_scripts().len() > 0 ||
+      this.__txBuilder.get_auxiliary_data().plutus_v2_scripts().len() > 0
+    ) {
       // TODO: Select up to maxCollateralInputs collaterals
       const collateral =
         this.collaterals.size > 0

@@ -39,13 +39,17 @@ export class TxFinalizer {
         if (account.__config.xprvKeyIsEncoded && !password)
           throw new Error("Password is required to sign with xprv encoded account")
         const xprvKey = account.__config.xprvKeyIsEncoded ? account.decodeXprvKey(password) : account.__config.xprvKey
-        const paymentKey = this.cw3.CML.PrivateKey.from_bech32(
-          this.cw3.utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, account.__config.addressPath)
+
+        const paymentVerificationKey = this.cw3.utils.keys.xprvToVrfKey(
+          xprvKey,
+          account.__config.accountPath,
+          account.__config.addressPath
         )
-        const stakingKey = this.cw3.CML.PrivateKey.from_bech32(
-          this.cw3.utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, [2, 0])
-        )
+        const paymentKey = this.cw3.CML.PrivateKey.from_bech32(paymentVerificationKey)
         const paymentKeyHash = paymentKey.to_public().hash().to_hex()
+
+        const stakingVerificationKey = this.cw3.utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, [2, 0])
+        const stakingKey = this.cw3.CML.PrivateKey.from_bech32(stakingVerificationKey)
         const stakingKeyHash = stakingKey.to_public().hash().to_hex()
 
         const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
@@ -76,7 +80,7 @@ export class TxFinalizer {
         throw new Error("Trezor account signing is not implemented yet")
       }
       if (account.__config.type === "xpub") {
-        throw new Error("Can't sign TX with xpub account type")
+        throw new Error("Can't sign TX with xpub account type. Use signWithVrfKey() method instead")
       }
     })
 

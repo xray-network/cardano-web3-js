@@ -207,9 +207,9 @@ export type RedeemerCost = {
   }
 }
 export type Datum = string
-export type DatumType = "inline" | "witness"
+export type DatumType = "inline" | "hash"
 export type DatumOutput = {
-  type: DatumType | "hash"
+  type: DatumType
   datum: Datum
 }
 export type Lovelace = bigint

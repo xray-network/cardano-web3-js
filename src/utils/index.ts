@@ -359,24 +359,43 @@ export class Utils {
     },
 
     utxoToTransactionOutput: (utxo: T.Utxo) => {
-      const address = this.address.getShelleyOrByronAddress(utxo.address)
       const value = this.tx.assetsToValue(utxo.value, utxo.assets)
-      const builder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address)
-      const builderWithDatum = (() => {
-        if (utxo.datumHash && utxo.datumType === "witness") {
-          return builder.with_data(this.cw3.CML.DatumOption.new_hash(this.cw3.CML.DatumHash.from_hex(utxo.datumHash)))
+      const outputBuilder = this.tx.outputToTransactionOutputBuilder(
+        {
+          address: utxo.address,
+          value: utxo.value,
+          assets: utxo.assets,
+        },
+        {
+          type: utxo.datumType,
+          datum: utxo.datum,
+        },
+        utxo.script
+      )
+      return outputBuilder.next().with_value(value).build().output()
+    },
+
+    outputToTransactionOutputBuilder: (output: T.Output, datum?: T.DatumOutput, script?: T.Script) => {
+      const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
+      let outputBuilder: T.CML.TransactionOutputBuilder
+      if (datum) {
+        if (datum.type === "inline") {
+          const data = this.cw3.CML.PlutusData.from_cbor_hex(datum.datum)
+          const datumOption = this.cw3.CML.DatumOption.new_datum(data)
+          outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address).with_data(datumOption)
         }
-        if (utxo.datumHash && utxo.datum && utxo.datumType === "inline") {
-          return builder.with_data(
-            this.cw3.CML.DatumOption.new_datum(this.cw3.CML.PlutusData.from_cbor_hex(utxo.datum))
-          )
+        if (datum.type === "hash") {
+          const data = this.cw3.CML.PlutusData.from_cbor_hex(datum.datum)
+          outputBuilder = this.cw3.CML.TransactionOutputBuilder.new()
+            .with_address(address)
+            .with_communication_data(data)
         }
-        return builder
-      })()
-      const output = utxo.scriptHash
-        ? builderWithDatum.with_reference_script(this.script.scriptToScriptRef(utxo.script)).next()
-        : builderWithDatum.next()
-      return output.with_value(value).build().output()
+      } else {
+        outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address)
+      }
+      return script
+        ? outputBuilder.with_reference_script(this.cw3.utils.script.scriptToScriptRef(script))
+        : outputBuilder
     },
 
     discoverOwnUsedTxKeyHashes: (tx: T.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]) => {
@@ -515,7 +534,7 @@ export class Utils {
       }
       if (scripts && scripts.len() > 0) keyHashFromScript(scripts)
 
-      return usedKeyHashes
+      return usedKeyHashes.filter((hash) => ownKeyHashes.includes(hash))
     },
   }
 

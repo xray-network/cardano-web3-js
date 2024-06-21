@@ -222,7 +222,7 @@ const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][nu
     value: BigInt(utxo.value),
     assets: koiosAssetsToAssets(utxo.asset_list || []),
     datumHash: utxo.datum_hash || null,
-    datumType: utxo.datum_hash ? (utxo.inline_datum ? "inline" : "witness") : null,
+    datumType: utxo.datum_hash ? (utxo.inline_datum ? "inline" : "hash") : null,
     scriptHash: utxo.reference_script?.hash || null,
     datum: null,
     script: null,
