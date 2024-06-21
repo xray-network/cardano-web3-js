@@ -1,5 +1,5 @@
 <a href="https://discord.gg/WhZmm46APN"><img alt="Discord" src="https://img.shields.io/discord/852538978946383893?style=for-the-badge&logo=discord&label=Discord&labelColor=%231940ED&color=%233FCB9B"></a>
-<a href="https://www.npmjs.com/package/cardano-web3-js"><img alt="NPM" src="https://img.shields.io/npm/v/cardano-web3-js/latest?style=for-the-badge&logo=npm&labelColor=%231940ED&color=%233FCB9B">
+<a href="https://www.npmjs.com/package/cardano-web3-js"><img alt="NPM" src="https://img.shields.io/npm/v/cardano-web3-js/latest?style=for-the-badge&logo=npm&labelColor=%231940ED&color=%233FCB9B"></a>
 <a href="https://github.com/ray-network/cardano-web3-js/actions"><img alt="CODEQL" src="https://img.shields.io/github/actions/workflow/status/xray-network/cardano-web3-js/codeql.yml?label=CodeQL&logo=github&style=for-the-badge&labelColor=%231940ED&color=%233FCB9B"></a>
 
   

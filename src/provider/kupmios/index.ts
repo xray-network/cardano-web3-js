@@ -244,7 +244,7 @@ const kupoUtxoToUtxo = (utxo: K.Utxo): T.Utxo => {
     value: BigInt(utxo.value.coins),
     assets: kupoAssetsToAssets(utxo.value.assets || {}),
     datumHash: utxo.datum_hash || null,
-    datumType: utxo.datum_hash ? (utxo.datum_type === "hash" ? "witness" : "inline") : null,
+    datumType: utxo.datum_hash ? (utxo.datum_type === "hash" ? "hash" : "inline") : null,
     scriptHash: utxo.script_hash || null,
     datum: null,
     script: null,
