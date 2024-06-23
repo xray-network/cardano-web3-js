@@ -14,7 +14,7 @@ import { KoiosProvider } from "../provider/koios"
 import KoiosExplorer from "../explorer/koios"
 import NftcdnExplorer from "../explorer/nftcdn"
 import PricingExplorer from "../explorer/pricing"
-import { signData, verifyData } from "../utils/message"
+import { Data, Constr } from "../utils/data"
 import * as T from "../types"
 
 /**
@@ -29,13 +29,19 @@ export class CardanoWeb3 {
   MSL: typeof T.MSL
   /** UPLC @ Untyped Plutus Core Library */
   UPLC: typeof T.UPLC
-  network: T.NetworkConfig
-  protocolParams: T.ProtocolParameters
-  slotConfig: T.SlotConfig
-  ttl: number
+  /** Lucid Plutus Data Serialization Lib */
+  Data: ReturnType<typeof Data>
+  /** Lucid Plutus Data Construction Lib */
+  Constr: typeof Constr
   explorer: T.Explorer
   provider: T.Provider
   utils: Utils
+  __config: {
+    network: T.NetworkConfig
+    protocolParams: T.ProtocolParameters
+    slotConfig: T.SlotConfig
+    ttl: number
+  }
 
   /**
    * Initialize CardanoWeb3 library
@@ -49,14 +55,8 @@ export class CardanoWeb3 {
     cw3.CML = await import("@dcspark/cardano-multiplatform-lib-nodejs")
     cw3.MSL = await import("@emurgo/cardano-message-signing-nodejs")
     cw3.UPLC = await import("uplc-node")
-    cw3.network = {
-      name: network,
-      type: network === "mainnet" ? "mainnet" : "testnet",
-      id: network === "mainnet" ? 1 : 0,
-    }
-    cw3.protocolParams = config?.protocolParams || DEFAULT_PROTOCOL_PARAMETERS
-    cw3.slotConfig = config?.slotConfig || SLOT_CONFIG_NETWORK[network]
-    cw3.ttl = config?.ttl || TTL
+    cw3.Data = Data(cw3)
+    cw3.Constr = Constr
     cw3.explorer = {
       koios: KoiosExplorer(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
@@ -73,6 +73,16 @@ export class CardanoWeb3 {
     }
     cw3.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     cw3.utils = new Utils(cw3)
+    cw3.__config = {
+      network: {
+        name: network,
+        type: network === "mainnet" ? "mainnet" : "testnet",
+        id: network === "mainnet" ? 1 : 0,
+      },
+      protocolParams: config?.protocolParams || DEFAULT_PROTOCOL_PARAMETERS,
+      slotConfig: config?.slotConfig || SLOT_CONFIG_NETWORK[network],
+      ttl: config?.ttl || TTL,
+    }
 
     return cw3
   }
@@ -274,10 +284,10 @@ export class CardanoWeb3 {
   signMessageWithVrfKey = (verificationKey: string, address: string, message: string): T.SignedMessage => {
     const hexAddress = this.CML.Address.from_bech32(address).to_hex()
     const hexMessage = this.utils.misc.fromStringToHex(message)
-    const { paymentCred } = this.utils.address.getPublicCredentials(address)
+    const { paymentCred } = this.utils.address.getCredentials(address)
     const hash = this.CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
     if (!paymentCred?.hash || paymentCred?.hash !== hash) throw new Error("Verification key does not match the address")
-    return this.utils.Message.signData(hexAddress, hexMessage, verificationKey)
+    return this.utils.message.signData(hexAddress, hexMessage, verificationKey)
   }
 
   /**
@@ -290,10 +300,10 @@ export class CardanoWeb3 {
   verifyMessage = (address: string, message: string, signedMessage: T.SignedMessage): boolean => {
     const hexAddress = this.CML.Address.from_bech32(address).to_hex()
     const hexMessage = this.utils.misc.fromStringToHex(message)
-    const { paymentCred, stakingCred } = this.utils.address.getPublicCredentials(address)
+    const { paymentCred, stakingCred } = this.utils.address.getCredentials(address)
     const hash = paymentCred?.hash || stakingCred?.hash
     if (!hash) throw new Error("Invalid address")
-    return this.utils.Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
+    return this.utils.message.verifyData(hexAddress, hash, hexMessage, signedMessage)
   }
 
   /**

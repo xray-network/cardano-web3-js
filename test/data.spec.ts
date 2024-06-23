@@ -3,9 +3,9 @@ import { CardanoWeb3, T } from "../src"
 
 describe("Data", async () => {
   const web3 = await CardanoWeb3.init()
+  const Data = web3.Data
+  const Constr = web3.Constr
   const {
-    Data,
-    Constr,
     script: { applyParamsToScript },
   } = web3.utils
 

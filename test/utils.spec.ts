@@ -1,6 +1,6 @@
 import { expect, it, describe } from "vitest"
 import { CardanoWeb3, T } from "../src"
-import { testData } from "./__config"
+import { testData } from "./__test"
 
 describe("Utils", async () => {
   const web3 = await CardanoWeb3.init()
@@ -83,17 +83,17 @@ describe("Utils", async () => {
     })
 
     it("getPublicCredentials(): from BaseAddress", async () => {
-      const credGenerated = web3.utils.address.getPublicCredentials(testData.paymentAddress)
+      const credGenerated = web3.utils.address.getCredentials(testData.paymentAddress)
       expect(credGenerated.type).toEqual("base")
     })
 
     it("getPublicCredentials(): from EnterpriseAddress", async () => {
-      const credGenerated = web3.utils.address.getPublicCredentials(testData.paymentAddressEnterprise)
+      const credGenerated = web3.utils.address.getCredentials(testData.paymentAddressEnterprise)
       expect(credGenerated.type).toEqual("enterprise")
     })
 
     it("getPublicCredentials(): from StakingAddress", async () => {
-      const credGenerated = web3.utils.address.getPublicCredentials(testData.stakingAddress)
+      const credGenerated = web3.utils.address.getCredentials(testData.stakingAddress)
       expect(credGenerated.type).toEqual("reward")
     })
 
@@ -144,8 +144,8 @@ describe("Utils", async () => {
   describe("Time", async () => {
     it("Roundtrip unixTimeToSlot() slotToUnixTime()", async () => {
       const unixTime = Date.now()
-      const slot = web3.utils.time.unixTimeToSlot(unixTime, web3.slotConfig)
-      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot, web3.slotConfig)
+      const slot = web3.utils.time.unixTimeToSlot(unixTime, web3.__config.slotConfig)
+      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot, web3.__config.slotConfig)
       expect(unixTimeGenerated).toEqual(Math.floor(unixTime / 1000) * 1000)
     })
   })

@@ -1,9 +1,11 @@
 import { expect, it, describe } from "vitest"
 import { CardanoWeb3, T } from "../src"
-import { testData } from "./__config"
+import { testData } from "./__test"
 
 describe("Message", async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = await CardanoWeb3.init({
+    network: "preview",
+  })
 
   it("SignAndVerify: with Account", async () => {
     const account = web3.account.fromXprvKey(testData.xprvKey)

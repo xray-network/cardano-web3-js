@@ -1,6 +1,6 @@
 import { expect, it, describe } from "vitest"
 import { CardanoWeb3, T } from "../src"
-import { testData } from "./__config"
+import { testData } from "./__test"
 
 describe("TX", async () => {
   const web3 = await CardanoWeb3.init()

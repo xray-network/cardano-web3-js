@@ -34,17 +34,13 @@ export class Connector {
    * @param extensions Wallet extensions
    * @returns Connector instance
    */
-  static init = async (wallet: string, extensions?: any): Promise<T.Connector> => {
+  static init = async (wallet: string, extensions?: any): Promise<T.Connector | undefined> => {
     if (typeof window === "undefined") throw new Error("Connector is only available in the browser environment")
     const connector = new Connector()
-    try {
-      if (!window?.cardano?.[wallet]) throw new Error(`Wallet ${wallet} not found`)
-      const api = await window?.cardano?.[wallet].enable(extensions ? { extensions } : undefined)
-      connector.__api = api
-      return connector
-    } catch (e) {
-      console.log(e)
-    }
+    if (!window?.cardano?.[wallet]) throw new Error(`Wallet ${wallet} not found`)
+    const api = await window?.cardano?.[wallet].enable(extensions ? { extensions } : undefined)
+    connector.__api = api
+    return connector
   }
 
   /**
