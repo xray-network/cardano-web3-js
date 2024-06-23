@@ -652,17 +652,17 @@ export class TxBuilder {
       await task()
     }
 
-    // Prepare draft TX
-    const draftTx = this.__txBuilder
-      .build_for_evaluation(
-        this.cw3.CML.ChangeSelectionAlgo.Default,
-        this.cw3.CML.Address.from_bech32(this.changeAddress)
-      )
-      .draft_tx()
-    const draftTxRedeemers = draftTx.witness_set().redeemers()
-
     // Set Collateral
-    if (draftTxRedeemers) {
+    if (
+      this.__txBuilder
+        .build_for_evaluation(
+          this.cw3.CML.ChangeSelectionAlgo.Default,
+          this.cw3.CML.Address.from_bech32(this.changeAddress)
+        )
+        .draft_tx()
+        .witness_set()
+        .redeemers()
+    ) {
       // TODO: Select up to maxCollateralInputs collaterals
       const collateral = [...this.inputs.values()].find((utxo) => utxo.value > 5_000_000)
       if (!collateral) throw new Error("Suitable collateral > 5 ADA not found")
@@ -687,6 +687,13 @@ export class TxBuilder {
     if (this.coinSelection !== -1) this.__txBuilder.select_utxos(this.coinSelection)
 
     // Evaluate TX phase two execution cost and set ex_units
+    const draftTx = this.__txBuilder
+      .build_for_evaluation(
+        this.cw3.CML.ChangeSelectionAlgo.Default,
+        this.cw3.CML.Address.from_bech32(this.changeAddress)
+      )
+      .draft_tx()
+    const draftTxRedeemers = draftTx.witness_set().redeemers()
     if (draftTxRedeemers) {
       if (!this.remoteTxEvaluate) {
         const costModels = this.cw3.utils.tx.createCostModels(this.protocolParams.costModels)

@@ -313,17 +313,4 @@ export class Account {
     }
     return this.__state
   }
-
-  // detectMultiAddressing = async (): Promise<T.AccountMultiAddressing> => {
-  //   return {
-  //     isMulti: false,
-  //     utxos: [],
-  //     derivation: [
-  //       {
-  //         address: "",
-  //         path: [0, 0],
-  //       },
-  //     ],
-  //   }
-  // }
 }
