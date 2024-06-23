@@ -1,6 +1,6 @@
 import { expect, it, describe } from "vitest"
 import { CardanoWeb3, T } from "../src"
-import { testData } from "./__config"
+import { testData } from "./__test"
 
 describe("Account", async () => {
   const web3 = await CardanoWeb3.init()
@@ -24,6 +24,7 @@ describe("Account", async () => {
 
   it("EncodeXprvKey", async () => {
     const account = web3.account.fromXprvKey(testData.xprvKey)
+    console.log(web3.utils.account.getDetailsFromXpub(testData.xpubKey, testData.addressPath))
     account.encodeAndUpdateXprvKey("password123")
     expect(account.__config.xprvKey).length(450)
   })

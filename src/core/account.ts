@@ -118,12 +118,12 @@ export class Account {
    */
   static fromConnector = async (cw3: T.CardanoWeb3, connector: T.Connector) => {
     const connectorNetwork = await connector.getNetworkId()
-    if (connectorNetwork !== cw3.network.id) throw new Error("Connector network mismatch")
+    if (connectorNetwork !== cw3.__config.network.id) throw new Error("Connector network mismatch")
 
     const account = new Account()
     const mainAddress = (await connector.getUsedAddresses())?.[0] || (await connector.getUnusedAddresses())?.[0]
     const paymentAddress = cw3.CML.Address.from_hex(mainAddress).to_bech32()
-    const { paymentCred, stakingCred } = cw3.utils.address.getPublicCredentials(paymentAddress)
+    const { paymentCred, stakingCred } = cw3.utils.address.getCredentials(paymentAddress)
     const stakingAddress = cw3.CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
 
     account.cw3 = cw3
@@ -272,7 +272,36 @@ export class Account {
    * @returns Account state
    */
   updateState = async (): Promise<T.AccountState> => {
-    // TODO: Get utxos & balance from connector if account type is connector
+    // TODO: Implement getUtxosFromConnector if account type is connector
+    // const getUtxosFromConnector = async (): Promise<T.Utxo[]> => {
+    //   const utxosRaw = await this.__config.connector.getUtxos()
+    //   const utxos = utxosRaw.map((utxoRaw) => {
+    //     const utxo = this.cw3.CML.TransactionUnspentOutput.from_cbor_hex(utxoRaw)
+    //     const input = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(utxo)
+    //     console.log(utxo)
+    //     console.log(input)
+    //     return {
+    //       transaction: {
+    //         id: "",
+    //       },
+    //       index: 0,
+    //       address: "",
+    //       value: 0n,
+    //       assets: [],
+    //       datumHash: null,
+    //       datumType: null,
+    //       scriptHash: null,
+    //       datum: null,
+    //       script: null,
+    //     }
+    //   })
+    //   return utxos
+    // }
+    // console.log(getUtxosFromConnector)
+    // const utxos =
+    //   this.__config.type !== "connector"
+    //     ? await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
+    //     : await getUtxosFromConnector()
     const utxos = await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
     const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
     const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)

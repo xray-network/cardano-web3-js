@@ -64,7 +64,6 @@ export type Provider = {
   getUtxosByAddress(address: string): Promise<Utxo[]>
   getUtxoByOutputRef(txHash: string, index: number): Promise<Utxo>
   resolveUtxoDatumAndScript(utxo: Utxo): Promise<Utxo>
-  resolveUtxosDatumAndScript(utxos: Utxo[]): Promise<Utxo[]>
   getDatumByHash(datumHash: string): Promise<string | undefined>
   getScriptByHash(scriptHash: string): Promise<Script | undefined>
   getDelegation(stakingAddress: string): Promise<AccountDelegation>
@@ -187,16 +186,14 @@ export type AccountDerivationPath = [number, number, number]
 export type AddressDerivationPath = [number, number]
 export type AddressType = "base" | "pointer" | "enterprise" | "reward" | "byron"
 export type AddressCredentialType = "key" | "script"
+export type Credential = {
+  type: AddressCredentialType
+  hash: string
+}
 export type AddressPublicCredentials = {
   type: AddressType
-  paymentCred: {
-    type: AddressCredentialType
-    hash: string
-  }
-  stakingCred: {
-    type: AddressCredentialType
-    hash: string
-  }
+  paymentCred: Credential
+  stakingCred: Credential
 }
 export type Redeemer = string
 export type RedeemerCost = {
