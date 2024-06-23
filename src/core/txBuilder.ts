@@ -201,7 +201,7 @@ export class TxBuilder {
    */
   validFrom = (unixTime: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
+      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime)
       this.__txBuilder.set_validity_start_interval(BigInt(slot))
     })
     return this
@@ -214,7 +214,7 @@ export class TxBuilder {
    */
   validTo = (unixTime: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
+      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime)
       this.__txBuilder.set_ttl(BigInt(slot))
     })
     return this
@@ -227,7 +227,7 @@ export class TxBuilder {
    */
   setTtl = (slotsOffset: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(Date.now() + slotsOffset * 1000, this.cw3.__config.slotConfig)
+      const slot = this.cw3.utils.time.unixTimeToSlot(Date.now() + slotsOffset * 1000)
       this.__txBuilder.set_ttl(BigInt(slot))
     })
     return this
@@ -312,7 +312,6 @@ export class TxBuilder {
               "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
             )
           }
-          // this.shouldAddCollaterals = true
           this.__txBuilder.add_mint(
             mintBuilder.plutus_script(
               this.cw3.utils.script.partialPlutusWitness(this.cw3.utils.script.scriptToPlutusScript(script), redeemer),
@@ -407,7 +406,6 @@ export class TxBuilder {
                   "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
                 )
               }
-              // this.shouldAddCollaterals = true
               this.__txBuilder.add_withdrawal(
                 withdrawBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
@@ -475,7 +473,6 @@ export class TxBuilder {
                   "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
                 )
               }
-              // this.shouldAddCollaterals = true
               this.__txBuilder.add_cert(
                 certificateBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
@@ -563,7 +560,6 @@ export class TxBuilder {
                   "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
                 )
               }
-              // this.shouldAddCollaterals = true
               this.__txBuilder.add_cert(
                 certificateBuilder.plutus_script(
                   this.cw3.utils.script.partialPlutusWitness(
@@ -648,9 +644,7 @@ export class TxBuilder {
           : this.cw3.CML.NetworkId.testnet()
       )
       // Set default TTL
-      this.__txBuilder.set_ttl(
-        BigInt(this.cw3.utils.time.unixTimeToSlot(Date.now() + TTL * 1000, this.cw3.__config.slotConfig))
-      )
+      this.__txBuilder.set_ttl(BigInt(this.cw3.utils.time.unixTimeToSlot(Date.now() + TTL * 1000)))
     }
 
     // Execute queue tasks
@@ -658,8 +652,17 @@ export class TxBuilder {
       await task()
     }
 
+    // Prepare draft TX
+    const draftTx = this.__txBuilder
+      .build_for_evaluation(
+        this.cw3.CML.ChangeSelectionAlgo.Default,
+        this.cw3.CML.Address.from_bech32(this.changeAddress)
+      )
+      .draft_tx()
+    const draftTxRedeemers = draftTx.witness_set().redeemers()
+
     // Set Collateral
-    if (this.scripts.size > 0) {
+    if (draftTxRedeemers) {
       // TODO: Select up to maxCollateralInputs collaterals
       const collateral = [...this.inputs.values()].find((utxo) => utxo.value > 5_000_000)
       if (!collateral) throw new Error("Suitable collateral > 5 ADA not found")
@@ -684,13 +687,6 @@ export class TxBuilder {
     if (this.coinSelection !== -1) this.__txBuilder.select_utxos(this.coinSelection)
 
     // Evaluate TX phase two execution cost and set ex_units
-    const draftTx = this.__txBuilder
-      .build_for_evaluation(
-        this.cw3.CML.ChangeSelectionAlgo.Default,
-        this.cw3.CML.Address.from_bech32(this.changeAddress)
-      )
-      .draft_tx()
-    const draftTxRedeemers = draftTx.witness_set().redeemers()
     if (draftTxRedeemers) {
       if (!this.remoteTxEvaluate) {
         const costModels = this.cw3.utils.tx.createCostModels(this.protocolParams.costModels)

@@ -3,7 +3,9 @@ import { CardanoWeb3, T } from "../src"
 import { testData } from "./__test"
 
 describe("Utils", async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = await CardanoWeb3.init({
+    network: "preview",
+  })
 
   describe("Keys", async () => {
     it("mnemonicGenerate(): 24 words", async () => {
@@ -144,8 +146,8 @@ describe("Utils", async () => {
   describe("Time", async () => {
     it("Roundtrip unixTimeToSlot() slotToUnixTime()", async () => {
       const unixTime = Date.now()
-      const slot = web3.utils.time.unixTimeToSlot(unixTime, web3.__config.slotConfig)
-      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot, web3.__config.slotConfig)
+      const slot = web3.utils.time.unixTimeToSlot(unixTime)
+      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot)
       expect(unixTimeGenerated).toEqual(Math.floor(unixTime / 1000) * 1000)
     })
   })
