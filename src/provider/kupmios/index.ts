@@ -251,7 +251,7 @@ const kupoUtxoToUtxo = (utxo: K.Utxo): T.Utxo => {
   }
 }
 
-const kupoUtxosToUtxos = (utxos: K.Utxo[]) => {
+const kupoUtxosToUtxos = (utxos: K.Utxo[]): T.Utxo[] => {
   return utxos.map((utxo) => kupoUtxoToUtxo(utxo))
 }
 

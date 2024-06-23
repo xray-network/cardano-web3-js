@@ -229,7 +229,7 @@ const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][nu
   }
 }
 
-const koiosUtxosToUtxos = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]) => {
+const koiosUtxosToUtxos = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]): T.Utxo[] => {
   return utxos.map((utxo) => koiosUtxoToUtxo(utxo))
 }
 

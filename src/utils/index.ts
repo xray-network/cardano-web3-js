@@ -49,26 +49,26 @@ export class Utils {
    * Keys related utils
    */
   keys = {
-    mnemonicGenerate: (length: 12 | 15 | 24 = 24) => {
+    mnemonicGenerate: (length: 12 | 15 | 24 = 24): string => {
       return Bip39.generateMnemonic((32 * length) / 3)
     },
 
-    mnemonicValidate: (mnemonic: string) => {
+    mnemonicValidate: (mnemonic: string): boolean => {
       return Bip39.validateMnemonic(mnemonic)
     },
 
-    mnemonicToXprvKey: (mnemonic: string, password?: string) => {
+    mnemonicToXprvKey: (mnemonic: string, password?: string): string => {
       return this.cw3.CML.Bip32PrivateKey.from_bip39_entropy(
         this.misc.fromHex(Bip39.mnemonicToEntropy(mnemonic)),
         password ? new TextEncoder().encode(password) : new Uint8Array()
       ).to_bech32()
     },
 
-    xprvKeyGenerate: () => {
+    xprvKeyGenerate: (): string => {
       return this.cw3.CML.Bip32PrivateKey.generate_ed25519_bip32().to_bech32()
     },
 
-    xprvKeyValidate: (xprvKey: string) => {
+    xprvKeyValidate: (xprvKey: string): boolean => {
       try {
         this.cw3.CML.Bip32PrivateKey.from_bech32(xprvKey).to_bech32()
         return true
@@ -81,7 +81,7 @@ export class Utils {
       xprvKey: string,
       accountPath?: T.AccountDerivationPath,
       addressPath?: T.AddressDerivationPath
-    ) => {
+    ): string => {
       let key = this.cw3.CML.Bip32PrivateKey.from_bech32(xprvKey)
       if (accountPath) {
         for (const index of accountPath) {
@@ -96,7 +96,11 @@ export class Utils {
       return key.to_public().to_bech32()
     },
 
-    xprvToVrfKey: (xprvKey: string, accountPath?: T.AccountDerivationPath, addressPath?: T.AddressDerivationPath) => {
+    xprvToVrfKey: (
+      xprvKey: string,
+      accountPath?: T.AccountDerivationPath,
+      addressPath?: T.AddressDerivationPath
+    ): string => {
       let key = this.cw3.CML.Bip32PrivateKey.from_bech32(xprvKey)
       if (accountPath) {
         for (const index of accountPath) {
@@ -111,11 +115,11 @@ export class Utils {
       return key.to_raw_key().to_bech32()
     },
 
-    xvkKeyToXpubKey: (xvkKey: string) => {
+    xvkKeyToXpubKey: (xvkKey: string): string => {
       return Bech32.bech32.encode("xpub", Bech32.bech32.decode(xvkKey, 118).words, 114)
     },
 
-    xpubKeyValidate: (pubKey: string) => {
+    xpubKeyValidate: (pubKey: string): boolean => {
       try {
         this.cw3.CML.Bip32PublicKey.from_bech32(pubKey)
         return true
@@ -129,7 +133,7 @@ export class Utils {
    * Address related utils
    */
   address = {
-    deriveBase: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath) => {
+    deriveBase: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath): string => {
       const paymentKeyHash = this.cw3.CML.Bip32PublicKey.from_bech32(xpubKey)
         .derive(addressDerivationPath[0])
         .derive(addressDerivationPath[1])
@@ -145,7 +149,7 @@ export class Utils {
         .to_bech32()
     },
 
-    deriveEnterprise: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath) => {
+    deriveEnterprise: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath): string => {
       const paymentKeyHash = this.cw3.CML.Bip32PublicKey.from_bech32(xpubKey)
         .derive(addressDerivationPath[0])
         .derive(addressDerivationPath[1])
@@ -159,7 +163,7 @@ export class Utils {
         .to_bech32()
     },
 
-    deriveStaking: (xpubKey: string) => {
+    deriveStaking: (xpubKey: string): string => {
       const stakeKeyHash = this.cw3.CML.Bip32PublicKey.from_bech32(xpubKey).derive(2).derive(0).to_raw_key().hash()
       return this.cw3.CML.RewardAddress.new(
         this.cw3.__config.network.id,
@@ -169,7 +173,7 @@ export class Utils {
         .to_bech32()
     },
 
-    getStakingAddress: (addrBech32: string) => {
+    getStakingAddress: (addrBech32: string): string => {
       const address = this.cw3.CML.Address.from_bech32(addrBech32)
       const stakingCred = address.staking_cred()
       return this.cw3.CML.RewardAddress.new(address.network_id(), stakingCred).to_address().to_bech32()
@@ -185,32 +189,84 @@ export class Utils {
         3: "reward",
         4: "byron",
       }[kind] as T.AddressType
-      return {
-        type,
-        paymentCred:
-          address.payment_cred()?.kind() === 0
-            ? {
-                type: "key",
-                hash: address.payment_cred()?.as_pub_key()?.to_hex(),
-              }
-            : {
-                type: "script",
-                hash: address.payment_cred()?.as_script().to_hex(),
-              },
-        stakingCred:
-          address.staking_cred()?.kind() === 0
-            ? {
-                type: "key",
-                hash: address.staking_cred()?.as_pub_key()?.to_hex(),
-              }
-            : {
-                type: "script",
-                hash: address.staking_cred()?.as_script().to_hex(),
-              },
+      if (type === "base") {
+        return {
+          type,
+          paymentCred:
+            address.payment_cred()?.kind() === 0
+              ? {
+                  type: "key",
+                  hash: address.payment_cred()?.as_pub_key()?.to_hex(),
+                }
+              : {
+                  type: "script",
+                  hash: address.payment_cred()?.as_script().to_hex(),
+                },
+          stakingCred:
+            address.staking_cred()?.kind() === 0
+              ? {
+                  type: "key",
+                  hash: address.staking_cred()?.as_pub_key()?.to_hex(),
+                }
+              : {
+                  type: "script",
+                  hash: address.staking_cred()?.as_script().to_hex(),
+                },
+        }
+      }
+      if (type === "pointer") {
+        return {
+          type,
+          paymentCred:
+            address.payment_cred()?.kind() === 0
+              ? {
+                  type: "key",
+                  hash: address.payment_cred()?.as_pub_key()?.to_hex(),
+                }
+              : {
+                  type: "script",
+                  hash: address.payment_cred()?.as_script().to_hex(),
+                },
+        }
+      }
+      if (type === "enterprise") {
+        return {
+          type,
+          paymentCred:
+            address.payment_cred()?.kind() === 0
+              ? {
+                  type: "key",
+                  hash: address.payment_cred()?.as_pub_key()?.to_hex(),
+                }
+              : {
+                  type: "script",
+                  hash: address.payment_cred()?.as_script().to_hex(),
+                },
+        }
+      }
+      if (type === "reward") {
+        return {
+          type,
+          stakingCred:
+            address.payment_cred()?.kind() === 0
+              ? {
+                  type: "key",
+                  hash: address.payment_cred()?.as_pub_key()?.to_hex(),
+                }
+              : {
+                  type: "script",
+                  hash: address.payment_cred()?.as_script().to_hex(),
+                },
+        }
+      }
+      if (type === "byron") {
+        return {
+          type,
+        }
       }
     },
 
-    getShelleyOrByronAddress: (addrBech32: string) => {
+    getShelleyOrByronAddress: (addrBech32: string): T.CML.Address => {
       try {
         return this.cw3.CML.Address.from_bech32(addrBech32)
       } catch {
@@ -223,11 +279,24 @@ export class Utils {
    * Account related utils
    */
   account = {
-    checksum: (xpubKey: string) => {
+    checksum: (
+      xpubKey: string
+    ): {
+      checksumId: string
+      checksumImage: string
+    } => {
       return walletChecksum(xpubKey)
     },
 
-    getDetailsFromXpub: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath) => {
+    getDetailsFromXpub: (
+      xpubKey: string,
+      addressDerivationPath: T.AddressDerivationPath
+    ): {
+      paymentAddress: string
+      paymentCred: string
+      stakingAddress: string
+      stakingCred: string
+    } => {
       const paymentAddress = this.address.deriveBase(xpubKey, addressDerivationPath)
       const { paymentCred, stakingCred } = this.address.getCredentials(paymentAddress)
       const stakingAddress = this.address.getStakingAddress(paymentAddress)
@@ -270,7 +339,7 @@ export class Utils {
    * Asset related utils
    */
   asset = {
-    getFingerprint: (policyId: string, assetName?: string) => {
+    getFingerprint: (policyId: string, assetName?: string): string => {
       const readablePart = "asset"
       const hashBuffer = Blake2b(20)
         .update(new Uint8Array([...Buffer.from(policyId, "hex"), ...Buffer.from(assetName || "", "hex")]))
@@ -285,7 +354,7 @@ export class Utils {
    * TX related utils
    */
   tx = {
-    createCostModels: (costModels: T.CostModels) => {
+    createCostModels: (costModels: T.CostModels): T.CML.CostModels => {
       const models = this.cw3.CML.CostModels.new()
       if (costModels["PlutusV1"]) {
         const plutusV1 = this.cw3.CML.IntList.new()
@@ -305,7 +374,7 @@ export class Utils {
       return models
     },
 
-    getTxBuilder: (protocolParams: T.ProtocolParameters) => {
+    getTxBuilder: (protocolParams: T.ProtocolParameters): T.CML.TransactionBuilder => {
       const pp = protocolParams
       const txBuilderConfig = this.cw3.CML.TransactionBuilderConfigBuilder.new()
         .fee_algo(this.cw3.CML.LinearFee.new(BigInt(pp.minFeeA), BigInt(pp.minFeeB)))
@@ -329,7 +398,7 @@ export class Utils {
       return this.cw3.CML.TransactionBuilder.new(txBuilderConfig)
     },
 
-    assetsToValue: (value?: T.Lovelace, assets?: T.Asset[]) => {
+    assetsToValue: (value?: T.Lovelace, assets?: T.Asset[]): T.CML.Value => {
       const multiAsset = this.cw3.CML.MultiAsset.new()
 
       if (assets) {
@@ -345,21 +414,21 @@ export class Utils {
       return this.cw3.CML.Value.new(value || 0n, multiAsset)
     },
 
-    utxoToCore: (utxo: T.Utxo) => {
+    utxoToCore: (utxo: T.Utxo): T.CML.TransactionUnspentOutput => {
       return this.cw3.CML.TransactionUnspentOutput.new(
         this.tx.utxoToTransactionInput(utxo),
         this.tx.utxoToTransactionOutput(utxo)
       )
     },
 
-    utxoToTransactionInput: (utxo: T.Utxo) => {
+    utxoToTransactionInput: (utxo: T.Utxo): T.CML.TransactionInput => {
       return this.cw3.CML.TransactionInput.new(
         this.cw3.CML.TransactionHash.from_hex(utxo.transaction.id),
         BigInt(utxo.index)
       )
     },
 
-    utxoToTransactionOutput: (utxo: T.Utxo) => {
+    utxoToTransactionOutput: (utxo: T.Utxo): T.CML.TransactionOutput => {
       const value = this.tx.assetsToValue(utxo.value, utxo.assets)
       const outputBuilder = this.tx.outputToTransactionOutputBuilder(
         {
@@ -378,7 +447,11 @@ export class Utils {
       return outputBuilder.next().with_value(value).build().output()
     },
 
-    outputToTransactionOutputBuilder: (output: T.Output, datum?: T.DatumOutput, script?: T.Script) => {
+    outputToTransactionOutputBuilder: (
+      output: T.Output,
+      datum?: T.DatumOutput,
+      script?: T.Script
+    ): T.CML.TransactionOutputBuilder => {
       const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
       let outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address)
       if (datum) {
@@ -398,7 +471,7 @@ export class Utils {
         : outputBuilder
     },
 
-    discoverOwnUsedTxKeyHashes: (tx: T.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]) => {
+    discoverOwnUsedTxKeyHashes: (tx: T.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]): string[] => {
       const usedKeyHashes: string[] = []
       const body = tx.body()
       const inputs = body.inputs()
@@ -443,21 +516,21 @@ export class Utils {
               break
             case 1: {
               const credential = cert.as_stake_deregistration()?.stake_credential()
-              switch (credential?.kind()) {
-                case 0:
-                  usedKeyHashes.push(credential.as_pub_key()?.to_hex())
-                  break
-                case 1:
-                  usedKeyHashes.push(credential.as_script()?.to_hex())
-                  break
+              if (credential?.kind() === 0) {
+                usedKeyHashes.push(credential.as_pub_key()?.to_hex())
+              }
+              if (credential?.kind() === 0) {
+                usedKeyHashes.push(credential.as_script()?.to_hex())
               }
               break
             }
             case 2: {
               const credential = cert.as_stake_delegation()?.stake_credential()
               if (credential?.kind() === 0) {
-                const keyHash = credential.to_cbor_hex()
-                usedKeyHashes.push(keyHash)
+                usedKeyHashes.push(credential.as_pub_key()?.to_hex())
+              }
+              if (credential?.kind() === 1) {
+                usedKeyHashes.push(credential.as_script()?.to_hex())
               }
               break
             }
@@ -542,7 +615,7 @@ export class Utils {
    * Script related utils
    */
   script = {
-    scriptToScriptRef: (script: T.Script) => {
+    scriptToScriptRef: (script: T.Script): T.CML.Script => {
       switch (script.language) {
         case "Native":
           return this.cw3.CML.Script.new_native(this.cw3.CML.NativeScript.from_cbor_hex(script.script))
@@ -563,7 +636,7 @@ export class Utils {
       }
     },
 
-    scriptToAddress: (script: T.Script, stakeCredential?: T.Credential) => {
+    scriptToAddress: (script: T.Script, stakeCredential?: T.Credential): string => {
       const validatorHash = this.script.scriptToScriptHash(script)
       if (stakeCredential) {
         return this.cw3.CML.BaseAddress.new(
@@ -585,7 +658,7 @@ export class Utils {
       }
     },
 
-    scriptToPlutusScript: (script: T.Script) => {
+    scriptToPlutusScript: (script: T.Script): T.CML.PlutusScript => {
       switch (script.language) {
         case "PlutusV1":
           return this.cw3.CML.PlutusScript.from_v1(
@@ -604,7 +677,7 @@ export class Utils {
       }
     },
 
-    scriptToScriptHash: (script: T.Script) => {
+    scriptToScriptHash: (script: T.Script): string => {
       switch (script.language) {
         case "Native":
           return this.cw3.CML.NativeScript.from_cbor_hex(script.script).hash().to_hex()
@@ -631,14 +704,14 @@ export class Utils {
       }
     },
 
-    partialPlutusWitness: (script: T.CML.PlutusScript, redeemer: string) => {
+    partialPlutusWitness: (script: T.CML.PlutusScript, redeemer: string): T.CML.PartialPlutusWitness => {
       return this.cw3.CML.PartialPlutusWitness.new(
         this.cw3.CML.PlutusScriptWitness.new_script(script),
         this.cw3.CML.PlutusData.from_cbor_hex(redeemer)
       )
     },
 
-    applyDoubleCborEncoding: (script: string) => {
+    applyDoubleCborEncoding: (script: string): string => {
       try {
         decode(decode(this.misc.fromHex(script)))
         return script
@@ -705,15 +778,17 @@ export class Utils {
    * Time related utils
    */
   time = {
-    unixTimeToSlot: (unixTime: number, config: T.SlotConfig) => {
-      const timePassed = unixTime - config.zeroTime
-      const slotsPassed = Math.floor(timePassed / config.slotDuration)
-      return slotsPassed + config.zeroSlot
+    unixTimeToSlot: (unixTime: number): number => {
+      const { slotConfig } = this.cw3.__config
+      const timePassed = unixTime - slotConfig.zeroTime
+      const slotsPassed = Math.floor(timePassed / slotConfig.slotDuration)
+      return slotsPassed + slotConfig.zeroSlot
     },
 
-    slotToUnixTime: (slot: number, config: T.SlotConfig) => {
-      const msAfterBegin = (slot - config.zeroSlot) * config.slotDuration
-      return config.zeroTime + msAfterBegin
+    slotToUnixTime: (slot: number): number => {
+      const { slotConfig } = this.cw3.__config
+      const msAfterBegin = (slot - slotConfig.zeroSlot) * slotConfig.slotDuration
+      return slotConfig.zeroTime + msAfterBegin
     },
   }
 
@@ -725,11 +800,11 @@ export class Utils {
       return 0x80000000 + num
     },
 
-    fromHex: (hex: string) => {
-      return Buffer.from(hex, "hex")
+    fromHex: (hex: string): Uint8Array => {
+      return new Uint8Array(Buffer.from(hex, "hex"))
     },
 
-    toHex: (bytes: Buffer | Uint8Array) => {
+    toHex: (bytes: Uint8Array): string => {
       return Buffer.from(bytes).toString("hex")
     },
 
@@ -741,7 +816,7 @@ export class Utils {
       return Buffer.from(text).toString("hex")
     },
 
-    encryptDataWithPass: (data: string, password: string) => {
+    encryptDataWithPass: (data: string, password: string): string => {
       return this.cw3.CML.emip3_encrypt_with_password(
         Buffer.from(password).toString("hex"),
         Buffer.from(this.misc.randomBytes(32)).toString("hex"),
@@ -750,14 +825,14 @@ export class Utils {
       )
     },
 
-    decryptDataWithPass: (data: string, password: string) => {
+    decryptDataWithPass: (data: string, password: string): string => {
       return Buffer.from(
         this.cw3.CML.emip3_decrypt_with_password(Buffer.from(password).toString("hex"), data),
         "hex"
       ).toString()
     },
 
-    randomBytes: (length: number) => {
+    randomBytes: (length: number): Uint8Array => {
       const bytes = new Uint8Array(length)
       for (let i = 0; i < length; i++) {
         bytes[i] = Math.floor(Math.random() * 256)

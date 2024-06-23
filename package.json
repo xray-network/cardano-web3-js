@@ -54,6 +54,7 @@
     "cardano-koios-client": "^1.0.4",
     "cardano-nftcdn-client": "^1.0.4",
     "cardano-pricing-client": "^1.0.4",
+    "cborg": "^4.2.1",
     "crypto-browserify": "^3.12.0",
     "js-sha256": "^0.11.0",
     "uplc-node": "^0.0.3",

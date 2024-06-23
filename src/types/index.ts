@@ -192,8 +192,8 @@ export type Credential = {
 }
 export type AddressPublicCredentials = {
   type: AddressType
-  paymentCred: Credential
-  stakingCred: Credential
+  paymentCred?: Credential
+  stakingCred?: Credential
 }
 export type Redeemer = string
 export type RedeemerCost = {
