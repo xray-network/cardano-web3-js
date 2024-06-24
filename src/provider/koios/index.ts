@@ -188,6 +188,7 @@ export class KoiosProvider implements T.Provider {
 
   submitTx = async (tx: string): Promise<string> => {
     const response = await this.client.POST("/submittx", {
+      parseAs: "text",
       headers: {
         "Content-Type": "application/cbor",
       },
