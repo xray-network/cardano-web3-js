@@ -3,7 +3,9 @@ import { CardanoWeb3, KupmiosProvider, T } from "../src"
 import { testData } from "./__test"
 
 describe("TX", async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = await CardanoWeb3.init({
+    network: "preview",
+  })
   const account = web3.account.fromXprvKey(testData.xprvKey)
   const changeAddress = account.__config.paymentAddress
   const stakingAddress = account.__config.stakingAddress
