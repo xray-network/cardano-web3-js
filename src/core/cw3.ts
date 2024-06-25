@@ -17,6 +17,10 @@ import PricingExplorer from "../explorer/pricing"
 import { Data, Constr } from "../utils/data"
 import * as T from "../types"
 
+import * as CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import * as MSL from "@emurgo/cardano-message-signing-nodejs"
+import * as UPLC from "uplc-node"
+
 /**
  * CardanoWeb3 class
  *
@@ -52,9 +56,9 @@ export class CardanoWeb3 {
     const cw3 = new CardanoWeb3()
     const network = config?.network || "mainnet"
 
-    cw3.CML = await import("@dcspark/cardano-multiplatform-lib-nodejs")
-    cw3.MSL = await import("@emurgo/cardano-message-signing-nodejs")
-    cw3.UPLC = await import("uplc-node")
+    cw3.CML = CML
+    cw3.MSL = MSL
+    cw3.UPLC = UPLC
     cw3.Data = Data(cw3)
     cw3.Constr = Constr
     cw3.explorer = {

@@ -53,7 +53,7 @@
     "bignumber.js": "^9.0.1",
     "blake2b": "^2.1.4",
     "buffer": "^6.0.3",
-    "cardano-koios-client": "^1.0.4",
+    "cardano-koios-client": "^1.0.5",
     "cardano-nftcdn-client": "^1.0.4",
     "cardano-pricing-client": "^1.0.4",
     "cborg": "^4.2.1",
