@@ -24,8 +24,8 @@ npm i cardano-web3-js
 ## Documentation
 
 * Docs: [https://cardano-web3-js.org](https://cardano-web3-js.org)
-* Typedoc API: [https://cardano-web3-js.org](https://cardano-web3-js.org/api)
-* Playground: [https://cardano-web3-js.org](https://cardano-web3-js.org/playground)
+* Typedoc API: [https://cardano-web3-js.org/api](https://cardano-web3-js.org/api)
+* Playground: [https://cardano-web3-js.org/playground](https://cardano-web3-js.org/playground)
 
 ## Basic Usage
 
