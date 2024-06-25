@@ -3,6 +3,6 @@
 package.json
 package-lock.json
 dist
-src/misc/lucid
-src/misc/uplc
-docs
+docs/node_modules
+docs/build
+docs/.docusaurus

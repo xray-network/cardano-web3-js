@@ -26,4 +26,3 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 test/private.spec.ts
-docs

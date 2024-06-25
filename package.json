@@ -34,7 +34,9 @@
     "build": "tsup src/index.ts",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "test": "vitest run",
-    "typedoc": "typedoc --name \"$npm_package_name (v$npm_package_version)\""
+    "docs:dev": "cd docs && yarn start",
+    "docs:serve": "cd docs && yarn serve",
+    "docs": "cd docs && yarn install && yarn build"
   },
   "browser": {
     "@dcspark/cardano-multiplatform-lib-nodejs": "@dcspark/cardano-multiplatform-lib-browser",
@@ -67,7 +69,6 @@
     "prettier": "^3.2.5",
     "tsup": "^8.1.0",
     "tsx": "^4.15.1",
-    "typedoc": "^0.25.13",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   }

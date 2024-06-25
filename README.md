@@ -23,8 +23,9 @@ npm i cardano-web3-js
 
 ## Documentation
 
-* Playground: [https://xray.app/graph/cardano-web3-js](https://xray.app/graph/cardano-web3-js)
-* Typedoc: [https://xray-network.github.io/cardano-web3-js](https://xray-network.github.io/cardano-web3-js/)
+* Docs: [https://cardano-web3-js.org](https://cardano-web3-js.org)
+* Typedoc API: [https://cardano-web3-js.org](https://cardano-web3-js.org/api)
+* Playground: [https://cardano-web3-js.org](https://cardano-web3-js.org/playground)
 
 ## Basic Usage
 

@@ -1,0 +1,54 @@
+{
+	"name": "cardano-web3-js-docs",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"docusaurus": "docusaurus",
+		"start": "docusaurus start",
+		"build": "docusaurus build",
+		"swizzle": "docusaurus swizzle",
+		"deploy": "docusaurus deploy",
+		"clear": "docusaurus clear",
+		"serve": "docusaurus serve",
+		"write-translations": "docusaurus write-translations",
+		"write-heading-ids": "docusaurus write-heading-ids",
+		"typecheck": "tsc"
+	},
+	"dependencies": {
+		"@docusaurus/core": "^3.4.0",
+		"@docusaurus/preset-classic": "^3.4.0",
+		"@docusaurus/theme-live-codeblock": "^3.4.0",
+		"@mdx-js/react": "^3.0.1",
+		"classnames": "^2.3.2",
+		"clsx": "^2.1.1",
+		"docusaurus-lunr-search": "^3.4.0",
+		"prism-react-renderer": "^2.3.1",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@docusaurus/module-type-aliases": "^3.4.0",
+		"@tsconfig/docusaurus": "^2.0.3",
+		"docusaurus-plugin-typedoc": "^1.0.1",
+		"docusaurus-plugin-typedoc-api": "^4.2.0",
+		"typedoc": "^0.26.2",
+		"typedoc-monorepo-link-types": "^0.0.4",
+		"typedoc-plugin-extras": "^3.0.0",
+		"typedoc-plugin-markdown": "^4.1.0",
+		"typedoc-plugin-mdn-links": "^3.2.1",
+		"typedoc-plugin-merge-modules": "^5.1.0",
+		"typescript": "^5.4.5"
+	},
+	"browserslist": {
+		"production": [
+			">0.5%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
