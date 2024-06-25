@@ -1,11 +1,11 @@
 {
-	"extends": "../tsconfig.json",
-	"compilerOptions": {
-		"declarationDir": "dts",
-		"outDir": "dts",
-		"declaration": true,
-		"declarationMap": true,
-		"baseUrl": "."
-	},
-	"include": ["../src/**/*"]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "declarationDir": "dts",
+    "outDir": "dts",
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": "."
+  },
+  "include": ["../src/**/*"]
 }

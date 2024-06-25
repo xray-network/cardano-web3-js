@@ -10,8 +10,8 @@
     "sourceMap": false,
     "baseUrl": ".",
     "declaration": true,
-    "outDir": "dist",
+    "outDir": "dist"
     // "strict": true,
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts"]
 }

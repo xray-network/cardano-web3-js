@@ -89,9 +89,9 @@ const config = {
             position: "right",
           },
           {
-            href: 'https://github.com/xray-network/cardano-web3-js',
-            position: 'right',
-            className: 'header-github-link',
+            href: "https://github.com/xray-network/cardano-web3-js",
+            position: "right",
+            className: "header-github-link",
           },
           // {
           //   href: "https://github.com/xray-network/cardano-web3-js/",
