@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy Docs (Github Pages)
+name: "CardanoWeb3js.org"
 
 on:
   # Runs on releases targeting the default branch
@@ -40,13 +40,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Build the documentation
-        run: yarn run typedoc
+        run: yarn run docs
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs'
+          path: './docs/build'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
