@@ -55,13 +55,9 @@ const config = {
         changelogs: true,
         readmes: false,
         tsconfigName: "tsconfig.json",
-        typedocOptions: {
-          plugin: [
-            "typedoc-monorepo-link-types",
-            'typedoc-plugin-extras',
-            'typedoc-plugin-mdn-links',
-          ],
-        },
+        // typedocOptions: {
+        //   plugin: ["typedoc-monorepo-link-types", "typedoc-plugin-extras", "typedoc-plugin-mdn-links"],
+        // },
       },
     ],
   ],

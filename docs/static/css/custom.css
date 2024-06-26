@@ -19,6 +19,10 @@
   src: url("../fonts/satoshi-black.ttf") format("truetype");
 }
 
+.docs-doc-id-playground\/index .row .col {
+  max-width: 100% !important;
+}
+
 /* Light theme */
 
 :root {
@@ -40,7 +44,11 @@
   --ifm-background-color: #ffffff;
 }
 
-
+.theme-code-block, .prism-code {
+  font-family: monospace;
+  /* font-weight: 600; */
+  font-size: 14px;
+}
 
 .footer {
   --ifm-footer-color: #aaa7b8;

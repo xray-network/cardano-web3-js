@@ -53,6 +53,13 @@ export function mnemonicToEntropy(mnemonic: string, wordlist?: Array<string>): s
   return toHex(entropy)
 }
 
+function randomValues(array: Uint8Array) {
+  for (let i = 0, l = array.length; i < l; i++) {
+    array[i] = Math.floor(Math.random() * 256)
+  }
+  return array
+}
+
 function randomBytes(size: number): Uint8Array {
   // reimplementation of: https://github.com/crypto-browserify/randombytes/blob/master/browser.js
   const MAX_UINT32 = 4294967295
@@ -71,10 +78,10 @@ function randomBytes(size: number): Uint8Array {
       for (let generated = 0; generated < size; generated += MAX_BYTES) {
         // buffer.slice automatically checks if the end is past the end of
         // the buffer so we don't have to here
-        crypto.getRandomValues(bytes.slice(generated, generated + MAX_BYTES))
+        randomValues(bytes.slice(generated, generated + MAX_BYTES))
       }
     } else {
-      crypto.getRandomValues(bytes)
+      randomValues(bytes)
     }
   }
 
