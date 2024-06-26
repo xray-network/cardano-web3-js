@@ -1,7 +1,8 @@
 import * as T from "../types"
+import * as L from "../types/links"
 
 export class Account {
-  private cw3: T.CardanoWeb3
+  private cw3: L.CardanoWeb3
   __config: T.AccountConfig = {
     configVersion: 1,
     type: undefined,
@@ -37,7 +38,7 @@ export class Account {
    * @returns Account instance
    */
   static fromMnemonic = (
-    cw3: T.CardanoWeb3,
+    cw3: L.CardanoWeb3,
     mnemonic: string,
     accountPath: T.AccountDerivationPath,
     addressPath: T.AddressDerivationPath
@@ -55,7 +56,7 @@ export class Account {
    * @returns Account instance
    */
   static fromXprvKey = (
-    cw3: T.CardanoWeb3,
+    cw3: L.CardanoWeb3,
     xprvKey: string,
     accountPath: T.AccountDerivationPath,
     addressPath: T.AddressDerivationPath
@@ -88,7 +89,7 @@ export class Account {
    * @param addressPath Address derivation path (e.g. [0, 0])
    * @returns Account instance
    */
-  static fromXpubKey = (cw3: T.CardanoWeb3, xpubKey: string, addressPath: T.AddressDerivationPath) => {
+  static fromXpubKey = (cw3: L.CardanoWeb3, xpubKey: string, addressPath: T.AddressDerivationPath) => {
     if (!cw3.utils.keys.xpubKeyValidate(xpubKey)) throw new Error("Invalid public key")
     const account = new Account()
     const checksum = cw3.utils.account.checksum(xpubKey)
@@ -116,7 +117,7 @@ export class Account {
    * @param connector Connector instance
    * @returns Account instance
    */
-  static fromConnector = async (cw3: T.CardanoWeb3, connector: T.Connector) => {
+  static fromConnector = async (cw3: L.CardanoWeb3, connector: L.Connector) => {
     const connectorNetwork = await connector.getNetworkId()
     if (connectorNetwork !== cw3.__config.network.id) throw new Error("Connector network mismatch")
 
@@ -171,7 +172,7 @@ export class Account {
    * @param config Account configuration
    * @returns Account instance
    */
-  static importAccount = (cw3: T.CardanoWeb3, config: T.AccountExportV1) => {
+  static importAccount = (cw3: L.CardanoWeb3, config: T.AccountExportV1) => {
     if (config.configVersion === 1) {
       if (config.type === "xprv") {
         const account = new Account()

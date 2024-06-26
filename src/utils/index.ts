@@ -4,24 +4,15 @@ import Blake2b from "blake2b"
 import * as Bip39 from "./bip39"
 import walletChecksum from "./cip4"
 import { Data, Constr } from "./data"
-import { signData, verifyData } from "./message"
 import * as Cborg from "./cborg"
 import * as T from "../types"
+import * as L from "../types/links"
 
 export class Utils {
-  private cw3: T.CardanoWeb3
+  private cw3: L.CardanoWeb3
 
-  message: {
-    signData: T.OmitFirstArg<typeof signData>
-    verifyData: T.OmitFirstArg<typeof verifyData>
-  }
-
-  constructor(cw3: T.CardanoWeb3) {
+  constructor(cw3: L.CardanoWeb3) {
     this.cw3 = cw3
-    this.message = {
-      signData: signData.bind(undefined, cw3),
-      verifyData: verifyData.bind(undefined, cw3),
-    }
   }
 
   /**
@@ -270,7 +261,7 @@ export class Utils {
       }
     },
 
-    getShelleyOrByronAddress: (addrBech32: string): T.CML.Address => {
+    getShelleyOrByronAddress: (addrBech32: string): L.CML.Address => {
       try {
         return this.cw3.CML.Address.from_bech32(addrBech32)
       } catch {
@@ -358,7 +349,7 @@ export class Utils {
    * TX related utils
    */
   tx = {
-    createCostModels: (costModels: T.CostModels): T.CML.CostModels => {
+    createCostModels: (costModels: T.CostModels): L.CML.CostModels => {
       const models = this.cw3.CML.CostModels.new()
       if (costModels["PlutusV1"]) {
         const plutusV1 = this.cw3.CML.IntList.new()
@@ -378,7 +369,7 @@ export class Utils {
       return models
     },
 
-    getTxBuilder: (protocolParams: T.ProtocolParameters): T.CML.TransactionBuilder => {
+    getTxBuilder: (protocolParams: T.ProtocolParameters): L.CML.TransactionBuilder => {
       const pp = protocolParams
       const txBuilderConfig = this.cw3.CML.TransactionBuilderConfigBuilder.new()
         .fee_algo(this.cw3.CML.LinearFee.new(BigInt(pp.minFeeA), BigInt(pp.minFeeB)))
@@ -402,7 +393,7 @@ export class Utils {
       return this.cw3.CML.TransactionBuilder.new(txBuilderConfig)
     },
 
-    assetsToValue: (value?: T.Lovelace, assets?: T.Asset[]): T.CML.Value => {
+    assetsToValue: (value?: T.Lovelace, assets?: T.Asset[]): L.CML.Value => {
       const multiAsset = this.cw3.CML.MultiAsset.new()
 
       if (assets) {
@@ -418,21 +409,21 @@ export class Utils {
       return this.cw3.CML.Value.new(value || 0n, multiAsset)
     },
 
-    utxoToCore: (utxo: T.Utxo): T.CML.TransactionUnspentOutput => {
+    utxoToCore: (utxo: T.Utxo): L.CML.TransactionUnspentOutput => {
       return this.cw3.CML.TransactionUnspentOutput.new(
         this.tx.utxoToTransactionInput(utxo),
         this.tx.utxoToTransactionOutput(utxo)
       )
     },
 
-    utxoToTransactionInput: (utxo: T.Utxo): T.CML.TransactionInput => {
+    utxoToTransactionInput: (utxo: T.Utxo): L.CML.TransactionInput => {
       return this.cw3.CML.TransactionInput.new(
         this.cw3.CML.TransactionHash.from_hex(utxo.transaction.id),
         BigInt(utxo.index)
       )
     },
 
-    utxoToTransactionOutput: (utxo: T.Utxo): T.CML.TransactionOutput => {
+    utxoToTransactionOutput: (utxo: T.Utxo): L.CML.TransactionOutput => {
       const value = this.tx.assetsToValue(utxo.value, utxo.assets)
       const outputBuilder = this.tx.outputToTransactionOutputBuilder(
         {
@@ -455,7 +446,7 @@ export class Utils {
       output: T.Output,
       datum?: T.DatumOutput,
       script?: T.Script
-    ): T.CML.TransactionOutputBuilder => {
+    ): L.CML.TransactionOutputBuilder => {
       const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
       let outputBuilder = this.cw3.CML.TransactionOutputBuilder.new().with_address(address)
       if (datum) {
@@ -475,7 +466,7 @@ export class Utils {
         : outputBuilder
     },
 
-    discoverOwnUsedTxKeyHashes: (tx: T.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]): string[] => {
+    discoverOwnUsedTxKeyHashes: (tx: L.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]): string[] => {
       const usedKeyHashes: string[] = []
       const body = tx.body()
       const inputs = body.inputs()
@@ -588,7 +579,7 @@ export class Utils {
         }
       }
 
-      function keyHashFromScript(scripts: T.CML.NativeScriptList) {
+      function keyHashFromScript(scripts: L.CML.NativeScriptList) {
         for (let i = 0; i < scripts.len(); i++) {
           const script = scripts.get(i)
           if (script.kind() === 0) {
@@ -619,7 +610,7 @@ export class Utils {
    * Script related utils
    */
   script = {
-    scriptToScriptRef: (script: T.Script): T.CML.Script => {
+    scriptToScriptRef: (script: T.Script): L.CML.Script => {
       switch (script.language) {
         case "Native":
           return this.cw3.CML.Script.new_native(this.cw3.CML.NativeScript.from_cbor_hex(script.script))
@@ -662,7 +653,7 @@ export class Utils {
       }
     },
 
-    scriptToPlutusScript: (script: T.Script): T.CML.PlutusScript => {
+    scriptToPlutusScript: (script: T.Script): L.CML.PlutusScript => {
       switch (script.language) {
         case "PlutusV1":
           return this.cw3.CML.PlutusScript.from_v1(
@@ -708,7 +699,7 @@ export class Utils {
       }
     },
 
-    partialPlutusWitness: (script: T.CML.PlutusScript, redeemer: string): T.CML.PartialPlutusWitness => {
+    partialPlutusWitness: (script: L.CML.PlutusScript, redeemer: string): L.CML.PartialPlutusWitness => {
       return this.cw3.CML.PartialPlutusWitness.new(
         this.cw3.CML.PlutusScriptWitness.new_script(script),
         this.cw3.CML.PlutusData.from_cbor_hex(redeemer)

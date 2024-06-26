@@ -1,5 +1,6 @@
 import * as TypeBox from "@sinclair/typebox"
 import * as T from "../../types"
+import * as L from "../../types/links"
 
 type Datum = T.Datum
 type Redeemer = T.Redeemer
@@ -27,7 +28,7 @@ export type Data =
   | Map<Data, Data> // AssocList
   | Constr<Data>
 
-export const Data = (cw3: T.CardanoWeb3) => {
+export const Data = (cw3: L.CardanoWeb3) => {
   return {
     // Types
     // Note: Recursive types are not supported (yet)
@@ -106,7 +107,7 @@ export const Data = (cw3: T.CardanoWeb3) => {
       return map
     },
     /**
-     * Object applies by default a PlutusData Constr with index 0.\
+     * Object applies by default a PlutusData Constr with index 0.
      * Set 'hasConstr' to false to serialize Object as PlutusData List.
      */
     Object: function <T extends TypeBox.TProperties>(properties: T, options?: { hasConstr?: boolean }) {
@@ -152,7 +153,7 @@ export const Data = (cw3: T.CardanoWeb3) => {
       return union
     },
     /**
-     * Tuple is by default a PlutusData List.\
+     * Tuple is by default a PlutusData List.
      * Set 'hasConstr' to true to apply a PlutusData Constr with index 0.
      */
     Tuple: function <T extends TypeBox.TSchema[]>(items: [...T], options?: { hasConstr?: boolean }) {
@@ -207,19 +208,19 @@ export const Data = (cw3: T.CardanoWeb3) => {
     },
 
     /**
-     * Convert PlutusData to Cbor encoded data.\
+     * Convert PlutusData to Cbor encoded data.
      * Or apply a shape and convert the provided data struct to Cbor encoded data.
      */
     to: <T = Data>(data: Exact<T>, type?: T) => to(cw3, data, type),
     /** Convert Cbor encoded data to PlutusData */
     from: <T = Data>(raw: Datum | Redeemer, type?: T) => from(cw3, raw, type),
     /**
-     * Note Constr cannot be used here.\
+     * Note Constr cannot be used here.
      * Strings prefixed with '0x' are not UTF-8 encoded.
      */
     fromJson: (json: Json) => fromJson(cw3, json),
     /**
-     * Note Constr cannot be used here, also only bytes/integers as Json keys.\
+     * Note Constr cannot be used here, also only bytes/integers as Json keys.
      */
     toJson: (plutusData: Data) => toJson(cw3, plutusData),
     void: function (): Datum | Redeemer {
@@ -231,11 +232,11 @@ export const Data = (cw3: T.CardanoWeb3) => {
 }
 
 /**
- * Convert PlutusData to Cbor encoded data.\
+ * Convert PlutusData to Cbor encoded data.
  * Or apply a shape and convert the provided data struct to Cbor encoded data.
  */
-function to<T = Data>(cw3: T.CardanoWeb3, data: Exact<T>, type?: T): Datum | Redeemer {
-  function serialize(data: Data): T.CML.PlutusData {
+function to<T = Data>(cw3: L.CardanoWeb3, data: Exact<T>, type?: T): Datum | Redeemer {
+  function serialize(data: Data): L.CML.PlutusData {
     try {
       if (typeof data === "bigint") {
         return cw3.CML.PlutusData.new_integer(cw3.CML.BigInteger.from_str(data.toString()))
@@ -275,11 +276,11 @@ function to<T = Data>(cw3: T.CardanoWeb3, data: Exact<T>, type?: T): Datum | Red
 }
 
 /**
- *  Convert Cbor encoded data to Data.\
+ *  Convert Cbor encoded data to Data.
  *  Or apply a shape and cast the cbor encoded data to a certain type.
  */
-function from<T = Data>(cw3: T.CardanoWeb3, raw: Datum | Redeemer, type?: T): T {
-  function deserialize(data: T.CML.PlutusData): Data {
+function from<T = Data>(cw3: L.CardanoWeb3, raw: Datum | Redeemer, type?: T): T {
+  function deserialize(data: L.CML.PlutusData): Data {
     if (data.kind() === 0) {
       const constr = data.as_constr_plutus_data()!
       const l = constr.fields()
@@ -316,10 +317,10 @@ function from<T = Data>(cw3: T.CardanoWeb3, raw: Datum | Redeemer, type?: T): T 
 }
 
 /**
- * Note Constr cannot be used here.\
+ * Note Constr cannot be used here.
  * Strings prefixed with '0x' are not UTF-8 encoded.
  */
-function fromJson(cw3: T.CardanoWeb3, json: Json): Data {
+function fromJson(cw3: L.CardanoWeb3, json: Json): Data {
   function toData(json: Json): Data {
     if (typeof json === "string") {
       return json.startsWith("0x")
@@ -342,9 +343,9 @@ function fromJson(cw3: T.CardanoWeb3, json: Json): Data {
 }
 
 /**
- * Note Constr cannot be used here, also only bytes/integers as Json keys.\
+ * Note Constr cannot be used here, also only bytes/integers as Json keys.
  */
-function toJson(cw3: T.CardanoWeb3, plutusData: Data): Json {
+function toJson(cw3: L.CardanoWeb3, plutusData: Data): Json {
   function fromData(data: Data): Json {
     if (
       typeof data === "bigint" ||

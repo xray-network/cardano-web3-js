@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3, KupmiosProvider, T } from "../src"
+import { CardanoWeb3, Data, T } from "../src"
 import { testData } from "./__test"
 
 describe("TX", async () => {
@@ -55,7 +55,7 @@ describe("TX", async () => {
       myVariableA: web3.Data.Bytes(),
       myVariableB: web3.Data.Nullable(web3.Data.Integer()),
     })
-    type MyDatum = T.Data.Static<typeof MyDatumSchema>
+    type MyDatum = Data.Static<typeof MyDatumSchema>
     const MyDatum = MyDatumSchema as unknown as MyDatum
     const datum = web3.Data.to(
       {

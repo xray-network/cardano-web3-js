@@ -1,9 +1,10 @@
 import { TTL } from "../config"
 import { TxFinalizer } from "./txFinalizer"
 import * as T from "../types"
+import * as L from "../types/links"
 
 export class TxBuilder {
-  private cw3: T.CardanoWeb3
+  private cw3: L.CardanoWeb3
   private protocolParams: T.ProtocolParameters
   private changeAddress: string
   private scripts: Map<string, T.Script> = new Map()
@@ -14,9 +15,9 @@ export class TxBuilder {
   private remoteProtocolParams: boolean = false
   private remoteTxEvaluate: boolean = false
   private coinSelection: number = 2 // Default: LargestFirstMultiAsset
-  __txBuilder: T.CML.TransactionBuilder
+  __txBuilder: L.CML.TransactionBuilder
 
-  constructor(cw3: T.CardanoWeb3) {
+  constructor(cw3: L.CardanoWeb3) {
     this.cw3 = cw3
   }
 

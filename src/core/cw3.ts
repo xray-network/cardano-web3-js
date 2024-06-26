@@ -15,7 +15,9 @@ import KoiosExplorer from "../explorer/koios"
 import NftcdnExplorer from "../explorer/nftcdn"
 import PricingExplorer from "../explorer/pricing"
 import { Data, Constr } from "../utils/data"
+import { Message } from "../utils/message"
 import * as T from "../types"
+import * as L from "../types/links"
 
 /**
  * CardanoWeb3 class
@@ -24,15 +26,17 @@ import * as T from "../types"
  */
 export class CardanoWeb3 {
   /** dcSpark @ Cardano Multiplatform Library */
-  CML: typeof T.CML
+  CML: typeof L.CML
   /** Emurgo @ Message Signing Library */
-  MSL: typeof T.MSL
+  MSL: typeof L.MSL
   /** UPLC @ Untyped Plutus Core Library */
-  UPLC: typeof T.UPLC
-  /** Lucid Plutus Data Serialization Lib */
+  UPLC: typeof L.UPLC
+  // /** Lucid Plutus Data Serialization Lib */
   Data: ReturnType<typeof Data>
   /** Lucid Plutus Data Construction Lib */
   Constr: typeof Constr
+  /** Message Signing/Verification Lib */
+  Message: ReturnType<typeof Message>
   explorer: T.Explorer
   provider: T.Provider
   utils: Utils
@@ -48,7 +52,7 @@ export class CardanoWeb3 {
    * @param config Configuration object
    * @returns CardanoWeb3 instance
    */
-  static init = async (config?: T.InitConfig): Promise<CardanoWeb3> => {
+  static init = async (config?: T.InitConfig) => {
     const cw3 = new CardanoWeb3()
     const network = config?.network || "mainnet"
 
@@ -57,6 +61,7 @@ export class CardanoWeb3 {
     cw3.UPLC = await import("uplc-node")
     cw3.Data = Data(cw3)
     cw3.Constr = Constr
+    cw3.Message = Message(cw3)
     cw3.explorer = {
       koios: KoiosExplorer(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
@@ -159,10 +164,10 @@ export class CardanoWeb3 {
 
     /**
      * Generate new account from wallet connector
-     * @param paymentAddress Payment address
+     * @param connector Connector instance
      * @returns Account instance
      */
-    fromConnector: (connector: T.Connector) => {
+    fromConnector: (connector: L.Connector) => {
       return Account.fromConnector(this, connector)
     },
 
@@ -246,7 +251,7 @@ export class CardanoWeb3 {
    * @param password Password for xprv key (optional)
    * @returns Signed message
    */
-  signMessageWithAccount = async (account: T.Account, message: string, password?: string): Promise<T.SignedMessage> => {
+  signMessageWithAccount = async (account: L.Account, message: string, password?: string): Promise<T.SignedMessage> => {
     if (account.__config.type === "xprv") {
       if (account.__config.xprvKeyIsEncoded && !password)
         throw new Error("Password is required to sign with xprv encoded account")
@@ -287,7 +292,7 @@ export class CardanoWeb3 {
     const { paymentCred } = this.utils.address.getCredentials(address)
     const hash = this.CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
     if (!paymentCred?.hash || paymentCred?.hash !== hash) throw new Error("Verification key does not match the address")
-    return this.utils.message.signData(hexAddress, hexMessage, verificationKey)
+    return this.Message.signData(hexAddress, hexMessage, verificationKey)
   }
 
   /**
@@ -303,7 +308,7 @@ export class CardanoWeb3 {
     const { paymentCred, stakingCred } = this.utils.address.getCredentials(address)
     const hash = paymentCred?.hash || stakingCred?.hash
     if (!hash) throw new Error("Invalid address")
-    return this.utils.message.verifyData(hexAddress, hash, hexMessage, signedMessage)
+    return this.Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
   }
 
   /**

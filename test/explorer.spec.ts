@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3, T } from "../src"
+import { CardanoWeb3 } from "../src"
 
 describe("Explorer", async () => {
   describe("Mainnet", async () => {

@@ -15,13 +15,13 @@ const config = {
   organizationName: "xray-network",
   projectName: "CardanoWeb3js",
   markdown: {
-    format: "md", // MDX for .mdx files, MD for .md files
-    parseFrontMatter: async (params) => {
-      const result = await params.defaultParseFrontMatter(params)
-      // Replace {inputs} with "inputs" in the description, CML has wrong MDX markdown docs/docs/api/types/namespaces/CML/classes/TransactionBuilder.md
-      result.frontMatter.description = result.frontMatter.description?.replaceAll("{inputs}", "inputs")
-      return result
-    },
+    // format: "md", // MDX for .mdx files, MD for .md files
+    // parseFrontMatter: async (params) => {
+    //   const result = await params.defaultParseFrontMatter(params)
+    //   // Replace {inputs} with "inputs" in the description, CML has wrong MDX markdown docs/docs/api/types/namespaces/CML/classes/TransactionBuilder.md
+    //   result.frontMatter.description = result.frontMatter.description?.replaceAll("{inputs}", "inputs")
+    //   return result
+    // },
   },
   i18n: {
     defaultLocale: "en",
@@ -30,13 +30,38 @@ const config = {
   plugins: [
     "@docusaurus/theme-live-codeblock",
     "docusaurus-lunr-search",
+    // [
+    //   "docusaurus-plugin-typedoc",
+    //   {
+    //     entryPoints: ["../src"],
+    //     readme: "none",
+    //     tsconfig: "../tsconfig.json",
+    //   },
+    // ],
     [
-      "docusaurus-plugin-typedoc",
+      "docusaurus-plugin-typedoc-api",
       {
-        entryPoints: ["../src"],
-        // entryPointStrategy: "expand",
-        readme: "none",
-        tsconfig: "../tsconfig.json",
+        projectRoot: join(__dirname, ".."),
+        packages: [
+          {
+            path: ".",
+            entry: {
+              index: "src/index.ts",
+            },
+          },
+        ],
+        minimal: false,
+        debug: false,
+        changelogs: true,
+        readmes: false,
+        tsconfigName: "tsconfig.json",
+        typedocOptions: {
+          plugin: [
+            "typedoc-monorepo-link-types",
+            'typedoc-plugin-extras',
+            'typedoc-plugin-mdn-links',
+          ],
+        },
       },
     ],
   ],
@@ -93,11 +118,6 @@ const config = {
             position: "right",
             className: "header-github-link",
           },
-          // {
-          //   href: "https://github.com/xray-network/cardano-web3-js/",
-          //   label: "GitHub",
-          //   position: "right",
-          // },
         ],
       },
       footer: {

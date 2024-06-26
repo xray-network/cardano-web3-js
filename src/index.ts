@@ -1,4 +1,5 @@
 export type * as T from "./types"
+export type { Account, Connector } from "./types/links"
 export * from "./core/cw3"
 export * from "./provider/koios"
 export * from "./provider/kupmios"

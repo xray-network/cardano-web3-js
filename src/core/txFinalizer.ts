@@ -1,12 +1,13 @@
 import * as T from "../types"
+import * as L from "../types/links"
 
 export class TxFinalizer {
-  private cw3: T.CardanoWeb3
+  private cw3: L.CardanoWeb3
   private queue: (() => unknown)[] = []
-  __tx: T.CML.Transaction
-  __witnessBuilder: T.CML.TransactionWitnessSetBuilder
+  __tx: L.CML.Transaction
+  __witnessBuilder: L.CML.TransactionWitnessSetBuilder
 
-  constructor(cw3: T.CardanoWeb3, tx: string) {
+  constructor(cw3: L.CardanoWeb3, tx: string) {
     this.cw3 = cw3
     this.__tx = this.cw3.CML.Transaction.from_cbor_hex(tx)
     this.__witnessBuilder = this.cw3.CML.TransactionWitnessSetBuilder.new()
@@ -33,7 +34,7 @@ export class TxFinalizer {
    * @param password Password to decode xprv key (optional)
    * @returns TxFinalizer instance
    */
-  signWithAccount = (account: T.Account, password?: string) => {
+  signWithAccount = (account: L.Account, password?: string) => {
     this.queue.push(async () => {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)

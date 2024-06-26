@@ -1,4 +1,6 @@
+// @ts-ignore
 import { Token } from './lib/token'
+// @ts-ignore
 import { Bl } from './lib/bl'
 
 export type TokenOrNestedTokens = Token | Token[] | TokenOrNestedTokens[]

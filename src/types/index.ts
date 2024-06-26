@@ -1,14 +1,5 @@
-/** Core lib types */
-export type * as CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-export type * as MSL from "@emurgo/cardano-message-signing-nodejs"
-export type * as UPLC from "uplc-node"
-import type { CardanoWeb3 } from "../core/cw3"
-export type { CardanoWeb3 } from "../core/cw3"
-import type { Data } from "../utils/data"
-export type { Data } from "../utils/data"
-
 /** Account types */
-export type { Account } from "../core/account"
+import type { Account } from "./links"
 export type AccountType = "xprv" | "xpub" | "connector" | "ledger" | "trezor"
 export type AccountConfig = {
   configVersion: number
@@ -58,7 +49,7 @@ export type AccountMultiAddressing = {
 
 /** Provider types */
 export type Provider = {
-  getTip(): Promise<Tip>
+  getTip: () => Promise<Tip>
   getProtocolParameters(): Promise<ProtocolParameters>
   getUtxosByAddresses(address: string[]): Promise<Utxo[]>
   getUtxosByAddress(address: string): Promise<Utxo[]>
@@ -87,8 +78,7 @@ export type Explorer = {
 }
 
 /** Connector types */
-import type { Connector } from "../core/connector"
-export type { Connector } from "../core/connector"
+import type { Connector } from "./links"
 export type ConnectorPaginate = {
   page: number
   limit: number
