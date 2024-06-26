@@ -59,7 +59,7 @@ const app = async () => {
 
   const tx_hash = await tx_unsigned
     .signWithAccount(account)
-    .applyAndSubmit()
+    .applyAndSubmit() // submit tx
 
   console.log(tx_hash)
 }
@@ -86,6 +86,7 @@ const app = async () => {
 
   const web3 = await CardanoWeb3.init({
     network: "preprod", // "mainnet" | "preprod" | "preview" | "custom"
+    protocolParams: {...}, // override protocolParams, eg. in case of custom network
     ttl: 900, // 900 secs = 15 minutes
     provider: new KoiosProvider("https://api.koios.rest/api/v1", providerHeaders),
     explorer: {
@@ -99,15 +100,12 @@ const app = async () => {
       },
       pricing: {
         headers: {},
-        url: "https://graph.xray.app/output/procing/mainnet/api/v1", // only mainnet available
+        url: "https://graph.xray.app/output/pricing/mainnet/api/v1", // only mainnet available
       },
     }
   })
 
-  console.log(web3.network)
-  console.log(web3.protocolParams)
-  console.log(web3.slotConfig)
-  console.log(web3.ttl)
+  console.log(web3.__config) // web3 instance config
 }
 
 app()
