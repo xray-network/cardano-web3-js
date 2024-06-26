@@ -612,11 +612,6 @@ cardano-pricing-client@^1.0.4:
   dependencies:
     openapi-fetch "^0.9.7"
 
-cborg@^4.2.1:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/cborg/-/cborg-4.2.2.tgz#22afa07f3f3f6e2ffaa0d5f91d8a61c8e86aaedc"
-  integrity sha512-A0z7WhnY4HDLrVdnQI4i/OLG3kANHotk5NzDpr2iauf4xrmQPwJCxlbCnIXkVrFtsr8G3omfvvr5oF50i1Zt8g==
-
 chai@^4.3.10:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.4.1.tgz#3603fa6eba35425b0f2ac91a009fe924106e50d1"

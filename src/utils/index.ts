@@ -1,13 +1,12 @@
 import { Buffer } from "buffer"
-import { decode, encode } from "cborg"
 import * as Bech32 from "bech32"
 import Blake2b from "blake2b"
 import * as Bip39 from "./bip39"
 import walletChecksum from "./cip4"
 import { Data, Constr } from "./data"
-import * as T from "../types"
 import { signData, verifyData } from "./message"
-import { DEFAULT_ADDRESS_DERIVATION_PATH } from "src/config"
+import * as Cborg from "./cborg"
+import * as T from "../types"
 
 export class Utils {
   private cw3: T.CardanoWeb3
@@ -24,6 +23,11 @@ export class Utils {
       verifyData: verifyData.bind(undefined, cw3),
     }
   }
+
+  /**
+   * Cbor encoding and decoding library
+   */
+  Cborg = Cborg
 
   /**
    * Bech32 encoding and decoding library
@@ -713,10 +717,10 @@ export class Utils {
 
     applyDoubleCborEncoding: (script: string): string => {
       try {
-        decode(decode(this.misc.fromHex(script)))
+        this.Cborg.decode(this.Cborg.decode(this.misc.fromHex(script)))
         return script
       } catch {
-        return this.misc.toHex(encode(this.misc.fromHex(script)))
+        return this.misc.toHex(this.Cborg.encode(this.misc.fromHex(script)))
       }
     },
 
