@@ -39,7 +39,7 @@ const config = {
     //   },
     // ],
     [
-      '@docusaurus/plugin-google-analytics',
+      '@docusaurus/plugin-google-gtag',
       {
         trackingID: 'G-QFZCYEEPH1',
         anonymizeIP: true,
