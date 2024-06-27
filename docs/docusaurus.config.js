@@ -39,6 +39,13 @@ const config = {
     //   },
     // ],
     [
+      '@docusaurus/plugin-google-analytics',
+      {
+        trackingID: 'G-QFZCYEEPH1',
+        anonymizeIP: true,
+      },
+    ],
+    [
       "docusaurus-plugin-typedoc-api",
       {
         projectRoot: join(__dirname, ".."),
