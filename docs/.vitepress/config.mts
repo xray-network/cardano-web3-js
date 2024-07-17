@@ -5,7 +5,7 @@ import typedocSidebar from "../api/typedoc-sidebar.json"
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "CardanoWeb3js",
-  description: "A VitePress Site",
+  description: "CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain",
   lastUpdated: true,
   cleanUrls: true,
   sitemap: {
@@ -13,26 +13,26 @@ export default defineConfig({
   },
   head: [
     ["link", { rel: "icon", href: "/favicon.svg" }],
-    // [
-    //   "link",
-    //   {
-    //     rel: "preload",
-    //     href: "https://cdn.xray.app/fonts/satoshi/Satoshi-Variable.ttf",
-    //     as: "font",
-    //     type: "font/ttf",
-    //     crossorigin: "anonymous",
-    //   },
-    // ],
-    // [
-    //   "link",
-    //   {
-    //     rel: "preload",
-    //     href: "https://cdn.xray.app/fonts/archivo/Archivo-Variable.ttf",
-    //     as: "font",
-    //     type: "font/ttf",
-    //     crossorigin: "anonymous",
-    //   },
-    // ],
+    [
+      "link",
+      {
+        rel: "preload",
+        href: "https://cdn.xray.app/fonts/satoshi/Satoshi-Variable.ttf",
+        as: "font",
+        type: "font/ttf",
+        crossorigin: "anonymous",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "preload",
+        href: "https://cdn.xray.app/fonts/archivo/Archivo-Variable.ttf",
+        as: "font",
+        type: "font/ttf",
+        crossorigin: "anonymous",
+      },
+    ],
     [
       "link",
       {
