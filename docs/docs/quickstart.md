@@ -13,7 +13,7 @@ yarn add cardano-web3-js
 ```
 == pnpm
 ```sh
-yarn add cardano-web3-js
+pnpm add cardano-web3-js
 ```
 == bun
 ```sh
