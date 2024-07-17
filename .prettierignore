@@ -6,4 +6,5 @@ dist
 docs/node_modules
 docs/build
 docs/.vitepress/cache
+docs/api
 src/utils/cborg

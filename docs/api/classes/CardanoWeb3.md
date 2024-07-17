@@ -26,7 +26,7 @@ dcSpark @ Cardano Multiplatform Library
 
 #### Defined in
 
-[src/core/cw3.ts:29](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L29)
+[src/core/cw3.ts:29](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L29)
 
 ***
 
@@ -38,7 +38,7 @@ Lucid Plutus Data Construction Lib
 
 #### Defined in
 
-[src/core/cw3.ts:37](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L37)
+[src/core/cw3.ts:37](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L37)
 
 ***
 
@@ -360,7 +360,7 @@ Note Constr cannot be used here, also only bytes/integers as Json keys.
 
 #### Defined in
 
-[src/core/cw3.ts:35](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L35)
+[src/core/cw3.ts:35](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L35)
 
 ***
 
@@ -372,7 +372,7 @@ Emurgo @ Message Signing Library
 
 #### Defined in
 
-[src/core/cw3.ts:31](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L31)
+[src/core/cw3.ts:31](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L31)
 
 ***
 
@@ -418,7 +418,7 @@ Message Signing/Verification Lib
 
 #### Defined in
 
-[src/core/cw3.ts:39](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L39)
+[src/core/cw3.ts:39](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L39)
 
 ***
 
@@ -430,7 +430,7 @@ UPLC @ Untyped Plutus Core Library
 
 #### Defined in
 
-[src/core/cw3.ts:33](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L33)
+[src/core/cw3.ts:33](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L33)
 
 ***
 
@@ -456,7 +456,7 @@ UPLC @ Untyped Plutus Core Library
 
 #### Defined in
 
-[src/core/cw3.ts:43](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L43)
+[src/core/cw3.ts:43](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L43)
 
 ***
 
@@ -566,7 +566,7 @@ Account instance
 
 #### Defined in
 
-[src/core/cw3.ts:124](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L124)
+[src/core/cw3.ts:124](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L124)
 
 ***
 
@@ -622,7 +622,7 @@ List of available connectors in window object
 
 #### Defined in
 
-[src/core/cw3.ts:95](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L95)
+[src/core/cw3.ts:95](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L95)
 
 ***
 
@@ -632,7 +632,7 @@ List of available connectors in window object
 
 #### Defined in
 
-[src/core/cw3.ts:40](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L40)
+[src/core/cw3.ts:40](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L40)
 
 ***
 
@@ -642,7 +642,7 @@ List of available connectors in window object
 
 #### Defined in
 
-[src/core/cw3.ts:41](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L41)
+[src/core/cw3.ts:41](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L41)
 
 ***
 
@@ -652,7 +652,7 @@ List of available connectors in window object
 
 #### Defined in
 
-[src/core/cw3.ts:42](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L42)
+[src/core/cw3.ts:42](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L42)
 
 ## Methods
 
@@ -684,7 +684,7 @@ Native token instance
 
 #### Defined in
 
-[src/core/cw3.ts:243](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L243)
+[src/core/cw3.ts:243](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L243)
 
 ***
 
@@ -702,7 +702,7 @@ Transaction builder instance
 
 #### Defined in
 
-[src/core/cw3.ts:196](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L196)
+[src/core/cw3.ts:196](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L196)
 
 ***
 
@@ -726,7 +726,7 @@ Transaction finalizer instance
 
 #### Defined in
 
-[src/core/cw3.ts:205](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L205)
+[src/core/cw3.ts:205](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L205)
 
 ***
 
@@ -758,7 +758,7 @@ Transaction status (boolean)
 
 #### Defined in
 
-[src/core/cw3.ts:225](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L225)
+[src/core/cw3.ts:225](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L225)
 
 ***
 
@@ -790,7 +790,7 @@ Signed message
 
 #### Defined in
 
-[src/core/cw3.ts:254](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L254)
+[src/core/cw3.ts:254](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L254)
 
 ***
 
@@ -822,7 +822,7 @@ Signed message
 
 #### Defined in
 
-[src/core/cw3.ts:289](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L289)
+[src/core/cw3.ts:289](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L289)
 
 ***
 
@@ -846,7 +846,7 @@ Transaction status (boolean)
 
 #### Defined in
 
-[src/core/cw3.ts:234](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L234)
+[src/core/cw3.ts:234](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L234)
 
 ***
 
@@ -870,7 +870,7 @@ Transaction hash
 
 #### Defined in
 
-[src/core/cw3.ts:214](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L214)
+[src/core/cw3.ts:214](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L214)
 
 ***
 
@@ -888,7 +888,7 @@ Current tip object
 
 #### Defined in
 
-[src/core/cw3.ts:318](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L318)
+[src/core/cw3.ts:318](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L318)
 
 ***
 
@@ -920,7 +920,7 @@ True if message is verified, false otherwise
 
 #### Defined in
 
-[src/core/cw3.ts:305](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L305)
+[src/core/cw3.ts:305](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L305)
 
 ***
 
@@ -944,4 +944,4 @@ CardanoWeb3 instance
 
 #### Defined in
 
-[src/core/cw3.ts:55](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/core/cw3.ts#L55)
+[src/core/cw3.ts:55](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/cw3.ts#L55)

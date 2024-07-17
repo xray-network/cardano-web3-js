@@ -144,4 +144,4 @@ Provider types
 
 ## Defined in
 
-[src/types/index.ts:51](https://github.com/xray-network/cardano-web3-js/blob/c2cd49478a527b9b57b4028f4ad7add1c4bff5b8/src/types/index.ts#L51)
+[src/types/index.ts:51](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/types/index.ts#L51)
