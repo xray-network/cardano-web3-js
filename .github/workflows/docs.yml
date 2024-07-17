@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: "CardanoWeb3js.org"
+name: "Homepage Build"
 
 on:
   # Runs on releases targeting the default branch
@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install Yarn
