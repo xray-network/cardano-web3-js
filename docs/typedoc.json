@@ -4,5 +4,5 @@
   "entryPoints": ["../src/index.ts"],
   "readme": "none",
   "tsconfig": "../tsconfig.json",
-  "gitRevision": "main",
+  "gitRevision": "main"
 }

@@ -2,9 +2,26 @@
 
 ## Install CardanoWeb3js
 
-```console
-yarn install cardano-web3-js
+:::tabs
+== npm
+```sh
+npm i cardano-web3-js
 ```
+== yarn
+```sh
+yarn add cardano-web3-js
+```
+== pnpm
+```sh
+yarn add cardano-web3-js
+```
+== bun
+```sh
+bun add cardano-web3-js
+```
+:::
+
+
 
 ## Retrieving blockchain tip
 

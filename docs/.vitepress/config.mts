@@ -1,15 +1,22 @@
 import { defineConfig } from "vitepress"
+import { tabsMarkdownPlugin } from "vitepress-plugin-tabs"
 import { quickStartSidebar, docsSidebar } from "../docs/docs-sidebar"
 import typedocSidebar from "../api/typedoc-sidebar.json"
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "CardanoWeb3js",
-  description: "CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain",
+  description:
+    "CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain",
   lastUpdated: true,
   cleanUrls: true,
   sitemap: {
     hostname: "https://carano-web3-js.org",
+  },
+  markdown: {
+    config(md) {
+      md.use(tabsMarkdownPlugin)
+    },
   },
   head: [
     ["link", { rel: "icon", href: "/favicon.svg" }],
