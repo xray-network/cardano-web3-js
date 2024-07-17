@@ -93,6 +93,7 @@
 
 body {
   font-weight: 500;
+  overflow-x: hidden;
 }
 
 .outline-link {
@@ -118,6 +119,10 @@ strong, .vp-doc strong {
   font-weight: 900 !important;
 }
 
+.VPHomeHero {
+  overflow: hidden;
+}
+
 .VPHomeHero .name {
   font-family: "Archivo";
   font-weight: 900 !important;
@@ -128,12 +133,19 @@ strong, .vp-doc strong {
   font-weight: 700 !important;
 }
 
-.VPHero .image {
+.VPHomeHero .image {
   perspective: 1500px;
 }
 
 .VPHero .image:hover .image-container {
   transform: rotate3d(0,0,0,0) rotate(0);
+}
+
+
+@media screen and (max-width: 960px) {
+  .VPHero .image .image-container {
+    transform: rotate3d(0,0,0,0) rotate(0);
+  }
 }
 
 .VPHero .image-container {
