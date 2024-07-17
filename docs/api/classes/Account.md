@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[src/core/account.ts:6](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L6)
+[src/core/account.ts:6](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L6)
 
 ***
 
@@ -30,7 +30,7 @@
 
 #### Defined in
 
-[src/core/account.ts:22](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L22)
+[src/core/account.ts:22](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L22)
 
 ## Methods
 
@@ -54,7 +54,7 @@ Decoded xprv key
 
 #### Defined in
 
-[src/core/account.ts:264](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L264)
+[src/core/account.ts:264](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L264)
 
 ***
 
@@ -82,7 +82,7 @@ Error if account is not encrypted or account type is wrong
 
 #### Defined in
 
-[src/core/account.ts:252](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L252)
+[src/core/account.ts:252](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L252)
 
 ***
 
@@ -106,7 +106,7 @@ Encoded xprv key
 
 #### Defined in
 
-[src/core/account.ts:239](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L239)
+[src/core/account.ts:239](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L239)
 
 ***
 
@@ -138,7 +138,7 @@ Error if account is already encrypted
 
 #### Defined in
 
-[src/core/account.ts:227](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L227)
+[src/core/account.ts:227](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L227)
 
 ***
 
@@ -160,7 +160,7 @@ Error if account type is not exportable
 
 #### Defined in
 
-[src/core/account.ts:204](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L204)
+[src/core/account.ts:204](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L204)
 
 ***
 
@@ -178,7 +178,7 @@ Account state
 
 #### Defined in
 
-[src/core/account.ts:275](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L275)
+[src/core/account.ts:275](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L275)
 
 ***
 
@@ -206,7 +206,7 @@ Account instance
 
 #### Defined in
 
-[src/core/account.ts:120](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L120)
+[src/core/account.ts:120](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L120)
 
 ***
 
@@ -242,7 +242,7 @@ Account instance
 
 #### Defined in
 
-[src/core/account.ts:40](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L40)
+[src/core/account.ts:40](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L40)
 
 ***
 
@@ -278,7 +278,7 @@ Account instance
 
 #### Defined in
 
-[src/core/account.ts:58](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L58)
+[src/core/account.ts:58](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L58)
 
 ***
 
@@ -310,7 +310,7 @@ Account instance
 
 #### Defined in
 
-[src/core/account.ts:92](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L92)
+[src/core/account.ts:92](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L92)
 
 ***
 
@@ -338,4 +338,4 @@ Account instance
 
 #### Defined in
 
-[src/core/account.ts:175](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/account.ts#L175)
+[src/core/account.ts:175](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/account.ts#L175)

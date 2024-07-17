@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:8](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L8)
+[src/provider/koios/index.ts:8](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L8)
 
 ## Methods
 
@@ -46,7 +46,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:146](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L146)
+[src/provider/koios/index.ts:146](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L146)
 
 ***
 
@@ -68,7 +68,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:103](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L103)
+[src/provider/koios/index.ts:103](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L103)
 
 ***
 
@@ -90,7 +90,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:130](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L130)
+[src/provider/koios/index.ts:130](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L130)
 
 ***
 
@@ -108,7 +108,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L28)
+[src/provider/koios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L28)
 
 ***
 
@@ -130,7 +130,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:115](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L115)
+[src/provider/koios/index.ts:115](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L115)
 
 ***
 
@@ -148,7 +148,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:12](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L12)
+[src/provider/koios/index.ts:12](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L12)
 
 ***
 
@@ -172,7 +172,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:74](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L74)
+[src/provider/koios/index.ts:74](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L74)
 
 ***
 
@@ -194,7 +194,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:70](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L70)
+[src/provider/koios/index.ts:70](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L70)
 
 ***
 
@@ -216,7 +216,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:43](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L43)
+[src/provider/koios/index.ts:43](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L43)
 
 ***
 
@@ -242,7 +242,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:163](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L163)
+[src/provider/koios/index.ts:163](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L163)
 
 ***
 
@@ -264,7 +264,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:87](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L87)
+[src/provider/koios/index.ts:87](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L87)
 
 ***
 
@@ -282,7 +282,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:95](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L95)
+[src/provider/koios/index.ts:95](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L95)
 
 ***
 
@@ -308,7 +308,7 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:206](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L206)
+[src/provider/koios/index.ts:206](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L206)
 
 ***
 
@@ -330,4 +330,4 @@
 
 #### Defined in
 
-[src/provider/koios/index.ts:189](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/provider/koios/index.ts#L189)
+[src/provider/koios/index.ts:189](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/koios/index.ts#L189)

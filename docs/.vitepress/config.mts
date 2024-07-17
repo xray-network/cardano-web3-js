@@ -101,10 +101,7 @@ export default defineConfig({
       docsSidebar,
       {
         text: "Typedoc API",
-        items: [
-          { text: "API Reference", link: "/api/" },
-          ...typedocSidebar,
-        ],
+        items: [{ text: "API Reference", link: "/api/" }, ...typedocSidebar],
       },
     ],
 

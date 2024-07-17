@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[src/core/connector.ts:11](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L11)
+[src/core/connector.ts:11](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L11)
 
 ## Methods
 
@@ -38,7 +38,7 @@ Wallet balance
 
 #### Defined in
 
-[src/core/connector.ts:85](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L85)
+[src/core/connector.ts:85](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L85)
 
 ***
 
@@ -56,7 +56,7 @@ Change address
 
 #### Defined in
 
-[src/core/connector.ts:110](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L110)
+[src/core/connector.ts:110](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L110)
 
 ***
 
@@ -74,7 +74,7 @@ List of collaterals
 
 #### Defined in
 
-[src/core/connector.ts:77](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L77)
+[src/core/connector.ts:77](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L77)
 
 ***
 
@@ -92,7 +92,7 @@ Wallet extensions
 
 #### Defined in
 
-[src/core/connector.ts:51](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L51)
+[src/core/connector.ts:51](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L51)
 
 ***
 
@@ -110,7 +110,7 @@ Wallet network ID (0 or 1)
 
 #### Defined in
 
-[src/core/connector.ts:59](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L59)
+[src/core/connector.ts:59](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L59)
 
 ***
 
@@ -128,7 +128,7 @@ Staking addresses
 
 #### Defined in
 
-[src/core/connector.ts:118](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L118)
+[src/core/connector.ts:118](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L118)
 
 ***
 
@@ -146,7 +146,7 @@ Array of unused addresses
 
 #### Defined in
 
-[src/core/connector.ts:102](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L102)
+[src/core/connector.ts:102](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L102)
 
 ***
 
@@ -170,7 +170,7 @@ Array of used addresses
 
 #### Defined in
 
-[src/core/connector.ts:94](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L94)
+[src/core/connector.ts:94](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L94)
 
 ***
 
@@ -198,7 +198,7 @@ List of UTXOs
 
 #### Defined in
 
-[src/core/connector.ts:69](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L69)
+[src/core/connector.ts:69](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L69)
 
 ***
 
@@ -226,7 +226,7 @@ Signed message
 
 #### Defined in
 
-[src/core/connector.ts:138](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L138)
+[src/core/connector.ts:138](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L138)
 
 ***
 
@@ -254,7 +254,7 @@ Staking key
 
 #### Defined in
 
-[src/core/connector.ts:128](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L128)
+[src/core/connector.ts:128](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L128)
 
 ***
 
@@ -278,7 +278,7 @@ Transaction hash
 
 #### Defined in
 
-[src/core/connector.ts:147](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L147)
+[src/core/connector.ts:147](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L147)
 
 ***
 
@@ -306,7 +306,7 @@ Connector instance
 
 #### Defined in
 
-[src/core/connector.ts:38](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L38)
+[src/core/connector.ts:38](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L38)
 
 ***
 
@@ -330,7 +330,7 @@ True if wallet is enabled
 
 #### Defined in
 
-[src/core/connector.ts:27](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L27)
+[src/core/connector.ts:27](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L27)
 
 ***
 
@@ -348,4 +348,4 @@ List of available wallets
 
 #### Defined in
 
-[src/core/connector.ts:17](https://github.com/xray-network/cardano-web3-js/blob/51359f53a33988f2d248eab0454f4ef69063970a/src/core/connector.ts#L17)
+[src/core/connector.ts:17](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/core/connector.ts#L17)
