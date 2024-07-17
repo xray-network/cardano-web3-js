@@ -10,4 +10,4 @@
 
 ## Defined in
 
-[src/types/index.ts:284](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/types/index.ts#L284)
+[src/types/index.ts:284](https://github.com/xray-network/cardano-web3-js/blob/main/src/types/index.ts#L284)

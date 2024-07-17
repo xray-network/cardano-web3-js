@@ -30,7 +30,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:11](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L11)
+[src/provider/kupmios/index.ts:11](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L11)
 
 ## Methods
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:157](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L157)
+[src/provider/kupmios/index.ts:157](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L157)
 
 ***
 
@@ -74,7 +74,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:109](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L109)
+[src/provider/kupmios/index.ts:109](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L109)
 
 ***
 
@@ -96,7 +96,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:134](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L134)
+[src/provider/kupmios/index.ts:134](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L134)
 
 ***
 
@@ -114,7 +114,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:44](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L44)
+[src/provider/kupmios/index.ts:44](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L44)
 
 ***
 
@@ -136,7 +136,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:120](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L120)
+[src/provider/kupmios/index.ts:120](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L120)
 
 ***
 
@@ -154,7 +154,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L28)
+[src/provider/kupmios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L28)
 
 ***
 
@@ -178,7 +178,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:82](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L82)
+[src/provider/kupmios/index.ts:82](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L82)
 
 ***
 
@@ -200,7 +200,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:78](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L78)
+[src/provider/kupmios/index.ts:78](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L78)
 
 ***
 
@@ -222,7 +222,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:60](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L60)
+[src/provider/kupmios/index.ts:60](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L60)
 
 ***
 
@@ -248,7 +248,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:173](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L173)
+[src/provider/kupmios/index.ts:173](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L173)
 
 ***
 
@@ -270,7 +270,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:93](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L93)
+[src/provider/kupmios/index.ts:93](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L93)
 
 ***
 
@@ -288,7 +288,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:101](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L101)
+[src/provider/kupmios/index.ts:101](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L101)
 
 ***
 
@@ -314,7 +314,7 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:227](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L227)
+[src/provider/kupmios/index.ts:227](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L227)
 
 ***
 
@@ -336,4 +336,4 @@
 
 #### Defined in
 
-[src/provider/kupmios/index.ts:202](https://github.com/xray-network/cardano-web3-js/blob/0efa60054f9e70c553f4bc789b93f1afba32576f/src/provider/kupmios/index.ts#L202)
+[src/provider/kupmios/index.ts:202](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L202)

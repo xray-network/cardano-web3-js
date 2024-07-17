@@ -3,5 +3,6 @@
   "out": "./api",
   "entryPoints": ["../src/index.ts"],
   "readme": "none",
-  "tsconfig": "../tsconfig.json"
+  "tsconfig": "../tsconfig.json",
+  "gitRevision": "main",
 }
