@@ -13,26 +13,26 @@ export default defineConfig({
   },
   head: [
     ["link", { rel: "icon", href: "/favicon.svg" }],
-    [
-      "link",
-      {
-        rel: "preload",
-        href: "https://cdn.xray.app/fonts/satoshi/Satoshi-Variable.ttf",
-        as: "font",
-        type: "font/ttf",
-        crossorigin: "anonymous",
-      },
-    ],
-    [
-      "link",
-      {
-        rel: "preload",
-        href: "https://cdn.xray.app/fonts/archivo/Archivo-Variable.ttf",
-        as: "font",
-        type: "font/ttf",
-        crossorigin: "anonymous",
-      },
-    ],
+    // [
+    //   "link",
+    //   {
+    //     rel: "preload",
+    //     href: "https://cdn.xray.app/fonts/satoshi/Satoshi-Variable.ttf",
+    //     as: "font",
+    //     type: "font/ttf",
+    //     crossorigin: "anonymous",
+    //   },
+    // ],
+    // [
+    //   "link",
+    //   {
+    //     rel: "preload",
+    //     href: "https://cdn.xray.app/fonts/archivo/Archivo-Variable.ttf",
+    //     as: "font",
+    //     type: "font/ttf",
+    //     crossorigin: "anonymous",
+    //   },
+    // ],
     [
       "link",
       {
