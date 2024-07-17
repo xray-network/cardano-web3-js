@@ -10,6 +10,8 @@ layout: home
 
 A testing environment to quickly validate your (and not only) ideas. <a href="https://stackblitz.com/edit/cardano-web3-js" target="_blank">Open in StackBlitz &rarr;</a>
 
+<br />
+
 <iframe
   height="700px"
   width="100%"
