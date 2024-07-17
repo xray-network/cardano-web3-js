@@ -1,0 +1,160 @@
+:root {
+  /* FONTS */
+  --vp-font-family-base: "Satoshi";
+
+  /* TEXT */
+  --vp-c-text-1: rgba(29, 29, 31);
+  --vp-c-text-2: rgba(29, 29, 31, 0.78);
+  --vp-c-text-3: rgba(29, 29, 31, 0.56);
+
+  /* BACKGROUNDS */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f2f4f8;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f2f4f8;
+
+  /* COLORS */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #1940ed;
+  --vp-c-indigo-2: #3a5ccc;
+  --vp-c-indigo-3: #1940ed;
+  --vp-c-indigo-soft: rgba(100, 108, 255, 0.14);
+
+  --vp-c-purple-1: #6f42c1;
+  --vp-c-purple-2: #7e4cc9;
+  --vp-c-purple-3: #8e5cd9;
+  --vp-c-purple-soft: rgba(159, 122, 234, 0.14);
+
+  --vp-c-green-1: #18794e;
+  --vp-c-green-2: #299764;
+  --vp-c-green-3: #30a46c;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-c-yellow-1: #915930;
+  --vp-c-yellow-2: #946300;
+  --vp-c-yellow-3: #9f6a00;
+  --vp-c-yellow-soft: rgba(234, 179, 8, 0.14);
+
+  --vp-c-red-1: #b8272c;
+  --vp-c-red-2: #d5393e;
+  --vp-c-red-3: #e0575b;
+  --vp-c-red-soft: rgba(244, 63, 94, 0.14);
+
+  --vp-c-sponsor: #db2777;
+}
+
+.dark {
+  /* TEXT */
+  --vp-c-text-1: rgba(240, 240, 240, 1);
+  --vp-c-text-2: rgba(240, 240, 240, 0.6);
+  --vp-c-text-3: rgba(240, 240, 240, 0.38);
+
+  /* BACKGROUNDS */
+  --vp-c-bg: #040408;
+  --vp-c-bg-alt: #0c0c12;
+  --vp-c-bg-elv: #0c0c12;
+  --vp-c-bg-soft: #0c0c12;
+
+  /* COLORS */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #436bfa;
+  --vp-c-indigo-2: #5c73e7;
+  --vp-c-indigo-3: #436bfa;
+  --vp-c-indigo-soft: rgba(100, 108, 255, 0.16);
+
+  --vp-c-purple-1: #c8abfa;
+  --vp-c-purple-2: #a879e6;
+  --vp-c-purple-3: #8e5cd9;
+  --vp-c-purple-soft: rgba(159, 122, 234, 0.16);
+
+  --vp-c-green-1: #3dd68c;
+  --vp-c-green-2: #30a46c;
+  --vp-c-green-3: #298459;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.16);
+
+  --vp-c-yellow-1: #f9b44e;
+  --vp-c-yellow-2: #da8b17;
+  --vp-c-yellow-3: #a46a0a;
+  --vp-c-yellow-soft: rgba(234, 179, 8, 0.16);
+
+  --vp-c-red-1: #f66f81;
+  --vp-c-red-2: #f14158;
+  --vp-c-red-3: #b62a3c;
+  --vp-c-red-soft: rgba(244, 63, 94, 0.16);
+}
+
+body {
+  font-weight: 500;
+}
+
+.outline-link {
+  font-weight: 500 !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.vp-doc h1, .vp-doc h2, .vp-doc h3, .vp-doc h4, .vp-doc h5, .vp-doc h6 {
+  font-family: "Archivo";
+  font-weight: 700;
+}
+
+.VPSidebarItem h1, .VPSidebarItem h2, .VPSidebarItem h3, .VPSidebarItem h4, .VPSidebarItem h5, .VPSidebarItem h6 {
+  font-family: "Satoshi";
+}
+
+strong, .vp-doc strong {
+  font-weight: 700;
+}
+
+.VPNavBarTitle span {
+  font-family: "Archivo";
+  font-weight: 900 !important;
+}
+
+.VPHomeHero .name {
+  font-family: "Archivo";
+  font-weight: 900 !important;
+}
+
+.VPHomeHero .text {
+  font-family: "Archivo";
+  font-weight: 700 !important;
+}
+
+.VPHero .image {
+  perspective: 1500px;
+}
+
+.VPHero .image:hover .image-container {
+  transform: rotate3d(0,0,0,0) rotate(0);
+}
+
+.VPHero .image-container {
+  transform: rotate3d(.5, -.900, 0, 15deg) rotate(1deg);
+  will-change: transform;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.VPHero .image-bg {
+  box-shadow: 2em 4em 6em -2em #00000080, 1em 2em 3.5em -2.5em #00000080;
+}
+
+.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+
+@media screen and (max-width: 768px) {
+  .two-cols {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

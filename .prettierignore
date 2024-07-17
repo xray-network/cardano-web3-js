@@ -5,5 +5,5 @@ package-lock.json
 dist
 docs/node_modules
 docs/build
-docs/.docusaurus
+docs/.vitepress/cache
 src/utils/cborg

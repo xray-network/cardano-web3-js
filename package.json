@@ -32,9 +32,9 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts",
-    "format": "prettier --write \"**/*.{js,ts,json}\"",
+    "format": "prettier --write \"**/*.{js,ts,mts,cts,json}\"",
     "test": "vitest run",
-    "docs:dev": "cd docs && yarn start",
+    "docs:start": "cd docs && yarn start",
     "docs:serve": "cd docs && yarn serve",
     "docs": "cd docs && yarn install && yarn build"
   },

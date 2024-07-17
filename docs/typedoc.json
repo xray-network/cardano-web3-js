@@ -1,0 +1,7 @@
+{
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+  "out": "./api",
+  "entryPoints": ["../src/index.ts"],
+  "readme": "none",
+  "tsconfig": "../tsconfig.json"
+}
