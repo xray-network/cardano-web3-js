@@ -55,9 +55,9 @@
 
   /* BACKGROUNDS */
   --vp-c-bg: #040408;
-  --vp-c-bg-alt: #0c0c12;
-  --vp-c-bg-elv: #0c0c12;
-  --vp-c-bg-soft: #0c0c12;
+  --vp-c-bg-alt: #0f0f17;
+  --vp-c-bg-elv: #0f0f17;
+  --vp-c-bg-soft: #0f0f17;
 
   /* COLORS */
   --vp-c-gray-1: #515c67;
@@ -161,4 +161,8 @@ strong, .vp-doc strong {
 
 iframe {
   border: none;
+}
+
+.vp-doc th, .vp-doc td, .vp-doc tr {
+  border: none !important;
 }
