@@ -92,12 +92,7 @@
 }
 
 body {
-  font-weight: 500;
   overflow-x: hidden;
-}
-
-.outline-link {
-  font-weight: 500 !important;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -108,10 +103,6 @@ h1, h2, h3, h4, h5, h6,
 
 .VPSidebarItem h1, .VPSidebarItem h2, .VPSidebarItem h3, .VPSidebarItem h4, .VPSidebarItem h5, .VPSidebarItem h6 {
   font-family: "Satoshi";
-}
-
-strong, .vp-doc strong {
-  font-weight: 700;
 }
 
 .VPNavBarTitle span {
