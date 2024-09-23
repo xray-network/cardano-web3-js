@@ -140,7 +140,7 @@ describe("TX", async () => {
       .createTx()
       .setChangeAddress(changeAddress)
       .addInputs(account.__state.utxos)
-      // .attachScript(alwaysSucceedScript) // not nedeed, if the script is loaded from readFrom UTXO
+      .attachScript(alwaysSucceedScript) // not nedeed, if the script is loaded from readFrom UTXO
       .readFrom([utxoRef!])
       .collectFrom([utxoToCollect!], emptyRedeemer)
       .applyAndBuild()

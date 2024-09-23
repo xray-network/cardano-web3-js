@@ -1,10 +1,10 @@
 {
   "name": "cardano-web3-js",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "author": "XRAY/Network <hello@xray.app>",
   "description": "Cardano Web3 JavaScript SDK",
   "license": "MIT",
-  "homepage": "https://xray.app",
+  "homepage": "https://cardano-web3-js.org",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xray-network/cardano-web3-js.git"
@@ -34,6 +34,7 @@
     "build": "tsup src/index.ts",
     "format": "prettier --write \"**/*.{js,ts,mts,cts,json}\"",
     "test": "vitest run",
+    "publish": "yarn build && npm publish --access public",
     "docs:start": "cd docs && yarn start",
     "docs:serve": "cd docs && yarn serve",
     "docs": "cd docs && yarn install && yarn build"
@@ -53,7 +54,7 @@
     "bignumber.js": "^9.0.1",
     "blake2b": "^2.1.4",
     "buffer": "^6.0.3",
-    "cardano-koios-client": "^1.0.5",
+    "cardano-koios-client": "^1.0.6",
     "cardano-nftcdn-client": "^1.0.4",
     "cardano-pricing-client": "^1.0.4",
     "crypto-browserify": "^3.12.0",
