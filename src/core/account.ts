@@ -10,7 +10,7 @@ export class Account {
     checksumId: undefined,
     xpubKey: undefined,
     xprvKey: undefined,
-    xprvKeyIsEncoded: false,
+    xprvKeyIsEncoded: undefined,
     accountPath: undefined,
     addressPath: undefined,
     paymentAddress: undefined,
@@ -144,6 +144,33 @@ export class Account {
     return account
   }
 
+  /**
+   * Create a new account from address
+   * @param cw3 CardanoWeb3 instance
+   * @param address Bech32 address
+   * @returns Account instance
+   */
+  static fromAddress = (cw3: L.CardanoWeb3, address: string) => {
+    const account = new Account()
+    const { paymentCred, stakingCred } = cw3.utils.address.getCredentials(address)
+    const stakingAddress = cw3.utils.address.getStakingAddress(address)
+
+    account.cw3 = cw3
+    account.__config.accountPath = undefined
+    account.__config.addressPath = undefined
+    account.__config.xpubKey = undefined
+    account.__config.xprvKey = undefined
+    account.__config.type = "address"
+    account.__config.checksumImage = undefined
+    account.__config.checksumId = undefined
+    account.__config.paymentAddress = address
+    account.__config.paymentCred = paymentCred.hash
+    account.__config.stakingCred = stakingCred.hash
+    account.__config.stakingAddress = stakingAddress
+
+    return account
+  }
+
   // static fromLedgerHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
   //   throw new Error("Not implemented: fromLedgerHW")
   //   if (typeof window === "undefined") throw new Error("fromLedgerHW is only available in the browser")
@@ -192,28 +219,28 @@ export class Account {
       if (config.type === "xpub") {
         return this.fromXpubKey(cw3, config.xpubKey, config.addressPath)
       }
+      if (config.type === "address") {
+        return this.fromAddress(cw3, config.paymentAddress)
+      }
     }
-    throw new Error("Wrong account type for import")
+    throw new Error(`Wrong account type for import. Only "xprv", "xpub", and "address" types are supported`)
   }
 
   /**
    * Export account configuration
    * @returns Account configuration
-   * @throws Error if account type is not exportable
    */
   exportAccount = (): T.AccountExportV1 => {
-    if (this.__config.type === "connector" || this.__config.type === "ledger" || this.__config.type === "trezor")
-      throw new Error(`Account with $"{this.__config.type}" type is not exportable`)
-
     return {
       configVersion: this.__config.configVersion,
       type: this.__config.type,
-      checksumId: this.__config.checksumId,
       xpubKey: this.__config.xpubKey,
       xprvKey: this.__config.xprvKey,
       xprvKeyIsEncoded: this.__config.xprvKeyIsEncoded,
       accountPath: this.__config.accountPath,
       addressPath: this.__config.addressPath,
+      paymentAddress: this.__config.paymentAddress,
+      stakingAddress: this.__config.stakingAddress,
     }
   }
 
@@ -272,7 +299,26 @@ export class Account {
    * Get account state and update internal state
    * @returns Account state
    */
-  updateState = async (): Promise<T.AccountState> => {
+
+  getState = async (): Promise<T.AccountState> => {
+    // TODO: Implement getUtxosFromConnector if account type is connector
+    const utxos = await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
+    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
+    const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)
+
+    return {
+      utxos,
+      balance,
+      delegation: delegation?.delegation || null,
+      rewards: delegation?.rewards,
+    }
+  }
+
+  /**
+   * Get account state and update internal state
+   * @returns Account state
+   */
+  getAndUpdateState = async (): Promise<T.AccountState> => {
     // TODO: Implement getUtxosFromConnector if account type is connector
     // const getUtxosFromConnector = async (): Promise<T.Utxo[]> => {
     //   const utxosRaw = await this.__config.connector.getUtxos()

@@ -1,6 +1,6 @@
 /** Account types */
 import type { Account } from "./links"
-export type AccountType = "xprv" | "xpub" | "connector" | "ledger" | "trezor"
+export type AccountType = "xprv" | "xpub" | "connector" | "address" | "ledger" | "trezor"
 export type AccountConfig = {
   configVersion: number
   type: AccountType
@@ -20,12 +20,13 @@ export type AccountConfig = {
 export type AccountExportV1 = {
   configVersion: number
   type: AccountType
-  checksumId: string
-  xpubKey: string
+  xpubKey: string | undefined
   xprvKey: string | undefined
   xprvKeyIsEncoded: boolean
   accountPath: AccountDerivationPath | undefined
   addressPath: AddressDerivationPath | undefined
+  paymentAddress: string
+  stakingAddress: string | undefined
 }
 export type AccountState = {
   utxos: Utxo[]
@@ -170,6 +171,7 @@ export type ProtocolParameters = {
   coinsPerUtxoByte: bigint
   collateralPercentage: number
   maxCollateralInputs: number
+  minFeeRefScriptCostPerByte: number
   costModels: CostModels
 }
 export type AccountDerivationPath = [number, number, number]
@@ -209,6 +211,7 @@ export type Balance = {
   lovelace: Lovelace
   assets: (Asset & {
     fingerprint: string
+    assetNameAscii: string
   })[]
 }
 export type Utxo = {

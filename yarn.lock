@@ -2,25 +2,25 @@
 # yarn lockfile v1
 
 
-"@dcspark/cardano-multiplatform-lib-browser@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-browser/-/cardano-multiplatform-lib-browser-5.3.1.tgz#b729388388ffe2897f6ad8fa904fc8f0db1f6394"
-  integrity sha512-iPLYATq7nCy26kAVBUKa4mOxFuTinDv4pFdZXYnkjN6+MFNjumM0/tKvb2eCxNrPFxSFZvgSlLEDL0Rq0HBaVg==
+"@dcspark/cardano-multiplatform-lib-browser@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-browser/-/cardano-multiplatform-lib-browser-6.0.1.tgz#4768008a02ff151c081ca367028df33cef84d91f"
+  integrity sha512-dka+D1cwoV5r+FcDP3fAaQ6EYG8ycOcIxC2UQrk/D2U3fglE9LiglxI4HKrDO4+t2OLsITzgb9U4ilPTUD4xMQ==
 
-"@dcspark/cardano-multiplatform-lib-nodejs@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-nodejs/-/cardano-multiplatform-lib-nodejs-5.3.1.tgz#a94e9cbf0f79d94c959c41ac64716891a4c36183"
-  integrity sha512-qQjQmKbShTScc1hfRA3CLtHikfmBt9sQPu9Nbm5iuCZP6dQoI+2lt/ldN1agkpWbRGIffNBCKaDeDn2B+GHXqw==
+"@dcspark/cardano-multiplatform-lib-nodejs@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-nodejs/-/cardano-multiplatform-lib-nodejs-6.0.1.tgz#670d3d5e9464c2a7da930d93789d9e4dd8fe5c21"
+  integrity sha512-x2+Ic9O899DuOh7dZarEMa6GfMFht83ft5fEoywoAzutvC8MR7cYg3VWwLbMyPoFt+6d+H1vBW4RWWx3s27FQw==
 
-"@emurgo/cardano-message-signing-browser@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@emurgo/cardano-message-signing-browser/-/cardano-message-signing-browser-1.0.1.tgz#fb0a481575131d15bf15bb8781cb03bd3f7d56b0"
-  integrity sha512-yC4Ymq44WR0bXO1wzxCoyc2W/RD1KSAla0oYhin7IYoVkp2raGp8wt7QNF4pDdNnTcejn5fyPyYY9dL4666H1w==
+"@emurgo/cardano-message-signing-browser@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-message-signing-browser/-/cardano-message-signing-browser-1.1.0.tgz#7376839a5b7e2dbdb3cf07881a1aa895545cc31a"
+  integrity sha512-LyeiGIqCyZu9DZnKsi4wlBjZA1MN+uy3Cqpb5J6RZWvFXDJnCoxrYB/EixUiGRD/la4WsldBgtPsrIHyGsVkpg==
 
-"@emurgo/cardano-message-signing-nodejs@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@emurgo/cardano-message-signing-nodejs/-/cardano-message-signing-nodejs-1.0.1.tgz#b2fa1f7541055a6c4b8e805492b1a9362bea5835"
-  integrity sha512-PoKh1tQnJX18f8iEr8Jk1KXxKCn9eqaSslMI1pyOJvYRJhQVDLCh0+9YReufjp0oFJIY1ShcrR+4/WnECVZUKQ==
+"@emurgo/cardano-message-signing-nodejs@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-message-signing-nodejs/-/cardano-message-signing-nodejs-1.1.0.tgz#04d45a48deed32e8ead16cf1e534162562e16835"
+  integrity sha512-PQRc8K8wZshEdmQenNUzVtiI8oJNF/1uAnBhidee5C4o1l2mDLOW+ur46HWHIFKQ6x8mSJTllcjMscHgzju0gQ==
 
 "@esbuild/aix-ppc64@0.21.5":
   version "0.21.5"

@@ -9,7 +9,7 @@ describe("TX", async () => {
   const account = web3.account.fromXprvKey(testData.xprvKey)
   const changeAddress = account.__config.paymentAddress
   const stakingAddress = account.__config.stakingAddress
-  await account.updateState()
+  await account.getAndUpdateState()
   const alwaysSucceedScript: T.Script = {
     language: "PlutusV2",
     script: "480100002221200101",

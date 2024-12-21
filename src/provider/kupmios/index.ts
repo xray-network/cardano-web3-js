@@ -298,6 +298,7 @@ const ogmiosProtocolParametersToProtocolParameters = (pp: any): T.ProtocolParame
     coinsPerUtxoByte: BigInt(pp.minUtxoDepositCoefficient),
     collateralPercentage: parseInt(pp.collateralPercentage),
     maxCollateralInputs: parseInt(pp.maxCollateralInputs),
+    minFeeRefScriptCostPerByte: 15, // TODO
     costModels: {
       PlutusV1: pp.plutusCostModels["plutus:v1"],
       PlutusV2: pp.plutusCostModels["plutus:v2"],

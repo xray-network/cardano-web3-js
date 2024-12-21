@@ -278,6 +278,7 @@ const koiosProtocolParamsToProtocolParams = (pp: KoiosTypes.components["schemas"
     coinsPerUtxoByte: BigInt(pp.coins_per_utxo_size),
     collateralPercentage: pp.collateral_percent,
     maxCollateralInputs: pp.max_collateral_inputs,
+    minFeeRefScriptCostPerByte: 15, // TODO
     costModels: pp.cost_models as any,
   }
 }

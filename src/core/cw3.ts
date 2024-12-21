@@ -123,7 +123,7 @@ export class CardanoWeb3 {
 
   account = {
     /**
-     * Generate new account from mnemonic
+     * Create new account from mnemonic
      * @param mnemonic Mnemonic
      * @param accountPath Account derivation path
      * @param addressPath Address derivation path
@@ -138,7 +138,7 @@ export class CardanoWeb3 {
     },
 
     /**
-     * Generate new account from xprv key
+     * Create new account from xprv key
      * @param xprvKey Extended private key
      * @param accountPath Account derivation path (optioanl, default: [1852, 1815, 0])
      * @param addressPath Address derivation path (optional, default: [0, 0])
@@ -153,7 +153,7 @@ export class CardanoWeb3 {
     },
 
     /**
-     * Generate new account from xpub key
+     * Create new account from xpub key
      * @param xpubKey Extended public key
      * @param addressPath  Known Address derivation path (optional, default: [0, 0])
      * @returns Account instance
@@ -163,12 +163,21 @@ export class CardanoWeb3 {
     },
 
     /**
-     * Generate new account from wallet connector
+     * Create new account from wallet connector
      * @param connector Connector instance
      * @returns Account instance
      */
     fromConnector: (connector: L.Connector) => {
       return Account.fromConnector(this, connector)
+    },
+
+    /**
+     * Create a new account from address
+     * @param address Bech32 address
+     * @returns Account instance
+     */
+    fromAddress: (address: string) => {
+      return Account.fromAddress(this, address)
     },
 
     // fromLedgerHW: (path: T.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH) => {

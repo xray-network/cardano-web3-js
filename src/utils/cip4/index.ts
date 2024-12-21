@@ -4,7 +4,9 @@ import Blake2b from "blake2b"
 const LETTERS = `ABCDEJHKLNOPSTXZ`
 
 function hash(len: number, input: string, message: string) {
-  return Blake2b(len, undefined, undefined, Buffer.from(message)).update(Buffer.from(input)).digest("hex")
+  return Blake2b(len, undefined, undefined, new Uint8Array(Buffer.from(message)))
+    .update(new Uint8Array(Buffer.from(input)))
+    .digest("hex")
 }
 
 function textPartFromWalletChecksumImagePart(walletChecksum: string): string {

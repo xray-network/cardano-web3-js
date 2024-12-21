@@ -128,6 +128,23 @@ export class Utils {
    * Address related utils
    */
   address = {
+    validateAddress: (addrBech32: string): boolean => {
+      try {
+        this.cw3.CML.Address.from_bech32(addrBech32)
+        return true
+      } catch {
+        return false
+      }
+    },
+
+    getNetwork: (addrBech32: string): T.NetworkId | undefined => {
+      try {
+        return this.cw3.CML.Address.from_bech32(addrBech32).network_id() as T.NetworkId
+      } catch {
+        return undefined
+      }
+    },
+
     deriveBase: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath): string => {
       const paymentKeyHash = this.cw3.CML.Bip32PublicKey.from_bech32(xpubKey)
         .derive(addressDerivationPath[0])
@@ -321,6 +338,7 @@ export class Utils {
             balance.assets.push({
               ...asset,
               fingerprint: this.asset.getFingerprint(asset.policyId, asset.assetName),
+              assetNameAscii: this.asset.assetNameToAssetNameAscii(asset.assetName),
             })
           }
         })
@@ -343,6 +361,9 @@ export class Utils {
       const fingerprint = Bech32.bech32.encode(readablePart, words)
       return fingerprint
     },
+    assetNameToAssetNameAscii: (assetName: string): string => {
+      return Buffer.from(assetName, "hex").toString("utf-8")
+    },
   }
 
   /**
@@ -350,29 +371,21 @@ export class Utils {
    */
   tx = {
     createCostModels: (costModels: T.CostModels): L.CML.CostModels => {
-      const models = this.cw3.CML.CostModels.new()
-      if (costModels["PlutusV1"]) {
-        const plutusV1 = this.cw3.CML.IntList.new()
-        costModels["PlutusV1"].forEach((value) => plutusV1.add(this.cw3.CML.Int.new(BigInt(value))))
-        models.set_plutus_v1(plutusV1)
-      }
-      if (costModels["PlutusV2"]) {
-        const plutusV2 = this.cw3.CML.IntList.new()
-        costModels["PlutusV2"].forEach((value) => plutusV2.add(this.cw3.CML.Int.new(BigInt(value))))
-        models.set_plutus_v2(plutusV2)
-      }
-      if (costModels["PlutusV3"]) {
-        const plutusV3 = this.cw3.CML.IntList.new()
-        costModels["PlutusV3"].forEach((value) => plutusV3.add(this.cw3.CML.Int.new(BigInt(value))))
-        models.set_plutus_v3(plutusV3)
-      }
-      return models
+      return this.cw3.CML.CostModels.from_json(
+        JSON.stringify({
+          0: costModels.PlutusV1,
+          1: costModels.PlutusV2,
+          2: costModels.PlutusV3,
+        })
+      )
     },
 
     getTxBuilder: (protocolParams: T.ProtocolParameters): L.CML.TransactionBuilder => {
       const pp = protocolParams
       const txBuilderConfig = this.cw3.CML.TransactionBuilderConfigBuilder.new()
-        .fee_algo(this.cw3.CML.LinearFee.new(BigInt(pp.minFeeA), BigInt(pp.minFeeB)))
+        .fee_algo(
+          this.cw3.CML.LinearFee.new(BigInt(pp.minFeeA), BigInt(pp.minFeeB), BigInt(pp.minFeeRefScriptCostPerByte))
+        )
         .pool_deposit(BigInt(pp.poolDeposit))
         .key_deposit(BigInt(pp.keyDeposit))
         .coins_per_utxo_byte(BigInt(pp.coinsPerUtxoByte))
@@ -399,7 +412,7 @@ export class Utils {
       if (assets) {
         for (const asset of assets) {
           const policyId = this.cw3.CML.ScriptHash.from_hex(asset.policyId)
-          const assetName = this.cw3.CML.AssetName.from_bytes(this.misc.fromHex(asset.assetName || ""))
+          const assetName = this.cw3.CML.AssetName.from_raw_bytes(this.misc.fromHex(asset.assetName || ""))
           const policyAssets = multiAsset.get_assets(policyId) ?? this.cw3.CML.MapAssetNameToCoin.new()
           policyAssets.insert(assetName, asset.quantity)
           multiAsset.insert_assets(policyId, policyAssets)

@@ -17,6 +17,8 @@ export class Connector {
   static list = async (): Promise<string[]> => {
     if (typeof window === "undefined") throw new Error("Connector is only available in the browser environment")
     return Object.keys(window?.cardano || {})
+      .map((key) => (window?.cardano?.[key]?.apiVersion ? key : ""))
+      .filter((item) => item !== "")
   }
 
   /**
@@ -24,7 +26,7 @@ export class Connector {
    * @param wallet Wallet name
    * @returns True if wallet is enabled
    */
-  static isEnabled = async (wallet: string): Promise<string[]> => {
+  static isEnabled = async (wallet: string): Promise<boolean> => {
     if (typeof window === "undefined") throw new Error("Connector is only available in the browser environment")
     return (await window?.cardano?.[wallet]?.isEnabled()) || false
   }
@@ -56,7 +58,7 @@ export class Connector {
    * Get wallet network ID
    * @returns Wallet network ID (0 or 1)
    */
-  getNetworkId = async (): Promise<number> => {
+  getNetworkId = async (): Promise<0 | 1> => {
     return await this.__api.getNetworkId()
   }
 
