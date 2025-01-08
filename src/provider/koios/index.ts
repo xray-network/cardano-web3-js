@@ -242,6 +242,7 @@ const koiosAssetsToAssets = (
       policyId: asset.policy_id,
       assetName: asset.asset_name || "",
       quantity: BigInt(asset.quantity),
+      decimals: asset.decimals,
     }
   })
 }

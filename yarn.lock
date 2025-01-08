@@ -598,12 +598,12 @@ cardano-koios-client@^1.0.6:
   dependencies:
     openapi-fetch "^0.9.7"
 
-cardano-nftcdn-client@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/cardano-nftcdn-client/-/cardano-nftcdn-client-1.0.4.tgz#399f8de3211c189f1e1e193ad0065e47c02e231c"
-  integrity sha512-QgRM8FVYxwsrGnjmi68q3DvzxURI9fnAJIVScT++Tr4h2SPttsttatWyer1Qlitb0tUp/etBbDqVJ46/C6xTKQ==
+cardano-nftcdn-client@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/cardano-nftcdn-client/-/cardano-nftcdn-client-1.0.6.tgz#6c8b25c48a211bb2d6f4e396ebc973d7596f3ae5"
+  integrity sha512-yTZy3oubS68TlHNqI9F2huwT/w3wC9cGKdMzeNKYAL4GkJzF+Dfz1IvuDHzOD7dM94aFQq0Nkaulcm/SYslaNg==
   dependencies:
-    openapi-fetch "^0.9.7"
+    openapi-fetch "^0.13.3"
 
 cardano-pricing-client@^1.0.4:
   version "1.0.4"
@@ -1293,12 +1293,24 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
+openapi-fetch@^0.13.3:
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.13.4.tgz#18ebee9c83855e143a65ad15e33204e200c9541e"
+  integrity sha512-JHX7UYjLEiHuQGCPxa3CCCIqe/nc4bTIF9c4UYVC8BegAbWoS3g4gJxKX5XcG7UtYQs2060kY6DH64KkvNZahg==
+  dependencies:
+    openapi-typescript-helpers "^0.0.15"
+
 openapi-fetch@^0.9.7:
   version "0.9.8"
   resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.9.8.tgz#177cd9d1c9a4f42ac6aec7adf075ac9638e1fbf5"
   integrity sha512-zM6elH0EZStD/gSiNlcPrzXcVQ/pZo3BDvC6CDwRDUt1dDzxlshpmQnpD6cZaJ39THaSmwVCxxRrPKNM1hHrDg==
   dependencies:
     openapi-typescript-helpers "^0.0.8"
+
+openapi-typescript-helpers@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
+  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
 
 openapi-typescript-helpers@^0.0.8:
   version "0.0.8"
@@ -1631,8 +1643,16 @@ std-env@^3.5.0:
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.7.0.tgz#c9f7386ced6ecf13360b6c6c55b8aaa4ef7481d2"
   integrity sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
-  name string-width-cjs
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1664,8 +1684,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  name strip-ansi-cjs
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==

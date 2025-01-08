@@ -13,7 +13,7 @@ import {
 import { KoiosProvider } from "../provider/koios"
 import KoiosExplorer from "../explorer/koios"
 import NftcdnExplorer from "../explorer/nftcdn"
-import PricingExplorer from "../explorer/pricing"
+// import PricingExplorer from "../explorer/pricing"
 import { Data, Constr } from "../utils/data"
 import { Message } from "../utils/message"
 import * as T from "../types"
@@ -71,10 +71,11 @@ export class CardanoWeb3 {
         config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/nftcdn/${network}/api/v1`,
         config?.explorer?.nftcdn?.headers
       ),
-      pricing: PricingExplorer(
-        config?.explorer?.pricing?.url || `https://graph.xray.app/output/pricing/mainnet/api/v1`,
-        config?.explorer?.pricing?.headers
-      ),
+      // TODO: Not available yet
+      // pricing: PricingExplorer(
+      //   config?.explorer?.pricing?.url || `https://graph.xray.app/output/pricing/mainnet/api/v1`,
+      //   config?.explorer?.pricing?.headers
+      // ),
     }
     cw3.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     cw3.utils = new Utils(cw3)

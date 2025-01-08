@@ -11,20 +11,21 @@ describe("Explorer", async () => {
     })
 
     it("Nftcdn: /metadata", async () => {
-      const metadata = await web3.explorer.nftcdn.GET("/metadata/{fingerprint}", {
+      const metadata = await web3.explorer.nftcdn.GET("/metadata/{id}", {
         params: {
           path: {
-            fingerprint: "asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx",
+            id: "86abe45be4d8fb2e8f28e8047d17d0ba5592f2a6c8c452fc88c2c14358524159",
           },
         },
       })
       expect(metadata.data).toHaveProperty("fingerprint")
     })
 
-    it("Pricing: /orders", async () => {
-      const orders = await web3.explorer.pricing.GET("/orders")
-      expect(orders.data?.[0]).toHaveProperty("asset_a")
-    })
+    // TODO: Not available yet
+    // it("Pricing: /orders", async () => {
+    //   const orders = await web3.explorer.pricing.GET("/orders")
+    //   expect(orders.data?.[0]).toHaveProperty("asset_a")
+    // })
   })
 
   describe("Preprod", async () => {
@@ -36,10 +37,10 @@ describe("Explorer", async () => {
     })
 
     it("Nftcdn: /metadata", async () => {
-      const metadata = await web3.explorer.nftcdn.GET("/metadata/{fingerprint}", {
+      const metadata = await web3.explorer.nftcdn.GET("/metadata/{id}", {
         params: {
           path: {
-            fingerprint: "asset1azw6h7l3zmwrpmuhuny0u3k70hk3qxyjkcq4du",
+            id: "0052bf6cd66b13b469813422373d8362918aef39a2607af9fa87871957415350",
           },
         },
       })
@@ -56,10 +57,10 @@ describe("Explorer", async () => {
     })
 
     it("Nftcdn: /metadata", async () => {
-      const metadata = await web3.explorer.nftcdn.GET("/metadata/{fingerprint}", {
+      const metadata = await web3.explorer.nftcdn.GET("/metadata/{id}", {
         params: {
           path: {
-            fingerprint: "asset1up032cdhr8e6xj63uqgys3pcygj0sr9l7wludw",
+            id: "7c833f1eb9b70c2e700d028e0ee28d421edad2af4222061be525382d4144415f555344435f4c50",
           },
         },
       })

@@ -75,7 +75,7 @@ export type PricingClient = ReturnType<typeof PricingClientInstance>
 export type Explorer = {
   koios: KoiosClient
   nftcdn: NftcdnClient
-  pricing: PricingClient
+  // pricing: PricingClient
 }
 
 /** Connector types */
@@ -206,6 +206,7 @@ export type Asset = {
   policyId: string
   assetName: string
   quantity: bigint
+  decimals?: number
 }
 export type Balance = {
   lovelace: Lovelace
