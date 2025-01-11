@@ -128,7 +128,7 @@ describe("Utils", async () => {
 
     it("getBalanceFromUtxos()", async () => {
       const balanceGenerated = web3.utils.account.getBalanceFromUtxos(testData.accountState.utxos)
-      expect(balanceGenerated.lovelace).toEqual(testData.accountState.balance.lovelace)
+      expect(balanceGenerated.value).toEqual(testData.accountState.balance.value)
     })
   })
 

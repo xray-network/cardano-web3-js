@@ -322,12 +322,12 @@ export class Utils {
     },
     getBalanceFromUtxos: (utxos: T.Utxo[]): T.Balance => {
       const balance: T.Balance = {
-        lovelace: BigInt(0),
+        value: BigInt(0),
         assets: [],
       }
 
       utxos.forEach((utxo) => {
-        balance.lovelace += utxo.value
+        balance.value += utxo.value
         utxo.assets.forEach((asset) => {
           const existingAsset = balance.assets.find(
             (a) => a.policyId + a.assetName === asset.policyId + asset.assetName
@@ -406,7 +406,7 @@ export class Utils {
       return this.cw3.CML.TransactionBuilder.new(txBuilderConfig)
     },
 
-    assetsToValue: (value?: T.Lovelace, assets?: T.Asset[]): L.CML.Value => {
+    assetsToValue: (value?: T.Value, assets?: T.Asset[]): L.CML.Value => {
       const multiAsset = this.cw3.CML.MultiAsset.new()
 
       if (assets) {

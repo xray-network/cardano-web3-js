@@ -201,7 +201,7 @@ export type DatumOutput = {
   type: DatumType
   datum: Datum
 }
-export type Lovelace = bigint
+export type Value = bigint
 export type Asset = {
   policyId: string
   assetName: string
@@ -209,7 +209,7 @@ export type Asset = {
   decimals?: number
 }
 export type Balance = {
-  lovelace: Lovelace
+  value: Value
   assets: (Asset & {
     fingerprint: string
     assetNameAscii: string
@@ -221,7 +221,7 @@ export type Utxo = {
   }
   index: number
   address: string
-  value: Lovelace
+  value: Value
   assets: Asset[]
   datumHash: string | null
   datumType: DatumType | null
@@ -231,7 +231,7 @@ export type Utxo = {
 }
 export type Output = {
   address: string
-  value?: Lovelace
+  value?: Value
   assets?: Asset[]
 }
 export type CollateralConfig = {

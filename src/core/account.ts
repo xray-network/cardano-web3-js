@@ -22,7 +22,7 @@ export class Account {
   __state: T.AccountState = {
     utxos: [],
     balance: {
-      lovelace: 0n,
+      value: 0n,
       assets: [],
     },
     delegation: null,

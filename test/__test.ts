@@ -46,7 +46,7 @@ export const testData = {
         script: null,
       },
     ],
-    balance: { lovelace: 5_000_000_000n, assets: [] }, // Dummy 5K ADA
+    balance: { value: 5_000_000_000n, assets: [] }, // Dummy 5K ADA
     delegation: null,
     rewards: 10_000_000n, // Dumnmy 10 ADA
   },
