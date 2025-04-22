@@ -737,7 +737,9 @@ export class Utils {
       const parseNativeScript = (json: T.NativeConfig) => {
         switch (json.type) {
           case "sig":
-            return this.cw3.libs.CML.NativeScript.new_script_pubkey(this.cw3.libs.CML.Ed25519KeyHash.from_hex(json.keyHash))
+            return this.cw3.libs.CML.NativeScript.new_script_pubkey(
+              this.cw3.libs.CML.Ed25519KeyHash.from_hex(json.keyHash)
+            )
           case "before":
             return this.cw3.libs.CML.NativeScript.new_script_invalid_hereafter(BigInt(json.slot))
           case "after":
@@ -777,7 +779,10 @@ export class Utils {
     ): string => {
       const p = (type ? this.cw3.libs.PlutusData.castTo<T>(params, type) : params) as Data[]
       return this.misc.toHex(
-        this.cw3.libs.UPLC.apply_params_to_script(this.misc.fromHex(this.cw3.libs.PlutusData.to(p)), this.misc.fromHex(plutusScript))
+        this.cw3.libs.UPLC.apply_params_to_script(
+          this.misc.fromHex(this.cw3.libs.PlutusData.to(p)),
+          this.misc.fromHex(plutusScript)
+        )
       )
     },
   }

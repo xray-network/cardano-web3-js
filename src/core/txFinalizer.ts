@@ -39,7 +39,9 @@ export class TxFinalizer {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)
           throw new Error("Password is required to sign with xprv encoded account")
-        const xprvKey = account.__config.xprvKeyIsEncoded ? account.getDecodedXprvKey(password) : account.__config.xprvKey
+        const xprvKey = account.__config.xprvKeyIsEncoded
+          ? account.getDecodedXprvKey(password)
+          : account.__config.xprvKey
 
         const paymentVerificationKey = this.cw3.utils.keys.xprvToVrfKey(
           xprvKey,
@@ -56,7 +58,7 @@ export class TxFinalizer {
         const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
           this.__tx,
           [stakingKeyHash, paymentKeyHash],
-          utxos,
+          utxos
         )
         if (foundHashes.includes(paymentKeyHash)) {
           this.__witnessBuilder.add_vkey(

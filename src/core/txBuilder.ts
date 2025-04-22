@@ -441,9 +441,14 @@ export class TxBuilder {
       if (!stakingCred) throw new Error("Invalid address for rewards delegation (no staking credential)")
       switch (stakingCred.type) {
         case "key": {
-          const credential = this.cw3.libs.CML.Credential.new_pub_key(this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+          const credential = this.cw3.libs.CML.Credential.new_pub_key(
+            this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash)
+          )
           const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
-            this.cw3.libs.CML.Certificate.new_stake_delegation(credential, this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId))
+            this.cw3.libs.CML.Certificate.new_stake_delegation(
+              credential,
+              this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId)
+            )
           )
           this.__txBuilder.add_cert(certificateBuilder.payment_key())
           break
@@ -455,9 +460,14 @@ export class TxBuilder {
               "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
             )
           }
-          const credential = this.cw3.libs.CML.Credential.new_script(this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash))
+          const credential = this.cw3.libs.CML.Credential.new_script(
+            this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash)
+          )
           const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
-            this.cw3.libs.CML.Certificate.new_stake_delegation(credential, this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId))
+            this.cw3.libs.CML.Certificate.new_stake_delegation(
+              credential,
+              this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId)
+            )
           )
           switch (script.language) {
             case "Native":
@@ -528,7 +538,9 @@ export class TxBuilder {
       if (!stakingCred) throw new Error("Invalid address for rewards deregistration (no staking credential)")
       switch (stakingCred.type) {
         case "key": {
-          const credential = this.cw3.libs.CML.Credential.new_pub_key(this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+          const credential = this.cw3.libs.CML.Credential.new_pub_key(
+            this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash)
+          )
           const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
             this.cw3.libs.CML.Certificate.new_stake_deregistration(credential)
           )
@@ -542,7 +554,9 @@ export class TxBuilder {
               "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
             )
           }
-          const credential = this.cw3.libs.CML.Credential.new_script(this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash))
+          const credential = this.cw3.libs.CML.Credential.new_script(
+            this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash)
+          )
           const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
             this.cw3.libs.CML.Certificate.new_stake_deregistration(credential)
           )
@@ -712,7 +726,12 @@ export class TxBuilder {
         }
         const draftTxWitnesses = draftTx.witness_set()
         draftTxWitnesses.set_redeemers(this.cw3.libs.CML.Redeemers.new_arr_legacy_redeemer(zeroRedeemers))
-        const newTx = this.cw3.libs.CML.Transaction.new(draftTx.body(), draftTxWitnesses, true, draftTx.auxiliary_data())
+        const newTx = this.cw3.libs.CML.Transaction.new(
+          draftTx.body(),
+          draftTxWitnesses,
+          true,
+          draftTx.auxiliary_data()
+        )
         const allInputs = [...this.inputs.values(), ...this.readInputs.values(), ...this.collectInputs.values()]
         const inputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionInput(utxo).to_cbor_bytes())
         const outputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionOutput(utxo).to_cbor_bytes())
@@ -730,7 +749,10 @@ export class TxBuilder {
         for (const evaluatedRedeemer of uplcEvaluatedRedeemers) {
           const redeemer = this.cw3.libs.CML.LegacyRedeemer.from_cbor_bytes(evaluatedRedeemer)
           const exUnits = this.cw3.libs.CML.ExUnits.new(redeemer.ex_units().mem(), redeemer.ex_units().steps())
-          this.__txBuilder.set_exunits(this.cw3.libs.CML.RedeemerWitnessKey.new(redeemer.tag(), redeemer.index()), exUnits)
+          this.__txBuilder.set_exunits(
+            this.cw3.libs.CML.RedeemerWitnessKey.new(redeemer.tag(), redeemer.index()),
+            exUnits
+          )
         }
       } else {
         throw new Error("Remote TX evaluation is not supported yet")

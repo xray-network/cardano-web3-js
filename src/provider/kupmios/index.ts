@@ -1,6 +1,6 @@
 import { TTL } from "../../config"
 import * as T from "../../types"
-import * as K from "./types"
+import * as KupmiosProviderTypes from "./types"
 
 export class KupmiosProvider implements T.Provider {
   private ogmiosUrl: string
@@ -28,7 +28,7 @@ export class KupmiosProvider implements T.Provider {
   getTip = async (): Promise<T.Tip> => {
     const response = await fetch(`${this.ogmiosUrl}/health`)
     if (response.ok) {
-      const tip = (await response.json()) as K.Health
+      const tip = (await response.json()) as KupmiosProviderTypes.Health
       return {
         hash: tip.lastKnownTip.id,
         epochNo: tip.currentEpoch,
@@ -145,7 +145,7 @@ export class KupmiosProvider implements T.Provider {
     })
     if (response.ok) {
       const data = await response.json()
-      const delegation = Object.values((data.result || {}) as K.Delegation)?.[0]
+      const delegation = Object.values((data.result || {}) as KupmiosProviderTypes.Delegation)?.[0]
       return {
         delegation: delegation?.delegate?.id,
         rewards: BigInt(delegation?.rewards?.ada?.lovelace || 0),
@@ -225,7 +225,7 @@ export class KupmiosProvider implements T.Provider {
   }
 }
 
-const kupoUtxoToUtxo = (utxo: K.Utxo): T.Utxo => {
+const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): T.Utxo => {
   return {
     transaction: {
       id: utxo.transaction_id,
@@ -242,11 +242,11 @@ const kupoUtxoToUtxo = (utxo: K.Utxo): T.Utxo => {
   }
 }
 
-const kupoUtxosToUtxos = (utxos: K.Utxo[]): T.Utxo[] => {
+const kupoUtxosToUtxos = (utxos: KupmiosProviderTypes.Utxo[]): T.Utxo[] => {
   return utxos.map((utxo) => kupoUtxoToUtxo(utxo))
 }
 
-const kupoAssetsToAssets = (assets: K.Assets): T.Asset[] => {
+const kupoAssetsToAssets = (assets: KupmiosProviderTypes.Assets): T.Asset[] => {
   return Object.entries(assets).map(([id, quantity]): T.Asset => {
     const [policy_id, asset_name] = id.split(".")
     return {
@@ -289,7 +289,7 @@ const ogmiosProtocolParametersToProtocolParameters = (pp: any): T.ProtocolParame
     coinsPerUtxoByte: BigInt(pp.minUtxoDepositCoefficient),
     collateralPercentage: parseInt(pp.collateralPercentage),
     maxCollateralInputs: parseInt(pp.maxCollateralInputs),
-    minFeeRefScriptCostPerByte: 15, // TODO
+    minFeeRefScriptCostPerByte: parseInt(pp.minFeeReferenceScripts.base),
     costModels: {
       PlutusV1: pp.plutusCostModels["plutus:v1"],
       PlutusV2: pp.plutusCostModels["plutus:v2"],
