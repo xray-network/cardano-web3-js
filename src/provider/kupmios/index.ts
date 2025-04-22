@@ -170,6 +170,31 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.evaluateTx")
   }
 
+  submitTx = async (tx: string): Promise<string> => {
+    const response = await fetch(`${this.ogmiosUrl}`, {
+      method: "POST",
+      headers: this.ogmiosHeaders,
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "submitTransaction",
+        params: {
+          transaction: {
+            cbor: tx,
+          },
+        },
+      }),
+    })
+    if (response.ok) {
+      const data = await response.json()
+      return data?.result?.transaction?.id
+    }
+    if (!response.ok) {
+      const data = await response.json()
+      throw new Error(JSON.stringify(data.error))
+    }
+    throw new Error("Error: KupmiosProvider.submitTx")
+  }
+
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
     const checkTx = async () => {
       const response = await fetch(`${this.kupoUrl}/matches/*@${txHash}?unspent`, {
@@ -197,40 +222,6 @@ export class KupmiosProvider implements T.Provider {
         return res(false)
       }, maxTime)
     })
-  }
-
-  submitTx = async (tx: string): Promise<string> => {
-    const response = await fetch(`${this.ogmiosUrl}`, {
-      method: "POST",
-      headers: this.ogmiosHeaders,
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "submitTransaction",
-        params: {
-          transaction: {
-            cbor: tx,
-          },
-        },
-      }),
-    })
-    if (response.ok) {
-      const data = await response.json()
-      return data?.result?.transaction?.id
-    }
-    if (!response.ok) {
-      const data = await response.json()
-      throw new Error(JSON.stringify(data.error))
-    }
-    throw new Error("Error: KupmiosProvider.submitTx")
-  }
-
-  submitAndObserveTx = async (
-    tx: string,
-    checkInterval: number = 3000,
-    maxTime: number = TTL * 1000
-  ): Promise<boolean> => {
-    const txHash = await this.submitTx(tx)
-    return this.observeTx(txHash, checkInterval, maxTime)
   }
 }
 

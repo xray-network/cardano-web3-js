@@ -4,8 +4,8 @@ import * as L from "../../types/links"
 export const Message = (cw3: L.CardanoWeb3) => {
   return {
     signData: (addressHex: string, payload: string, privateKey: string): T.SignedMessage => {
-      const M = cw3.MSL
-      const C = cw3.CML
+      const M = cw3.libs.MSL
+      const C = cw3.libs.CML
       const { fromHex, toHex } = cw3.utils.misc
 
       const protectedHeaders = M.HeaderMap.new()
@@ -43,8 +43,8 @@ export const Message = (cw3: L.CardanoWeb3) => {
       }
     },
     verifyData: (addressHex: string, keyHash: string, payload: string, signedMessage: T.SignedMessage): boolean => {
-      const M = cw3.MSL
-      const C = cw3.CML
+      const M = cw3.libs.MSL
+      const C = cw3.libs.CML
       const { fromHex, toHex } = cw3.utils.misc
 
       const cose1 = M.COSESign1.from_bytes(fromHex(signedMessage.signature))

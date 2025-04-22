@@ -19,15 +19,6 @@ export class Account {
     stakingCred: undefined,
     connector: undefined,
   }
-  __state: T.AccountState = {
-    utxos: [],
-    balance: {
-      value: 0n,
-      assets: [],
-    },
-    delegation: null,
-    rewards: 0n,
-  }
 
   /**
    * Create a new account from mnemonic
@@ -123,9 +114,9 @@ export class Account {
 
     const account = new Account()
     const mainAddress = (await connector.getUsedAddresses())?.[0] || (await connector.getUnusedAddresses())?.[0]
-    const paymentAddress = cw3.CML.Address.from_hex(mainAddress).to_bech32()
+    const paymentAddress = cw3.libs.CML.Address.from_hex(mainAddress).to_bech32()
     const { paymentCred, stakingCred } = cw3.utils.address.getCredentials(paymentAddress)
-    const stakingAddress = cw3.CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
+    const stakingAddress = cw3.libs.CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
 
     account.cw3 = cw3
     account.__config.accountPath = undefined
@@ -251,22 +242,10 @@ export class Account {
    * @throws Error if account is already encrypted
    * @returns Encoded xprv key
    */
-  encodeXprvKey = (password: string) => {
+  getEncodedXprvKey = (password: string) => {
     if (!this.__config.xprvKey) throw new Error("Wrong account type. No xprv key found")
-    if (this.__config.xprvKeyIsEncoded) throw new Error("Account is already encrypted")
+    if (this.__config.xprvKeyIsEncoded) throw new Error("Account is already encrypted, directly get xprv key")
     const xprvKey = this.cw3.utils.misc.encryptDataWithPass(this.__config.xprvKey, password)
-    return xprvKey
-  }
-
-  /**
-   * Encode key to encrypted state and update internal state
-   * @param password Password to encrypt the key
-   * @returns Encoded xprv key
-   */
-  encodeAndUpdateXprvKey = (password: string) => {
-    const xprvKey = this.encodeXprvKey(password)
-    this.__config.xprvKey = xprvKey
-    this.__config.xprvKeyIsEncoded = true
     return xprvKey
   }
 
@@ -276,22 +255,10 @@ export class Account {
    * @returns Decoded xprv key
    * @throws Error if account is not encrypted or account type is wrong
    */
-  decodeXprvKey = (password: string) => {
+  getDecodedXprvKey = (password: string) => {
     if (!this.__config.xprvKey || !this.__config.xprvKeyIsEncoded)
       throw new Error("Account is not encrypted or account type is wrong")
     const xprvKey = this.cw3.utils.misc.decryptDataWithPass(this.__config.xprvKey, password)
-    return xprvKey
-  }
-
-  /**
-   * Decode key from encrypted state and update internal state
-   * @param password Password to decrypt the key
-   * @returns Decoded xprv key
-   */
-  decodeAndUpdateXprvKey = (password: string) => {
-    const xprvKey = this.decodeXprvKey(password)
-    this.__config.xprvKey = xprvKey
-    this.__config.xprvKeyIsEncoded = false
     return xprvKey
   }
 
@@ -301,24 +268,6 @@ export class Account {
    */
 
   getState = async (): Promise<T.AccountState> => {
-    // TODO: Implement getUtxosFromConnector if account type is connector
-    const utxos = await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
-    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
-    const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)
-
-    return {
-      utxos,
-      balance,
-      delegation: delegation?.delegation || null,
-      rewards: delegation?.rewards,
-    }
-  }
-
-  /**
-   * Get account state and update internal state
-   * @returns Account state
-   */
-  getAndUpdateState = async (): Promise<T.AccountState> => {
     // TODO: Implement getUtxosFromConnector if account type is connector
     // const getUtxosFromConnector = async (): Promise<T.Utxo[]> => {
     //   const utxosRaw = await this.__config.connector.getUtxos()
@@ -350,14 +299,20 @@ export class Account {
     //     ? await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
     //     : await getUtxosFromConnector()
     const utxos = await this.cw3.provider.getUtxosByAddress(this.__config.paymentAddress)
-    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
     const balance = this.cw3.utils.account.getBalanceFromUtxos(utxos)
-    this.__state = {
+
+    return {
       utxos,
       balance,
+    }
+  }
+
+  getDelegation = async (): Promise<T.AccountDelegation> => {
+    const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
+
+    return {
       delegation: delegation?.delegation || null,
       rewards: delegation?.rewards,
     }
-    return this.__state
   }
 }

@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@dcspark/cardano-multiplatform-lib-browser@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-browser/-/cardano-multiplatform-lib-browser-6.0.1.tgz#4768008a02ff151c081ca367028df33cef84d91f"
-  integrity sha512-dka+D1cwoV5r+FcDP3fAaQ6EYG8ycOcIxC2UQrk/D2U3fglE9LiglxI4HKrDO4+t2OLsITzgb9U4ilPTUD4xMQ==
+"@dcspark/cardano-multiplatform-lib-browser@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-browser/-/cardano-multiplatform-lib-browser-6.2.0.tgz#98245cce32cce2285972fe29ed6a67f883b3b41d"
+  integrity sha512-qNBV0M7qcWD2l/wy0fhwo9u0aekPCFhQ1Lvu093mKuMrqGGrCfKCyGFnU7g1d/Wx55WmRXRJ8yvDH+J+5y6nsA==
 
-"@dcspark/cardano-multiplatform-lib-nodejs@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-nodejs/-/cardano-multiplatform-lib-nodejs-6.0.1.tgz#670d3d5e9464c2a7da930d93789d9e4dd8fe5c21"
-  integrity sha512-x2+Ic9O899DuOh7dZarEMa6GfMFht83ft5fEoywoAzutvC8MR7cYg3VWwLbMyPoFt+6d+H1vBW4RWWx3s27FQw==
+"@dcspark/cardano-multiplatform-lib-nodejs@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@dcspark/cardano-multiplatform-lib-nodejs/-/cardano-multiplatform-lib-nodejs-6.2.0.tgz#ca267e8ade5d2dd2a10e93d77e4f6fa230639272"
+  integrity sha512-D4swEw9rkMySB3uCZlZgTKBZwfc/lkvPNLJI9ZYfUzXCstA8Vk2e77I4WbSw4Vkyt1qgEUDTs9+DT6hMGBlMhw==
 
 "@emurgo/cardano-message-signing-browser@^1.1.0":
   version "1.1.0"
@@ -590,27 +590,6 @@ cac@^6.7.12, cac@^6.7.14:
   version "6.7.14"
   resolved "https://registry.yarnpkg.com/cac/-/cac-6.7.14.tgz#804e1e6f506ee363cb0e3ccbb09cad5dd9870959"
   integrity sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==
-
-cardano-koios-client@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/cardano-koios-client/-/cardano-koios-client-1.0.6.tgz#1d018fb51c93d7b8509aa75d4b13a22109bcdff8"
-  integrity sha512-ioRdx/llyNftNazvRnFnuLSemTiw//bSG06JEoztuvRDvpQHuKLnX43EPgRoU0YRgK/BYj4vs5rGT05i/uuFtA==
-  dependencies:
-    openapi-fetch "^0.9.7"
-
-cardano-nftcdn-client@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/cardano-nftcdn-client/-/cardano-nftcdn-client-1.0.6.tgz#6c8b25c48a211bb2d6f4e396ebc973d7596f3ae5"
-  integrity sha512-yTZy3oubS68TlHNqI9F2huwT/w3wC9cGKdMzeNKYAL4GkJzF+Dfz1IvuDHzOD7dM94aFQq0Nkaulcm/SYslaNg==
-  dependencies:
-    openapi-fetch "^0.13.3"
-
-cardano-pricing-client@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/cardano-pricing-client/-/cardano-pricing-client-1.0.4.tgz#28737539d2d8f9034a33f53b44bee991c79bc1d3"
-  integrity sha512-VInSmNc4TTgmyYaPnzFQrbzw79kVkNDlNjKhyuMVCHEEmakrM1Cjj4jJhscteu1nNaqMB5QXHamgSOjg/bJ6sA==
-  dependencies:
-    openapi-fetch "^0.9.7"
 
 chai@^4.3.10:
   version "4.4.1"
@@ -1293,30 +1272,6 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
-openapi-fetch@^0.13.3:
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.13.4.tgz#18ebee9c83855e143a65ad15e33204e200c9541e"
-  integrity sha512-JHX7UYjLEiHuQGCPxa3CCCIqe/nc4bTIF9c4UYVC8BegAbWoS3g4gJxKX5XcG7UtYQs2060kY6DH64KkvNZahg==
-  dependencies:
-    openapi-typescript-helpers "^0.0.15"
-
-openapi-fetch@^0.9.7:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.9.8.tgz#177cd9d1c9a4f42ac6aec7adf075ac9638e1fbf5"
-  integrity sha512-zM6elH0EZStD/gSiNlcPrzXcVQ/pZo3BDvC6CDwRDUt1dDzxlshpmQnpD6cZaJ39THaSmwVCxxRrPKNM1hHrDg==
-  dependencies:
-    openapi-typescript-helpers "^0.0.8"
-
-openapi-typescript-helpers@^0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
-  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
-
-openapi-typescript-helpers@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.8.tgz#460f395362cc16e4a5de56264b7b1c5a03746e35"
-  integrity sha512-1eNjQtbfNi5Z/kFhagDIaIRj6qqDzhjNJKz8cmMW0CVdGwT6e1GLbAfgI0d28VTJa1A8jz82jm/4dG8qNoNS8g==
-
 p-limit@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-5.0.0.tgz#6946d5b7140b649b7a33a027d89b4c625b3a5985"
@@ -1838,15 +1793,15 @@ undici-types@~5.26.4:
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
-uplc-node@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/uplc-node/-/uplc-node-0.0.3.tgz#f74e8b43b857ad71847c8c187ef14f8355804fe4"
-  integrity sha512-4vr7+RzsRmzS2xuMMMsAs7/VgUzq0Y6ha03IKY1yvTwTz4JQcrlOB0wISzpQ0wJUCxXCirsWKh95BJdrC9OT+w==
+uplc-node@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/uplc-node/-/uplc-node-0.0.4.tgz#b0efce10a316fc9340947bb0e77dd4344e271547"
+  integrity sha512-fY42g8+jiTuqusYZzlhYd3XtPm7VJAY7cDA4hFDT/UDD28Y1oHYLv+nFA5w7cPJqLNKhI2Q+1nBZhFYklcnt+A==
 
-uplc-web@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/uplc-web/-/uplc-web-0.0.3.tgz#6f1929be6e8900c96ebf6b318829d9325199dccf"
-  integrity sha512-eRdaVvVzQJoEQ8+ZuXPeI47BhuJJG68sKsteJ/E21pIPY2/omZn49wZ6gcmevWoQuzEtKdPUjjPDiToUfWm0kw==
+uplc-web@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/uplc-web/-/uplc-web-0.0.4.tgz#936d9aa02258c7ed34ed906e0130d5aad9db185b"
+  integrity sha512-t9wz5P1RB3SWoQ2XhkYEyxCAghJGZ9LIFAulDHwD0mAykIvySqiBhr76D2bObXWY9dBRlds42pqEr5OoqyJPYw==
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"

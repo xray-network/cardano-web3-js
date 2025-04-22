@@ -31,6 +31,7 @@
     "dist"
   ],
   "scripts": {
+    "dev": "vitest run test/__dev.spec.ts",
     "build": "tsup src/index.ts",
     "format": "prettier --write \"**/*.{js,ts,mts,cts,json}\"",
     "test": "vitest run",
@@ -45,8 +46,8 @@
     "uplc-node": "uplc-web"
   },
   "dependencies": {
-    "@dcspark/cardano-multiplatform-lib-browser": "^6.0.1",
-    "@dcspark/cardano-multiplatform-lib-nodejs": "^6.0.1",
+    "@dcspark/cardano-multiplatform-lib-browser": "^6.2.0",
+    "@dcspark/cardano-multiplatform-lib-nodejs": "^6.2.0",
     "@emurgo/cardano-message-signing-browser": "^1.1.0",
     "@emurgo/cardano-message-signing-nodejs": "^1.1.0",
     "@sinclair/typebox": "^0.32.31",
@@ -54,13 +55,10 @@
     "bignumber.js": "^9.0.1",
     "blake2b": "^2.1.4",
     "buffer": "^6.0.3",
-    "cardano-koios-client": "^1.0.6",
-    "cardano-nftcdn-client": "^1.0.6",
-    "cardano-pricing-client": "^1.0.4",
     "crypto-browserify": "^3.12.0",
     "js-sha256": "^0.11.0",
-    "uplc-node": "^0.0.3",
-    "uplc-web": "^0.0.3"
+    "uplc-node": "^0.0.4",
+    "uplc-web": "^0.0.4"
   },
   "devDependencies": {
     "@types/blake2b": "^2.1.3",

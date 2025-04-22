@@ -7,7 +7,7 @@ const INVALID_CHECKSUM = "Invalid mnemonic checksum"
 const WORDLIST_REQUIRED =
   "A wordlist is required but a default could not be found.\n" + "Please pass a 2048 word array explicitly."
 
-function toHex(bytes: Buffer | Uint8Array): string {
+function toHex(bytes: Uint8Array): string {
   return Buffer.from(bytes).toString("hex")
 }
 

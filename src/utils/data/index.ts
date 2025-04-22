@@ -239,32 +239,32 @@ function to<T = Data>(cw3: L.CardanoWeb3, data: Exact<T>, type?: T): Datum | Red
   function serialize(data: Data): L.CML.PlutusData {
     try {
       if (typeof data === "bigint") {
-        return cw3.CML.PlutusData.new_integer(cw3.CML.BigInteger.from_str(data.toString()))
+        return cw3.libs.CML.PlutusData.new_integer(cw3.libs.CML.BigInteger.from_str(data.toString()))
       } else if (typeof data === "string") {
-        return cw3.CML.PlutusData.new_bytes(cw3.utils.misc.fromHex(data))
+        return cw3.libs.CML.PlutusData.new_bytes(cw3.utils.misc.fromHex(data))
       } else if (data instanceof Constr) {
         const { index, fields } = data
-        const plutusList = cw3.CML.PlutusDataList.new()
+        const plutusList = cw3.libs.CML.PlutusDataList.new()
 
         fields.forEach((field) => plutusList.add(serialize(field)))
 
-        return cw3.CML.PlutusData.new_constr_plutus_data(
-          cw3.CML.ConstrPlutusData.new(cw3.CML.BigInteger.from_str(index.toString()).as_u64()!, plutusList)
+        return cw3.libs.CML.PlutusData.new_constr_plutus_data(
+          cw3.libs.CML.ConstrPlutusData.new(cw3.libs.CML.BigInteger.from_str(index.toString()).as_u64()!, plutusList)
         )
       } else if (data instanceof Array) {
-        const plutusList = cw3.CML.PlutusDataList.new()
+        const plutusList = cw3.libs.CML.PlutusDataList.new()
 
         data.forEach((arg) => plutusList.add(serialize(arg)))
 
-        return cw3.CML.PlutusData.new_list(plutusList)
+        return cw3.libs.CML.PlutusData.new_list(plutusList)
       } else if (data instanceof Map) {
-        const plutusMap = cw3.CML.PlutusMap.new()
+        const plutusMap = cw3.libs.CML.PlutusMap.new()
 
         for (const [key, value] of data.entries()) {
           plutusMap.set(serialize(key), serialize(value))
         }
 
-        return cw3.CML.PlutusData.new_map(plutusMap)
+        return cw3.libs.CML.PlutusData.new_map(plutusMap)
       }
       throw new Error("Unsupported type")
     } catch (error) {
@@ -311,7 +311,7 @@ function from<T = Data>(cw3: L.CardanoWeb3, raw: Datum | Redeemer, type?: T): T 
     }
     throw new Error("Unsupported type")
   }
-  const data = deserialize(cw3.CML.PlutusData.from_cbor_hex(raw))
+  const data = deserialize(cw3.libs.CML.PlutusData.from_cbor_hex(raw))
 
   return type ? castFrom<T>(data, type) : (data as T)
 }

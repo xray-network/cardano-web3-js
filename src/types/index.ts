@@ -31,11 +31,9 @@ export type AccountExportV1 = {
 export type AccountState = {
   utxos: Utxo[]
   balance: Balance
-  delegation: string | null
-  rewards: bigint
 }
 export type AccountDelegation = {
-  delegation: string
+  delegation: string | null
   rewards: bigint
 }
 export type AccountAddressDerivation = {
@@ -60,22 +58,8 @@ export type Provider = {
   getScriptByHash(scriptHash: string): Promise<Script | undefined>
   getDelegation(stakingAddress: string): Promise<AccountDelegation>
   evaluateTx(tx: string): Promise<RedeemerCost[]>
-  observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
   submitTx(tx: string): Promise<string>
-  submitAndObserveTx(tx: string, checkInterval?: number, maxTime?: number): Promise<boolean>
-}
-
-/** Explorer types */
-import type KoiosClientInstance from "cardano-koios-client"
-import type NftcdnClientInstance from "cardano-nftcdn-client"
-import type PricingClientInstance from "cardano-pricing-client"
-export type KoiosClient = ReturnType<typeof KoiosClientInstance>
-export type NftcdnClient = ReturnType<typeof NftcdnClientInstance>
-export type PricingClient = ReturnType<typeof PricingClientInstance>
-export type Explorer = {
-  koios: KoiosClient
-  nftcdn: NftcdnClient
-  // pricing: PricingClient
+  observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
 }
 
 /** Connector types */

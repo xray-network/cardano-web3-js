@@ -70,13 +70,13 @@ export class TxBuilder {
         }
         this.collectInputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
         const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
-        const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
+        const inputBuilder = this.cw3.libs.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         switch (script.language) {
           case "Native":
             this.__txBuilder.add_input(
               inputBuilder.native_script(
-                this.cw3.CML.NativeScript.from_cbor_hex(script.script),
-                this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
+                this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script),
+                this.cw3.libs.CML.NativeScriptWitnessInfo.assume_signature_count()
               )
             )
             break
@@ -92,8 +92,8 @@ export class TxBuilder {
                   this.cw3.utils.script.scriptToPlutusScript(script),
                   redeemer
                 ),
-                this.cw3.CML.Ed25519KeyHashList.new(),
-                this.cw3.CML.PlutusData.from_cbor_hex(utxo.datum!)
+                this.cw3.libs.CML.Ed25519KeyHashList.new(),
+                this.cw3.libs.CML.PlutusData.from_cbor_hex(utxo.datum!)
               )
             )
             break
@@ -109,7 +109,7 @@ export class TxBuilder {
                   this.cw3.utils.script.scriptToPlutusScript(script),
                   redeemer
                 ),
-                this.cw3.CML.Ed25519KeyHashList.new()
+                this.cw3.libs.CML.Ed25519KeyHashList.new()
               )
             )
             break
@@ -131,7 +131,7 @@ export class TxBuilder {
       for (const utxo of utxos) {
         this.inputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
         const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
-        const inputBuilder = this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
+        const inputBuilder = this.cw3.libs.CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         this.__txBuilder.add_input(inputBuilder.payment_key())
       }
     })
@@ -259,7 +259,7 @@ export class TxBuilder {
       if (credential.type === "script") {
         throw new Error("Only key hash (not script) is allowed for required signer")
       }
-      this.__txBuilder.add_required_signer(this.cw3.CML.Ed25519KeyHash.from_hex(credential.hash))
+      this.__txBuilder.add_required_signer(this.cw3.libs.CML.Ed25519KeyHash.from_hex(credential.hash))
     })
     return this
   }
@@ -271,7 +271,7 @@ export class TxBuilder {
    */
   addRequiredSignerByKey = (keyHash: string) => {
     this.queue.push(() => {
-      this.__txBuilder.add_required_signer(this.cw3.CML.Ed25519KeyHash.from_hex(keyHash))
+      this.__txBuilder.add_required_signer(this.cw3.libs.CML.Ed25519KeyHash.from_hex(keyHash))
     })
     return this
   }
@@ -285,10 +285,10 @@ export class TxBuilder {
   addMint = (assets: T.Asset[], redeemer?: string) => {
     this.queue.push(async () => {
       const policyId = assets[0].policyId
-      const mintAssets = this.cw3.CML.MapAssetNameToNonZeroInt64.new()
+      const mintAssets = this.cw3.libs.CML.MapAssetNameToNonZeroInt64.new()
       for (const asset of assets) {
         if (asset.policyId !== policyId) throw new Error("All assets must have the same policyId")
-        mintAssets.insert(this.cw3.CML.AssetName.from_str(asset.assetName || ""), asset.quantity)
+        mintAssets.insert(this.cw3.libs.CML.AssetName.from_str(asset.assetName || ""), asset.quantity)
       }
       const script = this.scripts.get(policyId)
       if (!script) {
@@ -296,13 +296,13 @@ export class TxBuilder {
           "Script is required for addMint() method. Attach script with attachScript() or readFrom() method"
         )
       }
-      const mintBuilder = this.cw3.CML.SingleMintBuilder.new(mintAssets)
+      const mintBuilder = this.cw3.libs.CML.SingleMintBuilder.new(mintAssets)
       switch (script.language) {
         case "Native":
           this.__txBuilder.add_mint(
             mintBuilder.native_script(
-              this.cw3.CML.NativeScript.from_cbor_hex(script.script),
-              this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
+              this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script),
+              this.cw3.libs.CML.NativeScriptWitnessInfo.assume_signature_count()
             )
           )
           break
@@ -316,7 +316,7 @@ export class TxBuilder {
           this.__txBuilder.add_mint(
             mintBuilder.plutus_script(
               this.cw3.utils.script.partialPlutusWitness(this.cw3.utils.script.scriptToPlutusScript(script), redeemer),
-              this.cw3.CML.Ed25519KeyHashList.new()
+              this.cw3.libs.CML.Ed25519KeyHashList.new()
             )
           )
           break
@@ -335,10 +335,10 @@ export class TxBuilder {
    */
   addMetadataString = (label: number, metadata: T.Json) => {
     this.queue.push(async () => {
-      const metadatum = this.cw3.CML.TransactionMetadatum.new_text(JSON.stringify(metadata))
-      const metadataBuilder = this.cw3.CML.Metadata.new()
+      const metadatum = this.cw3.libs.CML.TransactionMetadatum.new_text(JSON.stringify(metadata))
+      const metadataBuilder = this.cw3.libs.CML.Metadata.new()
       metadataBuilder.set(BigInt(label), metadatum)
-      const aux = this.cw3.CML.AuxiliaryData.new()
+      const aux = this.cw3.libs.CML.AuxiliaryData.new()
       aux.add_metadata(metadataBuilder)
       this.__txBuilder.add_auxiliary_data(aux)
     })
@@ -354,10 +354,10 @@ export class TxBuilder {
    */
   addMetadataJson = (label: number, metadata: T.Json, conversion: 0 | 1 | 2 = 0) => {
     this.queue.push(async () => {
-      const metadatum = this.cw3.CML.encode_json_str_to_metadatum(JSON.stringify(metadata), conversion)
-      const metadataBuilder = this.cw3.CML.Metadata.new()
+      const metadatum = this.cw3.libs.CML.encode_json_str_to_metadatum(JSON.stringify(metadata), conversion)
+      const metadataBuilder = this.cw3.libs.CML.Metadata.new()
       metadataBuilder.set(BigInt(label), metadatum)
-      const aux = this.cw3.CML.AuxiliaryData.new()
+      const aux = this.cw3.libs.CML.AuxiliaryData.new()
       aux.add_metadata(metadataBuilder)
       this.__txBuilder.add_auxiliary_data(aux)
     })
@@ -376,8 +376,8 @@ export class TxBuilder {
     this.queue.push(async () => {
       const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
       if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
-      const withdrawBuilder = this.cw3.CML.SingleWithdrawalBuilder.new(
-        this.cw3.CML.RewardAddress.from_address(this.cw3.CML.Address.from_bech32(rewardAddress)),
+      const withdrawBuilder = this.cw3.libs.CML.SingleWithdrawalBuilder.new(
+        this.cw3.libs.CML.RewardAddress.from_address(this.cw3.libs.CML.Address.from_bech32(rewardAddress)),
         amount
       )
       switch (stakingCred.type) {
@@ -396,8 +396,8 @@ export class TxBuilder {
             case "Native":
               this.__txBuilder.add_withdrawal(
                 withdrawBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
-                  this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
+                  this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script),
+                  this.cw3.libs.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
             case "PlutusV1":
@@ -413,7 +413,7 @@ export class TxBuilder {
                     this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
-                  this.cw3.CML.Ed25519KeyHashList.new()
+                  this.cw3.libs.CML.Ed25519KeyHashList.new()
                 )
               )
               break
@@ -441,9 +441,9 @@ export class TxBuilder {
       if (!stakingCred) throw new Error("Invalid address for rewards delegation (no staking credential)")
       switch (stakingCred.type) {
         case "key": {
-          const credential = this.cw3.CML.Credential.new_pub_key(this.cw3.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
-            this.cw3.CML.Certificate.new_stake_delegation(credential, this.cw3.CML.Ed25519KeyHash.from_bech32(poolId))
+          const credential = this.cw3.libs.CML.Credential.new_pub_key(this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+          const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
+            this.cw3.libs.CML.Certificate.new_stake_delegation(credential, this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId))
           )
           this.__txBuilder.add_cert(certificateBuilder.payment_key())
           break
@@ -455,16 +455,16 @@ export class TxBuilder {
               "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
             )
           }
-          const credential = this.cw3.CML.Credential.new_script(this.cw3.CML.ScriptHash.from_hex(stakingCred.hash))
-          const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
-            this.cw3.CML.Certificate.new_stake_delegation(credential, this.cw3.CML.Ed25519KeyHash.from_bech32(poolId))
+          const credential = this.cw3.libs.CML.Credential.new_script(this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash))
+          const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
+            this.cw3.libs.CML.Certificate.new_stake_delegation(credential, this.cw3.libs.CML.Ed25519KeyHash.from_bech32(poolId))
           )
           switch (script.language) {
             case "Native":
               this.__txBuilder.add_cert(
                 certificateBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
-                  this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
+                  this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script),
+                  this.cw3.libs.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
             case "PlutusV1":
@@ -480,7 +480,7 @@ export class TxBuilder {
                     this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
-                  this.cw3.CML.Ed25519KeyHashList.new()
+                  this.cw3.libs.CML.Ed25519KeyHashList.new()
                 )
               )
               break
@@ -505,10 +505,10 @@ export class TxBuilder {
       if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
       const credential =
         stakingCred.type === "key"
-          ? this.cw3.CML.Credential.new_pub_key(this.cw3.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          : this.cw3.CML.Credential.new_script(this.cw3.CML.ScriptHash.from_hex(stakingCred.hash))
-      const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
-        this.cw3.CML.Certificate.new_stake_registration(credential)
+          ? this.cw3.libs.CML.Credential.new_pub_key(this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+          : this.cw3.libs.CML.Credential.new_script(this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash))
+      const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
+        this.cw3.libs.CML.Certificate.new_stake_registration(credential)
       )
       this.__txBuilder.add_cert(certificateBuilder.skip_witness())
     })
@@ -528,9 +528,9 @@ export class TxBuilder {
       if (!stakingCred) throw new Error("Invalid address for rewards deregistration (no staking credential)")
       switch (stakingCred.type) {
         case "key": {
-          const credential = this.cw3.CML.Credential.new_pub_key(this.cw3.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
-            this.cw3.CML.Certificate.new_stake_deregistration(credential)
+          const credential = this.cw3.libs.CML.Credential.new_pub_key(this.cw3.libs.CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+          const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
+            this.cw3.libs.CML.Certificate.new_stake_deregistration(credential)
           )
           this.__txBuilder.add_cert(certificateBuilder.payment_key())
           break
@@ -542,16 +542,16 @@ export class TxBuilder {
               "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
             )
           }
-          const credential = this.cw3.CML.Credential.new_script(this.cw3.CML.ScriptHash.from_hex(stakingCred.hash))
-          const certificateBuilder = this.cw3.CML.SingleCertificateBuilder.new(
-            this.cw3.CML.Certificate.new_stake_deregistration(credential)
+          const credential = this.cw3.libs.CML.Credential.new_script(this.cw3.libs.CML.ScriptHash.from_hex(stakingCred.hash))
+          const certificateBuilder = this.cw3.libs.CML.SingleCertificateBuilder.new(
+            this.cw3.libs.CML.Certificate.new_stake_deregistration(credential)
           )
           switch (script.language) {
             case "Native":
               this.__txBuilder.add_cert(
                 certificateBuilder.native_script(
-                  this.cw3.CML.NativeScript.from_cbor_hex(script.script),
-                  this.cw3.CML.NativeScriptWitnessInfo.assume_signature_count()
+                  this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script),
+                  this.cw3.libs.CML.NativeScriptWitnessInfo.assume_signature_count()
                 )
               )
             case "PlutusV1":
@@ -567,7 +567,7 @@ export class TxBuilder {
                     this.cw3.utils.script.scriptToPlutusScript(script),
                     redeemer
                   ),
-                  this.cw3.CML.Ed25519KeyHashList.new()
+                  this.cw3.libs.CML.Ed25519KeyHashList.new()
                 )
               )
               break
@@ -641,8 +641,8 @@ export class TxBuilder {
       // Set Network ID
       this.__txBuilder.set_network_id(
         this.cw3.__config.network.type === "mainnet"
-          ? this.cw3.CML.NetworkId.mainnet()
-          : this.cw3.CML.NetworkId.testnet()
+          ? this.cw3.libs.CML.NetworkId.mainnet()
+          : this.cw3.libs.CML.NetworkId.testnet()
       )
       // Set default TTL
       this.__txBuilder.set_ttl(BigInt(this.cw3.utils.time.unixTimeToSlot(Date.now() + TTL * 1000)))
@@ -657,8 +657,8 @@ export class TxBuilder {
     if (
       this.__txBuilder
         .build_for_evaluation(
-          this.cw3.CML.ChangeSelectionAlgo.Default,
-          this.cw3.CML.Address.from_bech32(this.changeAddress)
+          this.cw3.libs.CML.ChangeSelectionAlgo.Default,
+          this.cw3.libs.CML.Address.from_bech32(this.changeAddress)
         )
         .draft_tx()
         .witness_set()
@@ -669,14 +669,14 @@ export class TxBuilder {
       if (!collateral) throw new Error("Suitable collateral > 5 ADA not found")
       // Add Collateral
       this.__txBuilder.add_collateral(
-        this.cw3.CML.SingleInputBuilder.from_transaction_unspent_output(
+        this.cw3.libs.CML.SingleInputBuilder.from_transaction_unspent_output(
           this.cw3.utils.tx.utxoToCore(collateral)
         ).payment_key()
       )
       // Add Collateral Return
       this.__txBuilder.set_collateral_return(
-        this.cw3.CML.TransactionOutputBuilder.new()
-          .with_address(this.cw3.CML.Address.from_bech32(this.changeAddress))
+        this.cw3.libs.CML.TransactionOutputBuilder.new()
+          .with_address(this.cw3.libs.CML.Address.from_bech32(this.changeAddress))
           .next()
           .with_value(this.cw3.utils.tx.assetsToValue(collateral.value - BigInt(3_000_000), collateral.assets))
           .build()
@@ -690,8 +690,8 @@ export class TxBuilder {
     // Evaluate TX phase two execution cost and set ex_units
     const draftTx = this.__txBuilder
       .build_for_evaluation(
-        this.cw3.CML.ChangeSelectionAlgo.Default,
-        this.cw3.CML.Address.from_bech32(this.changeAddress)
+        this.cw3.libs.CML.ChangeSelectionAlgo.Default,
+        this.cw3.libs.CML.Address.from_bech32(this.changeAddress)
       )
       .draft_tx()
     const draftTxRedeemers = draftTx.witness_set().redeemers()
@@ -699,24 +699,24 @@ export class TxBuilder {
       if (!this.remoteTxEvaluate) {
         const costModels = this.cw3.utils.tx.createCostModels(this.protocolParams.costModels)
         const slotConfig = this.cw3.__config.slotConfig
-        const zeroRedeemers = this.cw3.CML.LegacyRedeemerList.new()
+        const zeroRedeemers = this.cw3.libs.CML.LegacyRedeemerList.new()
         for (let i = 0; i < draftTxRedeemers.as_arr_legacy_redeemer()!.len(); i++) {
           const redeemer = draftTxRedeemers.as_arr_legacy_redeemer()!.get(i)
-          const zeroRedeemer = this.cw3.CML.LegacyRedeemer.new(
+          const zeroRedeemer = this.cw3.libs.CML.LegacyRedeemer.new(
             redeemer.tag(),
             redeemer.index(),
             redeemer.data(),
-            this.cw3.CML.ExUnits.new(0n, 0n)
+            this.cw3.libs.CML.ExUnits.new(0n, 0n)
           )
           zeroRedeemers.add(zeroRedeemer)
         }
         const draftTxWitnesses = draftTx.witness_set()
-        draftTxWitnesses.set_redeemers(this.cw3.CML.Redeemers.new_arr_legacy_redeemer(zeroRedeemers))
-        const newTx = this.cw3.CML.Transaction.new(draftTx.body(), draftTxWitnesses, true, draftTx.auxiliary_data())
+        draftTxWitnesses.set_redeemers(this.cw3.libs.CML.Redeemers.new_arr_legacy_redeemer(zeroRedeemers))
+        const newTx = this.cw3.libs.CML.Transaction.new(draftTx.body(), draftTxWitnesses, true, draftTx.auxiliary_data())
         const allInputs = [...this.inputs.values(), ...this.readInputs.values(), ...this.collectInputs.values()]
         const inputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionInput(utxo).to_cbor_bytes())
         const outputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionOutput(utxo).to_cbor_bytes())
-        const uplcEvaluatedRedeemers = this.cw3.UPLC.eval_phase_two_raw(
+        const uplcEvaluatedRedeemers = this.cw3.libs.UPLC.eval_phase_two_raw(
           newTx.to_cbor_bytes(),
           inputs,
           outputs,
@@ -728,9 +728,9 @@ export class TxBuilder {
           slotConfig.slotDuration
         )
         for (const evaluatedRedeemer of uplcEvaluatedRedeemers) {
-          const redeemer = this.cw3.CML.LegacyRedeemer.from_cbor_bytes(evaluatedRedeemer)
-          const exUnits = this.cw3.CML.ExUnits.new(redeemer.ex_units().mem(), redeemer.ex_units().steps())
-          this.__txBuilder.set_exunits(this.cw3.CML.RedeemerWitnessKey.new(redeemer.tag(), redeemer.index()), exUnits)
+          const redeemer = this.cw3.libs.CML.LegacyRedeemer.from_cbor_bytes(evaluatedRedeemer)
+          const exUnits = this.cw3.libs.CML.ExUnits.new(redeemer.ex_units().mem(), redeemer.ex_units().steps())
+          this.__txBuilder.set_exunits(this.cw3.libs.CML.RedeemerWitnessKey.new(redeemer.tag(), redeemer.index()), exUnits)
         }
       } else {
         throw new Error("Remote TX evaluation is not supported yet")
@@ -738,7 +738,7 @@ export class TxBuilder {
     }
 
     // Final calculations
-    this.__txBuilder.add_change_if_needed(this.cw3.CML.Address.from_bech32(this.changeAddress), true)
+    this.__txBuilder.add_change_if_needed(this.cw3.libs.CML.Address.from_bech32(this.changeAddress), true)
 
     return this
   }
@@ -752,7 +752,7 @@ export class TxBuilder {
     return new TxFinalizer(
       this.cw3,
       this.__txBuilder
-        .build(this.cw3.CML.ChangeSelectionAlgo.Default, this.cw3.CML.Address.from_bech32(this.changeAddress))
+        .build(this.cw3.libs.CML.ChangeSelectionAlgo.Default, this.cw3.libs.CML.Address.from_bech32(this.changeAddress))
         .build_unchecked()
         .to_cbor_hex()
     )

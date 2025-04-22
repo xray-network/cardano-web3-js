@@ -1,4 +1,3 @@
-import KoiosClient, { KoiosTypes } from "cardano-koios-client"
 import { TTL } from "../../config"
 import * as T from "../../types"
 
@@ -6,7 +5,7 @@ export class KoiosProvider implements T.Provider {
   private client: T.KoiosClient
 
   constructor(baseUrl: string, headers?: T.Headers) {
-    this.client = KoiosClient(baseUrl, headers)
+    this.client = undefined
   }
 
   getTip = async (): Promise<T.Tip> => {
@@ -160,6 +159,23 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.evaluateTx")
   }
 
+  submitTx = async (tx: string): Promise<string> => {
+    const response = await this.client.POST("/submittx", {
+      parseAs: "text",
+      headers: {
+        "Content-Type": "application/cbor",
+      },
+      body: tx,
+    })
+    if (response.data) {
+      return response.data
+    }
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
+    }
+    throw new Error("Error: KoiosProvider.submitTx")
+  }
+
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
     const checkTx = async () => {
       const response = await this.client.POST("/tx_status", {
@@ -184,32 +200,6 @@ export class KoiosProvider implements T.Provider {
         return res(false)
       }, maxTime)
     })
-  }
-
-  submitTx = async (tx: string): Promise<string> => {
-    const response = await this.client.POST("/submittx", {
-      parseAs: "text",
-      headers: {
-        "Content-Type": "application/cbor",
-      },
-      body: tx,
-    })
-    if (response.data) {
-      return response.data
-    }
-    if (response.error) {
-      throw new Error(JSON.stringify(response.error))
-    }
-    throw new Error("Error: KoiosProvider.submitTx")
-  }
-
-  submitAndObserveTx = async (
-    tx: string,
-    checkInterval: number = 3000,
-    maxTime: number = TTL * 1000
-  ): Promise<boolean> => {
-    const txHash = await this.submitTx(tx)
-    return this.observeTx(txHash, checkInterval, maxTime)
   }
 }
 

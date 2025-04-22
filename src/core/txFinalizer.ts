@@ -9,8 +9,8 @@ export class TxFinalizer {
 
   constructor(cw3: L.CardanoWeb3, tx: string) {
     this.cw3 = cw3
-    this.__tx = this.cw3.CML.Transaction.from_cbor_hex(tx)
-    this.__witnessBuilder = this.cw3.CML.TransactionWitnessSetBuilder.new()
+    this.__tx = this.cw3.libs.CML.Transaction.from_cbor_hex(tx)
+    this.__witnessBuilder = this.cw3.libs.CML.TransactionWitnessSetBuilder.new()
   }
 
   /**
@@ -20,9 +20,9 @@ export class TxFinalizer {
    */
   signWithVrfKey = (verificationKey: string) => {
     this.queue.push(async () => {
-      const vkey = this.cw3.CML.PrivateKey.from_bech32(verificationKey)
+      const vkey = this.cw3.libs.CML.PrivateKey.from_bech32(verificationKey)
       this.__witnessBuilder.add_vkey(
-        this.cw3.CML.make_vkey_witness(this.cw3.CML.hash_transaction(this.__tx.body()), vkey)
+        this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), vkey)
       )
     })
     return this
@@ -34,44 +34,44 @@ export class TxFinalizer {
    * @param password Password to decode xprv key (optional)
    * @returns TxFinalizer instance
    */
-  signWithAccount = (account: L.Account, password?: string) => {
+  signWithAccount = (account: L.Account, utxos: T.Utxo[], password?: string) => {
     this.queue.push(async () => {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)
           throw new Error("Password is required to sign with xprv encoded account")
-        const xprvKey = account.__config.xprvKeyIsEncoded ? account.decodeXprvKey(password) : account.__config.xprvKey
+        const xprvKey = account.__config.xprvKeyIsEncoded ? account.getDecodedXprvKey(password) : account.__config.xprvKey
 
         const paymentVerificationKey = this.cw3.utils.keys.xprvToVrfKey(
           xprvKey,
           account.__config.accountPath,
           account.__config.addressPath
         )
-        const paymentKey = this.cw3.CML.PrivateKey.from_bech32(paymentVerificationKey)
+        const paymentKey = this.cw3.libs.CML.PrivateKey.from_bech32(paymentVerificationKey)
         const paymentKeyHash = paymentKey.to_public().hash().to_hex()
 
         const stakingVerificationKey = this.cw3.utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, [2, 0])
-        const stakingKey = this.cw3.CML.PrivateKey.from_bech32(stakingVerificationKey)
+        const stakingKey = this.cw3.libs.CML.PrivateKey.from_bech32(stakingVerificationKey)
         const stakingKeyHash = stakingKey.to_public().hash().to_hex()
 
         const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
           this.__tx,
           [stakingKeyHash, paymentKeyHash],
-          account.__state.utxos
+          utxos,
         )
         if (foundHashes.includes(paymentKeyHash)) {
           this.__witnessBuilder.add_vkey(
-            this.cw3.CML.make_vkey_witness(this.cw3.CML.hash_transaction(this.__tx.body()), paymentKey)
+            this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), paymentKey)
           )
         }
         if (foundHashes.includes(stakingKeyHash)) {
           this.__witnessBuilder.add_vkey(
-            this.cw3.CML.make_vkey_witness(this.cw3.CML.hash_transaction(this.__tx.body()), stakingKey)
+            this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), stakingKey)
           )
         }
       }
       if (account.__config.type === "connector") {
         const witnessSetHex = await account.__config.connector.signTx(this.__tx.to_cbor_hex())
-        const witnessSet = this.cw3.CML.TransactionWitnessSet.from_cbor_hex(witnessSetHex)
+        const witnessSet = this.cw3.libs.CML.TransactionWitnessSet.from_cbor_hex(witnessSetHex)
         this.__witnessBuilder.add_existing(witnessSet)
       }
       if (account.__config.type === "ledger") {
@@ -102,7 +102,7 @@ export class TxFinalizer {
     }
 
     // Rebuild finalized TX
-    this.__tx = this.cw3.CML.Transaction.new(
+    this.__tx = this.cw3.libs.CML.Transaction.new(
       this.__tx.body(),
       this.__witnessBuilder.build(),
       true,
@@ -120,7 +120,7 @@ export class TxFinalizer {
     await this.apply()
     return {
       tx: this.__tx.to_cbor_hex(),
-      hash: this.cw3.CML.hash_transaction(this.__tx.body()).to_hex(),
+      hash: this.cw3.libs.CML.hash_transaction(this.__tx.body()).to_hex(),
       json: this.__tx.to_js_value(),
     }
   }
@@ -132,16 +132,5 @@ export class TxFinalizer {
   applyAndSubmit = async () => {
     await this.apply()
     return await this.cw3.provider.submitTx(this.__tx.to_cbor_hex())
-  }
-
-  /**
-   * Apply all methods and submit TX with observing
-   * @param checkInterval Check interval in ms
-   * @param maxTime Max time to wait in ms
-   * @returns Transaction status (boolean)
-   */
-  applyAndSubmitAndObserve = async (checkInterval: number = 3000, maxTime: number) => {
-    await this.apply()
-    return await this.cw3.provider.submitAndObserveTx(this.__tx.to_cbor_hex(), checkInterval, maxTime)
   }
 }
