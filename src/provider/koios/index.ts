@@ -9,9 +9,9 @@ export class KoiosProvider implements T.Provider {
   constructor(baseUrl: string, headers?: T.Headers) {
     this.baseUrl = baseUrl
     this.headers = {
-      ...headers,
       Accept: "application/json",
       "Content-Type": "application/json",
+      ...headers,
     }
   }
 
@@ -84,15 +84,18 @@ export class KoiosProvider implements T.Provider {
   }
 
   getUtxoByOutputRef = async (txHash: string, index: number): Promise<T.Utxo> => {
-    // const response = await this.client.POST("/utxo_info", {
-    //   body: {
-    //     _utxo_refs: [`${txHash}#${index}`],
-    //     _extended: true,
-    //   },
-    // })
-    // if (response.data) {
-    //   return koiosUtxoToUtxo(response.data[0])
-    // }
+    const response = await fetch(`${this.baseUrl}/utxo_info`, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({
+        _utxo_refs: [`${txHash}#${index}`],
+        _extended: true,
+      }),
+    })
+    if (response.ok) {
+      const data = (await response.json()) as any // TODO TYPES
+      return koiosUtxoToUtxo(data[0])
+    }
     throw new Error("Error: KoiosProvider.getUtxoByTxRef")
   }
 
@@ -113,108 +116,130 @@ export class KoiosProvider implements T.Provider {
   }
 
   getDatumByHash = async (datumHash: string): Promise<string | undefined> => {
-    // const response = await this.client.POST("/datum_info", {
-    //   body: {
-    //     _datum_hashes: [datumHash],
-    //   },
-    // })
-    // if (response.data) {
-    //   return response.data[0]?.bytes
-    // }
+    const response = await fetch(`${this.baseUrl}/datum_info`, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({
+        _datum_hashes: [datumHash],
+      }),
+    })
+    if (response.ok) {
+      const data = (await response.json()) as any // TODO TYPES
+      return data[0]?.bytes
+    }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
   getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
-    // const response = await this.client.POST("/script_info", {
-    //   body: {
-    //     _script_hashes: [scriptHash],
-    //   },
-    // })
-    // if (response.data) {
-    //   return {
-    //     language: koiosPlutusVersionToPlutusVersion(response.data[0]?.type),
-    //     script: response.data[0]?.bytes,
-    //   }
-    // }
+    const response = await fetch(`${this.baseUrl}/script_info`, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({
+        _script_hashes: [scriptHash],
+      }),
+    })
+    if (response.ok) {
+      const data = (await response.json()) as any // TODO TYPES
+      console.log(data)
+      return {
+        language: koiosPlutusVersionToPlutusVersion(data[0]?.type),
+        script: data[0]?.bytes,
+      }
+    }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
   getDelegation = async (stakingAddress: string): Promise<T.AccountDelegation> => {
-    // const response = await this.client.POST("/account_info", {
-    //   body: {
-    //     _stake_addresses: [stakingAddress],
-    //   },
-    // })
-    // if (response.data) {
-    //   const delegation = response.data[0]
-    //   return {
-    //     delegation: delegation?.delegated_pool,
-    //     rewards: BigInt(delegation?.rewards_available || 0),
-    //   }
-    // }
+    const response = await fetch(`${this.baseUrl}/account_info`, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({
+        _stake_addresses: [stakingAddress],
+      }),
+    })
+    if (response.ok) {
+      const data = (await response.json()) as any // TODO TYPES
+      const delegation = data[0]
+      return {
+        delegation: delegation?.delegated_pool,
+        rewards: BigInt(delegation?.rewards_available || 0),
+      }
+    }
     throw new Error("Error: KoiosProvider.getDelegation")
   }
 
-  evaluateTx = async (tx: string): Promise<T.RedeemerCost[]> => {
-    // const response = await this.client.POST("/ogmios", {
-    //   headers: {
-    //     "Content-Type": "application/cbor",
-    //   },
-    //   body: {
-    //     jsonrpc: "2.0",
-    //     method: "evaluateTransaction",
-    //     params: { transaction: { cbor: tx } },
-    //   },
-    // })
-    // if (response.data) {
-    //   return (response.data?.result as T.RedeemerCost[]) || []
-    // }
+  evaluateTx = async (tx: string, additionalUtxos?: T.Utxo[]): Promise<T.RedeemerCost[]> => {
+    const response = await fetch(`${this.baseUrl}/ogmios`, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evaluateTransaction",
+        params: {
+          transaction: { cbor: tx },
+          // additionalUtxoSet: [] TODO
+        },
+      }),
+    })
+    if (response.ok) {
+      const data = (await response.json()) as any // TODO TYPES
+      console.log(data)
+      return (data?.result as T.RedeemerCost[]) || []
+    }
+    if (!response.ok) {
+      throw new Error(await response.json())
+    }
+    
     throw new Error("Error: KoiosProvider.evaluateTx")
   }
 
   submitTx = async (tx: string): Promise<string> => {
-    // const response = await this.client.POST("/submittx", {
-    //   parseAs: "text",
-    //   headers: {
-    //     "Content-Type": "application/cbor",
-    //   },
-    //   body: tx,
-    // })
-    // if (response.data) {
-    //   return response.data
-    // }
-    // if (response.error) {
-    //   throw new Error(JSON.stringify(response.error))
-    // }
+    console.log(`${this.baseUrl}/submittx`)
+    const response = await fetch(`${this.baseUrl}/submittx`, {
+      headers: {
+        ...this.headers,
+        "Content-Type": "application/cbor",
+      },
+      method: "POST",
+      body: JSON.stringify(tx),
+    })
+    if (response.ok) {
+      return await response.text()
+    } 
+    if (!response.ok) {
+      throw new Error(await response.text())
+    }
     throw new Error("Error: KoiosProvider.submitTx")
   }
 
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
-    // const checkTx = async () => {
-    //   const response = await this.client.POST("/tx_status", {
-    //     body: {
-    //       _tx_hashes: [txHash],
-    //     },
-    //   })
-    //   return response.data && response.data[0].num_confirmations > 0
-    // }
-    // return new Promise(async (res) => {
-    //   const resolve = await checkTx()
-    //   if (resolve) return res(true)
-    //   const confirm = setInterval(async () => {
-    //     const resolve = await checkTx()
-    //     if (resolve) {
-    //       clearInterval(confirm)
-    //       return res(true)
-    //     }
-    //   }, checkInterval)
-    //   setTimeout(() => {
-    //     clearInterval(confirm)
-    //     return res(false)
-    //   }, maxTime)
-    // })
+    const checkTx = async () => {
+      const response = await fetch(`${this.baseUrl}/tx_status`, {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify({
+          _tx_hashes: [txHash],
+        }),
+      })
+      const data = await response.json() as any // TODO TYPES
+      return data?.[0]?.num_confirmations > 0
+    }
+    return new Promise(async (res) => {
+      const resolve = await checkTx()
+      if (resolve) return res(true)
+      const confirm = setInterval(async () => {
+        const resolve = await checkTx()
+        if (resolve) {
+          clearInterval(confirm)
+          return res(true)
+        }
+      }, checkInterval)
+      setTimeout(() => {
+        clearInterval(confirm)
+        return res(false)
+      }, maxTime)
+    })
 
-    return true as any
   }
 }
 

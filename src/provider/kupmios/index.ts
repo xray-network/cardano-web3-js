@@ -154,14 +154,17 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getDelegation")
   }
 
-  evaluateTx = async (tx: string): Promise<T.RedeemerCost[]> => {
+  evaluateTx = async (tx: string, additionalUtxos?: T.Utxo[]): Promise<T.RedeemerCost[]> => {
     const response = await fetch(`${this.ogmiosUrl}`, {
       method: "POST",
       headers: this.ogmiosHeaders,
       body: JSON.stringify({
         jsonrpc: "2.0",
         method: "evaluateTransaction",
-        params: { transaction: { cbor: tx } },
+        params: {
+          transaction: { cbor: tx },
+          // additionalUtxoSet: [] TODO
+        },
       }),
     })
     if (response.ok) {

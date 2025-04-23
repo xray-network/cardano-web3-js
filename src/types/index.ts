@@ -57,7 +57,7 @@ export type Provider = {
   getDatumByHash(datumHash: string): Promise<string | undefined>
   getScriptByHash(scriptHash: string): Promise<Script | undefined>
   getDelegation(stakingAddress: string): Promise<AccountDelegation>
-  evaluateTx(tx: string): Promise<RedeemerCost[]>
+  evaluateTx(tx: string, additionalUtxos?: Utxo[]): Promise<RedeemerCost[]>
   submitTx(tx: string): Promise<string>
   observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
 }
