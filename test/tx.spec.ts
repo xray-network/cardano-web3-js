@@ -9,7 +9,9 @@ describe("TX", async () => {
   const account = web3.account.fromXprvKey(testData.xprvKey)
   const changeAddress = account.__config.paymentAddress
   const stakingAddress = account.__config.stakingAddress
-  await account.getAndUpdateState()
+  const accountState = await account.getState()
+  const accountUtxos = accountState.utxos
+  const accountBalance = accountState.balance
   const alwaysSucceedScript: T.Script = {
     language: "PlutusV2",
     script: "480100002221200101",
@@ -33,11 +35,11 @@ describe("TX", async () => {
           // ]
         },
       ])
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .applyAndBuild()
 
     const tx_signed = await tx_build
-      .signWithAccount(account)
+      .signWithAccount(account, accountUtxos)
       // .signWithVrfKey(testData.paymentAddressVerificationKey) // or with payment address verification key
       .applyAndToJson()
     // console.log(tx_signed)
@@ -51,13 +53,13 @@ describe("TX", async () => {
   })
 
   it("Pay to address with data", async () => {
-    const MyDatumSchema = web3.Data.Object({
-      myVariableA: web3.Data.Bytes(),
-      myVariableB: web3.Data.Nullable(web3.Data.Integer()),
+    const MyDatumSchema = web3.libs.PlutusData.Object({
+      myVariableA: web3.libs.PlutusData.Bytes(),
+      myVariableB: web3.libs.PlutusData.Nullable(web3.libs.PlutusData.Integer()),
     })
     type MyDatum = Data.Static<typeof MyDatumSchema>
     const MyDatum = MyDatumSchema as unknown as MyDatum
-    const datum = web3.Data.to(
+    const datum = web3.libs.PlutusData.to(
       {
         myVariableA: "313131",
         myVariableB: 5555n,
@@ -81,11 +83,11 @@ describe("TX", async () => {
           datum: datum,
         }
       )
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .applyAndBuild()
 
     const tx_signed = await tx_build
-      .signWithAccount(account)
+      .signWithAccount(account, accountUtxos)
       // .signWithVrfKey(testData.paymentAddressVerificationKey) // or with payment address verification key
       .applyAndToJson()
     // console.log(tx_signed)
@@ -99,13 +101,13 @@ describe("TX", async () => {
   })
 
   it("Deposit to contract", async () => {
-    const datum = web3.Data.void()
+    const datum = web3.libs.PlutusData.void()
     const scriptAddress = web3.utils.script.scriptToAddress(alwaysSucceedScript)
 
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .payToContract(
         {
           address: scriptAddress,
@@ -118,7 +120,7 @@ describe("TX", async () => {
       )
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -134,18 +136,18 @@ describe("TX", async () => {
     const utxos = await web3.provider.getUtxosByAddress(scriptAddress)
     const utxoRef = utxos.find((utxo) => utxo.scriptHash)
     const utxoToCollect = utxos.find((utxo) => utxo.datumType === "inline" && !utxo.scriptHash)
-    const emptyRedeemer = web3.Data.void()
+    const emptyRedeemer = web3.libs.PlutusData.void()
 
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .attachScript(alwaysSucceedScript) // not nedeed, if the script is loaded from readFrom UTXO
       .readFrom([utxoRef!])
       .collectFrom([utxoToCollect!], emptyRedeemer)
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -172,7 +174,7 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress) // will be sent to this address, or addInputs() with newly minted token
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .attachScript(script)
       .addMetadataJson(
         721, // NFT label
@@ -190,7 +192,7 @@ describe("TX", async () => {
       ])
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -217,7 +219,7 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress) // will be sent to this address, or addInputs() with newly minted token
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .attachScript(script)
       .addMint([
         {
@@ -228,7 +230,7 @@ describe("TX", async () => {
       ])
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -243,12 +245,12 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .registerStake(stakingAddress!)
       // .delegateTo("pool1pn9sffcqqzkx70m0gujks4h3wf8p4y706t2f0cjcyreekg83wtf") // you can also use delegate stake in one TX
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -263,11 +265,11 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .delegateTo(stakingAddress!, "pool1pn9sffcqqzkx70m0gujks4h3wf8p4y706t2f0cjcyreekg83wtf")
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -282,11 +284,11 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .withdrawRewards(stakingAddress!, 0n) // 0n for testing, you must use exact amount of existing rewards to withdraw
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build
@@ -301,11 +303,11 @@ describe("TX", async () => {
     const tx_build = await web3
       .createTx()
       .setChangeAddress(changeAddress)
-      .addInputs(account.__state.utxos)
+      .addInputs(accountUtxos)
       .deregisterStake(stakingAddress!)
       .applyAndBuild()
 
-    const tx_signed = await tx_build.signWithAccount(account).applyAndToJson()
+    const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
     // console.log(tx_signed)
 
     // const submitted_hash = await tx_build

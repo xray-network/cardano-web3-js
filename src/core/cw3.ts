@@ -10,7 +10,9 @@ import {
   SLOT_CONFIG_NETWORK,
   TTL,
 } from "../config"
-import { KoiosProvider } from "../provider/koios"
+import { KoiosProvider } from "../providers/koios"
+import KoiosExplorer from "../explorers/koios"
+import NftcdnExplorer from "../explorers/nftcdn"
 import { Data, Constr } from "../utils/data"
 import { Message } from "../utils/message"
 import * as T from "../types"
@@ -30,6 +32,7 @@ export class CardanoWeb3 {
     PlutusConstr: typeof Constr // Lucid Plutus Data Construction Lib */
     Message: ReturnType<typeof Message> // Message Signing/Verification Lib
   }
+  explorers: T.Explorers
   provider: T.Provider
   utils: Utils
   __config: {
@@ -55,6 +58,16 @@ export class CardanoWeb3 {
       PlutusData: Data(cw3),
       PlutusConstr: Constr,
       Message: Message(cw3),
+    }
+    cw3.explorers = {
+      koios: KoiosExplorer(
+        config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
+        config?.explorer?.koios?.headers
+      ),
+      nftcdn: NftcdnExplorer(
+        config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/nftcdn/${network}/api/v1`,
+        config?.explorer?.nftcdn?.headers
+      ),
     }
     cw3.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     cw3.utils = new Utils(cw3)

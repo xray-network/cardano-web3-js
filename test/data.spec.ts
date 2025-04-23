@@ -3,8 +3,8 @@ import { CardanoWeb3, Data } from "../src"
 
 describe("Data", async () => {
   const web3 = await CardanoWeb3.init()
-  const Data = web3.Data
-  const Constr = web3.Constr
+  const Data = web3.libs.PlutusData
+  const Constr = web3.libs.PlutusConstr
   const {
     script: { applyParamsToScript },
   } = web3.utils

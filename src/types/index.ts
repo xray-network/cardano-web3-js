@@ -62,6 +62,16 @@ export type Provider = {
   observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
 }
 
+/** Explorer types */
+import type KoiosClientInstance from "cardano-koios-client"
+import type NftcdnClientInstance from "cardano-nftcdn-client"
+export type KoiosClient = ReturnType<typeof KoiosClientInstance>
+export type NftcdnClient = ReturnType<typeof NftcdnClientInstance>
+export type Explorers = {
+  koios: KoiosClient
+  nftcdn: NftcdnClient
+}
+
 /** Connector types */
 import type { Connector } from "./links"
 export type ConnectorPaginate = {

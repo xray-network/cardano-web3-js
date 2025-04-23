@@ -1,46 +1,41 @@
+import KoiosClient, { KoiosTypes } from "cardano-koios-client"
 import { TTL } from "../../config"
 import * as T from "../../types"
-import * as KoiosProviderTypes from "./types"
 
 export class KoiosProvider implements T.Provider {
-  private baseUrl: string
-  private headers: T.Headers
+  private client: T.KoiosClient
 
   constructor(baseUrl: string, headers?: T.Headers) {
-    this.baseUrl = baseUrl
-    this.headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      ...headers,
-    }
+    this.client = KoiosClient(baseUrl, headers)
   }
 
   getTip = async (): Promise<T.Tip> => {
-    const response = await fetch(`${this.baseUrl}/tip`, {
-      headers: this.headers,
-    })
-    if (response.ok) {
-      const data = (await response.json())[0] as any
+    const response = await this.client.GET("/tip", {})
+    const tip = response.data?.[0]
+    if (tip) {
       return {
-        hash: data.hash,
-        epochNo: data.epoch_no,
-        absSlot: data.abs_slot,
-        epochSlot: data.epoch_slot,
-        blockNo: data.block_no,
-        blockTime: data.block_time,
+        hash: tip.hash,
+        epochNo: tip.epoch_no,
+        absSlot: tip.abs_slot,
+        epochSlot: tip.epoch_slot,
+        blockNo: tip.block_no,
+        blockTime: tip.block_time,
       }
     }
     throw new Error("Error: KoiosProvider.getTip")
   }
 
   getProtocolParameters = async (): Promise<T.ProtocolParameters> => {
-    const response = await fetch(`${this.baseUrl}/epoch_params?limit=1`, {
-      headers: this.headers,
-      method: "POST",
+    const response = await this.client.GET("/epoch_params", {
+      params: {
+        query: {
+          _epoch_no: undefined,
+          limit: "1",
+        },
+      },
     })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      return koiosProtocolParamsToProtocolParams(data[0])
+    if (response.data) {
+      return koiosProtocolParamsToProtocolParams(response.data[0])
     }
     throw new Error("Error: KoiosProvider.getProtocolParameters")
   }
@@ -50,23 +45,16 @@ export class KoiosProvider implements T.Provider {
       const utxos: T.Utxo[] = []
       let hasMore = true
       while (hasMore) {
-        const response = await fetch(`${this.baseUrl}/address_utxos`, {
-          headers: this.headers,
-          method: "POST",
-          body: JSON.stringify({
+        const response = await this.client.POST("/address_utxos", {
+          body: {
             _addresses: addresses,
             _extended: true,
-          }),
+          },
         })
-        if (response.ok) {
-          const data = (await response.json()) as any // TODO TYPES
-          if (data.length > 0) {
-            utxos.push(...koiosUtxosToUtxos(data))
-            // Koios default response limit = 1000
-            if (data.length < 1000) {
-              hasMore = false
-            }
-          } else {
+        if (response.data && response.data.length > 0) {
+          utxos.push(...koiosUtxosToUtxos(response.data))
+          // Koios default limit
+          if (response.data.length < 1000) {
             hasMore = false
           }
         } else {
@@ -84,17 +72,14 @@ export class KoiosProvider implements T.Provider {
   }
 
   getUtxoByOutputRef = async (txHash: string, index: number): Promise<T.Utxo> => {
-    const response = await fetch(`${this.baseUrl}/utxo_info`, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({
+    const response = await this.client.POST("/utxo_info", {
+      body: {
         _utxo_refs: [`${txHash}#${index}`],
         _extended: true,
-      }),
+      },
     })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      return koiosUtxoToUtxo(data[0])
+    if (response.data) {
+      return koiosUtxoToUtxo(response.data[0])
     }
     throw new Error("Error: KoiosProvider.getUtxoByTxRef")
   }
@@ -116,50 +101,40 @@ export class KoiosProvider implements T.Provider {
   }
 
   getDatumByHash = async (datumHash: string): Promise<string | undefined> => {
-    const response = await fetch(`${this.baseUrl}/datum_info`, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({
+    const response = await this.client.POST("/datum_info", {
+      body: {
         _datum_hashes: [datumHash],
-      }),
+      },
     })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      return data[0]?.bytes
+    if (response.data) {
+      return response.data[0]?.bytes
     }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
   getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
-    const response = await fetch(`${this.baseUrl}/script_info`, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({
+    const response = await this.client.POST("/script_info", {
+      body: {
         _script_hashes: [scriptHash],
-      }),
+      },
     })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      console.log(data)
+    if (response.data) {
       return {
-        language: koiosPlutusVersionToPlutusVersion(data[0]?.type),
-        script: data[0]?.bytes,
+        language: koiosPlutusVersionToPlutusVersion(response.data[0]?.type),
+        script: response.data[0]?.bytes,
       }
     }
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
   getDelegation = async (stakingAddress: string): Promise<T.AccountDelegation> => {
-    const response = await fetch(`${this.baseUrl}/account_info`, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({
+    const response = await this.client.POST("/account_info", {
+      body: {
         _stake_addresses: [stakingAddress],
-      }),
+      },
     })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      const delegation = data[0]
+    if (response.data) {
+      const delegation = response.data[0]
       return {
         delegation: delegation?.delegated_pool,
         rewards: BigInt(delegation?.rewards_available || 0),
@@ -169,60 +144,37 @@ export class KoiosProvider implements T.Provider {
   }
 
   evaluateTx = async (tx: string, additionalUtxos?: T.Utxo[]): Promise<T.RedeemerCost[]> => {
-    const response = await fetch(`${this.baseUrl}/ogmios`, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({
+    const response = await this.client.POST("/ogmios", {
+      parseAs: "text",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
         jsonrpc: "2.0",
         method: "evaluateTransaction",
         params: {
           transaction: { cbor: tx },
           // additionalUtxoSet: [] TODO
-        },
-      }),
-    })
-    if (response.ok) {
-      const data = (await response.json()) as any // TODO TYPES
-      console.log(data)
-      return (data?.result as T.RedeemerCost[]) || []
-    }
-    if (!response.ok) {
-      throw new Error(await response.json())
-    }
-    
-    throw new Error("Error: KoiosProvider.evaluateTx")
-  }
-
-  submitTx = async (tx: string): Promise<string> => {
-    console.log(`${this.baseUrl}/submittx`)
-    const response = await fetch(`${this.baseUrl}/submittx`, {
-      headers: {
-        ...this.headers,
-        "Content-Type": "application/cbor",
+        } as any,
       },
-      method: "POST",
-      body: JSON.stringify(tx),
     })
-    if (response.ok) {
-      return await response.text()
-    } 
-    if (!response.ok) {
-      throw new Error(await response.text())
+    if (response.data) {
+      return (response.data?.result as T.RedeemerCost[]) || []
     }
-    throw new Error("Error: KoiosProvider.submitTx")
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
+    }
+    throw new Error("Error: KoiosProvider.evaluateTx")
   }
 
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
     const checkTx = async () => {
-      const response = await fetch(`${this.baseUrl}/tx_status`, {
-        method: "POST",
-        headers: this.headers,
-        body: JSON.stringify({
+      const response = await this.client.POST("/tx_status", {
+        body: {
           _tx_hashes: [txHash],
-        }),
+        },
       })
-      const data = await response.json() as any // TODO TYPES
-      return data?.[0]?.num_confirmations > 0
+      return response.data && response.data[0].num_confirmations > 0
     }
     return new Promise(async (res) => {
       const resolve = await checkTx()
@@ -239,11 +191,36 @@ export class KoiosProvider implements T.Provider {
         return res(false)
       }, maxTime)
     })
+  }
 
+  submitTx = async (tx: string): Promise<string> => {
+    const response = await this.client.POST("/submittx", {
+      parseAs: "text",
+      headers: {
+        "Content-Type": "application/cbor",
+      },
+      body: tx,
+    })
+    if (response.data) {
+      return response.data
+    }
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
+    }
+    throw new Error("Error: KoiosProvider.submitTx")
+  }
+
+  submitAndObserveTx = async (
+    tx: string,
+    checkInterval: number = 3000,
+    maxTime: number = TTL * 1000
+  ): Promise<boolean> => {
+    const txHash = await this.submitTx(tx)
+    return this.observeTx(txHash, checkInterval, maxTime)
   }
 }
 
-const koiosUtxoToUtxo = (utxo: KoiosProviderTypes.Utxo): T.Utxo => {
+const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][number]): T.Utxo => {
   return {
     transaction: {
       id: utxo.tx_hash,
@@ -260,11 +237,13 @@ const koiosUtxoToUtxo = (utxo: KoiosProviderTypes.Utxo): T.Utxo => {
   }
 }
 
-const koiosUtxosToUtxos = (utxos: KoiosProviderTypes.Utxo[]): T.Utxo[] => {
+const koiosUtxosToUtxos = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]): T.Utxo[] => {
   return utxos.map((utxo) => koiosUtxoToUtxo(utxo))
 }
 
-const koiosAssetsToAssets = (assets: KoiosProviderTypes.Utxo["asset_list"]): T.Asset[] => {
+const koiosAssetsToAssets = (
+  assets: KoiosTypes.components["schemas"]["utxo_infos"][number]["asset_list"]
+): T.Asset[] => {
   return assets.map((asset): T.Asset => {
     return {
       policyId: asset.policy_id,
@@ -292,7 +271,7 @@ const koiosPlutusVersionToPlutusVersion = (plutusVersion: string) => {
   }
 }
 
-const koiosProtocolParamsToProtocolParams = (pp: any): T.ProtocolParameters => {
+const koiosProtocolParamsToProtocolParams = (pp: KoiosTypes.components["schemas"]["epoch_params"][number]) => {
   return {
     minFeeA: pp.min_fee_a,
     minFeeB: pp.min_fee_b,
@@ -307,7 +286,7 @@ const koiosProtocolParamsToProtocolParams = (pp: any): T.ProtocolParameters => {
     coinsPerUtxoByte: BigInt(pp.coins_per_utxo_size),
     collateralPercentage: pp.collateral_percent,
     maxCollateralInputs: pp.max_collateral_inputs,
-    minFeeRefScriptCostPerByte: pp.min_fee_ref_script_cost_per_byte,
+    minFeeRefScriptCostPerByte: 15, // TODO
     costModels: pp.cost_models as any,
   }
 }

@@ -591,6 +591,20 @@ cac@^6.7.12, cac@^6.7.14:
   resolved "https://registry.yarnpkg.com/cac/-/cac-6.7.14.tgz#804e1e6f506ee363cb0e3ccbb09cad5dd9870959"
   integrity sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==
 
+cardano-koios-client@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/cardano-koios-client/-/cardano-koios-client-1.0.7.tgz#124276df2cd1325785ab2fa91e8f9e948bb37215"
+  integrity sha512-rjN2432302m1HnYJ6leU5c2w6FOn9v/PFUIwp8FR1gJ3WUMvW/OQ8Od5u+zDFDTwge2FeLMFz/HVrgwL5Jce3w==
+  dependencies:
+    openapi-fetch "^0.13.3"
+
+cardano-nftcdn-client@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/cardano-nftcdn-client/-/cardano-nftcdn-client-1.0.6.tgz#6c8b25c48a211bb2d6f4e396ebc973d7596f3ae5"
+  integrity sha512-yTZy3oubS68TlHNqI9F2huwT/w3wC9cGKdMzeNKYAL4GkJzF+Dfz1IvuDHzOD7dM94aFQq0Nkaulcm/SYslaNg==
+  dependencies:
+    openapi-fetch "^0.13.3"
+
 chai@^4.3.10:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.4.1.tgz#3603fa6eba35425b0f2ac91a009fe924106e50d1"
@@ -1271,6 +1285,18 @@ onetime@^6.0.0:
   integrity sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==
   dependencies:
     mimic-fn "^4.0.0"
+
+openapi-fetch@^0.13.3:
+  version "0.13.5"
+  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.13.5.tgz#805606860d85b8ba8c2e7cb36ea30b473d8065d9"
+  integrity sha512-AQK8T9GSKFREFlN1DBXTYsLjs7YV2tZcJ7zUWxbjMoQmj8dDSFRrzhLCbHPZWA1TMV3vACqfCxLEZcwf2wxV6Q==
+  dependencies:
+    openapi-typescript-helpers "^0.0.15"
+
+openapi-typescript-helpers@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
+  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
 
 p-limit@^5.0.0:
   version "5.0.0"

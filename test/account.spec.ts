@@ -24,7 +24,7 @@ describe("Account", async () => {
 
   it("EncodeXprvKey", async () => {
     const account = web3.account.fromXprvKey(testData.xprvKey)
-    account.encodeAndUpdateXprvKey("password123")
-    expect(account.__config.xprvKey).length(450)
+    const encodedXprvKey = account.getEncodedXprvKey("password123")
+    expect(encodedXprvKey).length(450)
   })
 })
