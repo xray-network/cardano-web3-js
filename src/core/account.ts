@@ -1,9 +1,9 @@
-import * as T from "../types"
+import * as CW3Types from "../types"
 import * as L from "../types/links"
 
 export class Account {
   private cw3: L.CardanoWeb3
-  __config: T.AccountConfig = {
+  __config: CW3Types.AccountConfig = {
     configVersion: 1,
     type: undefined,
     checksumImage: undefined,
@@ -31,8 +31,8 @@ export class Account {
   static fromMnemonic = (
     cw3: L.CardanoWeb3,
     mnemonic: string,
-    accountPath: T.AccountDerivationPath,
-    addressPath: T.AddressDerivationPath
+    accountPath: CW3Types.AccountDerivationPath,
+    addressPath: CW3Types.AddressDerivationPath
   ) => {
     const xprvKey = cw3.utils.keys.mnemonicToXprvKey(mnemonic)
     return this.fromXprvKey(cw3, xprvKey, accountPath, addressPath)
@@ -49,8 +49,8 @@ export class Account {
   static fromXprvKey = (
     cw3: L.CardanoWeb3,
     xprvKey: string,
-    accountPath: T.AccountDerivationPath,
-    addressPath: T.AddressDerivationPath
+    accountPath: CW3Types.AccountDerivationPath,
+    addressPath: CW3Types.AddressDerivationPath
   ) => {
     const account = new Account()
     const xpubKey = cw3.utils.keys.xprvKeyToXpubKey(xprvKey, accountPath)
@@ -80,7 +80,7 @@ export class Account {
    * @param addressPath Address derivation path (e.g. [0, 0])
    * @returns Account instance
    */
-  static fromXpubKey = (cw3: L.CardanoWeb3, xpubKey: string, addressPath: T.AddressDerivationPath) => {
+  static fromXpubKey = (cw3: L.CardanoWeb3, xpubKey: string, addressPath: CW3Types.AddressDerivationPath) => {
     if (!cw3.utils.keys.xpubKeyValidate(xpubKey)) throw new Error("Invalid public key")
     const account = new Account()
     const checksum = cw3.utils.account.checksum(xpubKey)
@@ -162,7 +162,7 @@ export class Account {
     return account
   }
 
-  // static fromLedgerHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
+  // static fromLedgerHW = (cw3: CW3Types.CardanoWeb3, path: CW3Types.AccountDerivationPath) => {
   //   throw new Error("Not implemented: fromLedgerHW")
   //   if (typeof window === "undefined") throw new Error("fromLedgerHW is only available in the browser")
   //   const account = new Account()
@@ -173,7 +173,7 @@ export class Account {
   //   return account
   // }
 
-  // static fromTrezorHW = (cw3: T.CardanoWeb3, path: T.AccountDerivationPath) => {
+  // static fromTrezorHW = (cw3: CW3Types.CardanoWeb3, path: CW3Types.AccountDerivationPath) => {
   //   throw new Error("Not implemented: fromLedgerHW")
   //   if (typeof window === "undefined") throw new Error("fromTrezorHW is only available in the browser")
   //   const account = new Account()
@@ -190,7 +190,7 @@ export class Account {
    * @param config Account configuration
    * @returns Account instance
    */
-  static importAccount = (cw3: L.CardanoWeb3, config: T.AccountExportV1) => {
+  static importAccount = (cw3: L.CardanoWeb3, config: CW3Types.AccountExportV1) => {
     if (config.configVersion === 1) {
       if (config.type === "xprv") {
         const account = new Account()
@@ -221,7 +221,7 @@ export class Account {
    * Export account configuration
    * @returns Account configuration
    */
-  exportAccount = (): T.AccountExportV1 => {
+  exportAccount = (): CW3Types.AccountExportV1 => {
     return {
       configVersion: this.__config.configVersion,
       type: this.__config.type,
@@ -267,9 +267,9 @@ export class Account {
    * @returns Account state
    */
 
-  getState = async (): Promise<T.AccountState> => {
+  getState = async (): Promise<CW3Types.AccountState> => {
     // TODO: Implement getUtxosFromConnector if account type is connector
-    // const getUtxosFromConnector = async (): Promise<T.Utxo[]> => {
+    // const getUtxosFromConnector = async (): Promise<CW3Types.Utxo[]> => {
     //   const utxosRaw = await this.__config.connector.getUtxos()
     //   const utxos = utxosRaw.map((utxoRaw) => {
     //     const utxo = this.cw3.CML.TransactionUnspentOutput.from_cbor_hex(utxoRaw)
@@ -307,7 +307,7 @@ export class Account {
     }
   }
 
-  getDelegation = async (): Promise<T.AccountDelegation> => {
+  getDelegation = async (): Promise<CW3Types.AccountDelegation> => {
     const delegation = await this.cw3.provider.getDelegation(this.__config.stakingAddress)
 
     return {

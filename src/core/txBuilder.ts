@@ -1,17 +1,17 @@
 import { TTL } from "../config"
 import { TxFinalizer } from "./txFinalizer"
-import * as T from "../types"
+import * as CW3Types from "../types"
 import * as L from "../types/links"
 
 export class TxBuilder {
   private cw3: L.CardanoWeb3
-  private protocolParams: T.ProtocolParameters
+  private protocolParams: CW3Types.ProtocolParameters
   private changeAddress: string
-  private scripts: Map<string, T.Script> = new Map()
+  private scripts: Map<string, CW3Types.Script> = new Map()
   private queue: (() => unknown)[] = []
-  private inputs: Map<string, T.Utxo> = new Map()
-  private readInputs: Map<string, T.Utxo> = new Map()
-  private collectInputs: Map<string, T.Utxo> = new Map()
+  private inputs: Map<string, CW3Types.Utxo> = new Map()
+  private readInputs: Map<string, CW3Types.Utxo> = new Map()
+  private collectInputs: Map<string, CW3Types.Utxo> = new Map()
   private remoteProtocolParams: boolean = false
   private remoteTxEvaluate: boolean = false
   private coinSelection: number = 2 // Default: LargestFirstMultiAsset
@@ -25,7 +25,7 @@ export class TxBuilder {
    * @param script Script to attach
    * @returns TxBuilder instance
    */
-  attachScript = (script: T.Script) => {
+  attachScript = (script: CW3Types.Script) => {
     const scriptHash = this.cw3.utils.script.scriptToScriptHash(script)
     this.scripts.set(scriptHash, script)
     return this
@@ -36,7 +36,7 @@ export class TxBuilder {
    * @param utxos UTXOs to read from
    * @returns TxBuilder instance
    */
-  readFrom = (utxos: T.Utxo[]) => {
+  readFrom = (utxos: CW3Types.Utxo[]) => {
     this.queue.push(async () => {
       for (const utxoUnresolved of utxos) {
         const utxo = await this.cw3.provider.resolveUtxoDatumAndScript(utxoUnresolved)
@@ -57,7 +57,7 @@ export class TxBuilder {
    * @param redeemer Redeemer to use (optional)
    * @returns TxBuilder instance
    */
-  collectFrom = (utxos: T.Utxo[], redeemer?: string) => {
+  collectFrom = (utxos: CW3Types.Utxo[], redeemer?: string) => {
     this.queue.push(async () => {
       for (const utxoUnresolved of utxos) {
         const utxo = await this.cw3.provider.resolveUtxoDatumAndScript(utxoUnresolved)
@@ -126,7 +126,7 @@ export class TxBuilder {
    * @param utxos UTXOs to spend from
    * @returns TxBuilder instance
    */
-  addInputs = (utxos: T.Utxo[]) => {
+  addInputs = (utxos: CW3Types.Utxo[]) => {
     this.queue.push(async () => {
       for (const utxo of utxos) {
         this.inputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
@@ -146,7 +146,7 @@ export class TxBuilder {
    * @returns TxBuilder instance
    * @throws Error if script is not provided with hash datum type
    */
-  private payTo = (output: T.Output, datum?: T.DatumOutput, script?: T.Script) => {
+  private payTo = (output: CW3Types.Output, datum?: CW3Types.DatumOutput, script?: CW3Types.Script) => {
     this.queue.push(async () => {
       const outputBuilder = this.cw3.utils.tx.outputToTransactionOutputBuilder(output, datum, script)
       const outputBuilderResult =
@@ -172,7 +172,7 @@ export class TxBuilder {
    * @returns TxBuilder instance
    * @throws Error if address is not script type
    */
-  payToContract = (output: T.Output, datum: T.DatumOutput, script?: T.Script) => {
+  payToContract = (output: CW3Types.Output, datum: CW3Types.DatumOutput, script?: CW3Types.Script) => {
     const { paymentCred } = this.cw3.utils.address.getCredentials(output.address)
     if (!paymentCred || paymentCred.type !== "script") {
       throw new Error("Invalid address for contract")
@@ -188,7 +188,7 @@ export class TxBuilder {
    * @param script Script to attach (optional)
    * @returns TxBuilder instance
    */
-  addOutputs = (outputs: T.Output[], datum?: T.DatumOutput, script?: T.Script) => {
+  addOutputs = (outputs: CW3Types.Output[], datum?: CW3Types.DatumOutput, script?: CW3Types.Script) => {
     for (const output of outputs) {
       this.payTo(output, datum, script)
     }
@@ -282,7 +282,7 @@ export class TxBuilder {
    * @param redeemer Redeemer to use (optional)
    * @returns TxBuilder instance
    */
-  addMint = (assets: T.Asset[], redeemer?: string) => {
+  addMint = (assets: CW3Types.Asset[], redeemer?: string) => {
     this.queue.push(async () => {
       const policyId = assets[0].policyId
       const mintAssets = this.cw3.libs.CML.MapAssetNameToNonZeroInt64.new()
@@ -333,7 +333,7 @@ export class TxBuilder {
    * @param metadata Metadata to attach
    * @returns TxBuilder instance
    */
-  addMetadataString = (label: number, metadata: T.Json) => {
+  addMetadataString = (label: number, metadata: CW3Types.Json) => {
     this.queue.push(async () => {
       const metadatum = this.cw3.libs.CML.TransactionMetadatum.new_text(JSON.stringify(metadata))
       const metadataBuilder = this.cw3.libs.CML.Metadata.new()
@@ -352,7 +352,7 @@ export class TxBuilder {
    * @param conversion Conversion type (optional, 0: default, 1: detailed, 2: more detailed)
    * @returns TxBuilder instance
    */
-  addMetadataJson = (label: number, metadata: T.Json, conversion: 0 | 1 | 2 = 0) => {
+  addMetadataJson = (label: number, metadata: CW3Types.Json, conversion: 0 | 1 | 2 = 0) => {
     this.queue.push(async () => {
       const metadatum = this.cw3.libs.CML.encode_json_str_to_metadatum(JSON.stringify(metadata), conversion)
       const metadataBuilder = this.cw3.libs.CML.Metadata.new()

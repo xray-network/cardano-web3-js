@@ -1,12 +1,12 @@
 import { TTL } from "../../config"
-import * as T from "../../types"
+import * as CW3Types from "../../types"
 import * as KupmiosProviderTypes from "./types"
 
-export class KupmiosProvider implements T.Provider {
+export class KupmiosProvider implements CW3Types.Provider {
   private ogmiosUrl: string
-  private ogmiosHeaders: T.Headers
+  private ogmiosHeaders: CW3Types.Headers
   private kupoUrl: string
-  private kupoHeaders: T.Headers
+  private kupoHeaders: CW3Types.Headers
 
   constructor({
     ogmiosUrl,
@@ -15,9 +15,9 @@ export class KupmiosProvider implements T.Provider {
     kupoHeaders,
   }: {
     ogmiosUrl: string
-    ogmiosHeaders?: T.Headers
+    ogmiosHeaders?: CW3Types.Headers
     kupoUrl: string
-    kupoHeaders?: T.Headers
+    kupoHeaders?: CW3Types.Headers
   }) {
     this.ogmiosUrl = ogmiosUrl
     this.ogmiosHeaders = ogmiosHeaders
@@ -25,7 +25,7 @@ export class KupmiosProvider implements T.Provider {
     this.kupoHeaders = kupoHeaders
   }
 
-  getTip = async (): Promise<T.Tip> => {
+  getTip = async (): Promise<CW3Types.Tip> => {
     const response = await fetch(`${this.ogmiosUrl}/health`)
     if (response.ok) {
       const tip = (await response.json()) as KupmiosProviderTypes.Health
@@ -41,7 +41,7 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getTip")
   }
 
-  getProtocolParameters = async (): Promise<T.ProtocolParameters> => {
+  getProtocolParameters = async (): Promise<CW3Types.ProtocolParameters> => {
     const response = await fetch(`${this.ogmiosUrl}`, {
       method: "POST",
       headers: this.ogmiosHeaders,
@@ -57,9 +57,9 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getProtocolParameters")
   }
 
-  getUtxosByAddresses = async (addresses: string[]): Promise<T.Utxo[]> => {
+  getUtxosByAddresses = async (addresses: string[]): Promise<CW3Types.Utxo[]> => {
     try {
-      const utxos: T.Utxo[] = []
+      const utxos: CW3Types.Utxo[] = []
       for (const address of addresses) {
         const response = await fetch(`${this.kupoUrl}/matches/${address}?unspent`, {
           headers: this.kupoHeaders,
@@ -75,11 +75,11 @@ export class KupmiosProvider implements T.Provider {
     }
   }
 
-  getUtxosByAddress = async (address: string): Promise<T.Utxo[]> => {
+  getUtxosByAddress = async (address: string): Promise<CW3Types.Utxo[]> => {
     return await this.getUtxosByAddresses([address])
   }
 
-  getUtxoByOutputRef = async (txHash: string, index: number): Promise<T.Utxo> => {
+  getUtxoByOutputRef = async (txHash: string, index: number): Promise<CW3Types.Utxo> => {
     const response = await fetch(`${this.kupoUrl}/matches/${index}@${txHash}?unspent`, {
       headers: this.kupoHeaders,
     })
@@ -90,7 +90,7 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getUtxoByTxRef")
   }
 
-  resolveUtxoDatumAndScript = async (utxo: T.Utxo): Promise<T.Utxo> => {
+  resolveUtxoDatumAndScript = async (utxo: CW3Types.Utxo): Promise<CW3Types.Utxo> => {
     return {
       ...utxo,
       datum: utxo.datumHash ? await this.getDatumByHash(utxo.datumHash) : null,
@@ -98,7 +98,7 @@ export class KupmiosProvider implements T.Provider {
     }
   }
 
-  resolveUtxosDatumAndScript = async (utxos: T.Utxo[]) => {
+  resolveUtxosDatumAndScript = async (utxos: CW3Types.Utxo[]) => {
     return await Promise.all(
       utxos.map(async (utxo) => {
         return await this.resolveUtxoDatumAndScript(utxo)
@@ -117,7 +117,7 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getDatumByhash")
   }
 
-  getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
+  getScriptByHash = async (scriptHash: string): Promise<CW3Types.Script | undefined> => {
     const response = await fetch(`${this.kupoUrl}/scripts/${scriptHash}`, {
       headers: this.kupoHeaders,
     })
@@ -131,7 +131,7 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getDatumByhash")
   }
 
-  getDelegation = async (stakingAddress: string): Promise<T.AccountDelegation> => {
+  getDelegation = async (stakingAddress: string): Promise<CW3Types.AccountDelegation> => {
     const response = await fetch(`${this.ogmiosUrl}`, {
       method: "POST",
       headers: this.ogmiosHeaders,
@@ -154,7 +154,7 @@ export class KupmiosProvider implements T.Provider {
     throw new Error("Error: KupmiosProvider.getDelegation")
   }
 
-  evaluateTx = async (tx: string, additionalUtxos?: T.Utxo[]): Promise<T.RedeemerCost[]> => {
+  evaluateTx = async (tx: string, additionalUtxos?: CW3Types.Utxo[]): Promise<CW3Types.RedeemerCost[]> => {
     const response = await fetch(`${this.ogmiosUrl}`, {
       method: "POST",
       headers: this.ogmiosHeaders,
@@ -168,7 +168,7 @@ export class KupmiosProvider implements T.Provider {
       }),
     })
     if (response.ok) {
-      return ((await response.json())?.result as T.RedeemerCost[]) || []
+      return ((await response.json())?.result as CW3Types.RedeemerCost[]) || []
     }
     throw new Error("Error: KupmiosProvider.evaluateTx")
   }
@@ -228,7 +228,7 @@ export class KupmiosProvider implements T.Provider {
   }
 }
 
-const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): T.Utxo => {
+const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): CW3Types.Utxo => {
   return {
     transaction: {
       id: utxo.transaction_id,
@@ -245,12 +245,12 @@ const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): T.Utxo => {
   }
 }
 
-const kupoUtxosToUtxos = (utxos: KupmiosProviderTypes.Utxo[]): T.Utxo[] => {
+const kupoUtxosToUtxos = (utxos: KupmiosProviderTypes.Utxo[]): CW3Types.Utxo[] => {
   return utxos.map((utxo) => kupoUtxoToUtxo(utxo))
 }
 
-const kupoAssetsToAssets = (assets: KupmiosProviderTypes.Assets): T.Asset[] => {
-  return Object.entries(assets).map(([id, quantity]): T.Asset => {
+const kupoAssetsToAssets = (assets: KupmiosProviderTypes.Assets): CW3Types.Asset[] => {
+  return Object.entries(assets).map(([id, quantity]): CW3Types.Asset => {
     const [policy_id, asset_name] = id.split(".")
     return {
       policyId: policy_id,
@@ -275,7 +275,7 @@ const kupoPlutusVersionToPlutusVersion = (plutusVersion: string) => {
   }
 }
 
-const ogmiosProtocolParametersToProtocolParameters = (pp: any): T.ProtocolParameters => {
+const ogmiosProtocolParametersToProtocolParameters = (pp: any): CW3Types.ProtocolParameters => {
   const scriptExecutionPricesMemory = pp.scriptExecutionPrices.memory.split("/")
   const scriptExecutionPricesCpu = pp.scriptExecutionPrices.cpu.split("/")
   return {

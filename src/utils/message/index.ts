@@ -1,9 +1,9 @@
-import * as T from "../../types"
+import * as CW3Types from "../../types"
 import * as L from "../../types/links"
 
 export const Message = (cw3: L.CardanoWeb3) => {
   return {
-    signData: (addressHex: string, payload: string, privateKey: string): T.SignedMessage => {
+    signData: (addressHex: string, payload: string, privateKey: string): CW3Types.SignedMessage => {
       const M = cw3.libs.MSL
       const C = cw3.libs.CML
       const { fromHex, toHex } = cw3.utils.misc
@@ -42,7 +42,12 @@ export const Message = (cw3: L.CardanoWeb3) => {
         key: toHex(key.to_bytes()),
       }
     },
-    verifyData: (addressHex: string, keyHash: string, payload: string, signedMessage: T.SignedMessage): boolean => {
+    verifyData: (
+      addressHex: string,
+      keyHash: string,
+      payload: string,
+      signedMessage: CW3Types.SignedMessage
+    ): boolean => {
       const M = cw3.libs.MSL
       const C = cw3.libs.CML
       const { fromHex, toHex } = cw3.utils.misc

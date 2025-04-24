@@ -1,4 +1,4 @@
-export type * as T from "./types"
+export type * as CW3Types from "./types"
 export type { Account, Connector, Data, Constr } from "./types/links"
 export * from "./core/cw3"
 export * from "./providers/koios"

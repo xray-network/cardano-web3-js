@@ -9,5 +9,5 @@ export type { Account } from "../core/account"
 export type { Connector } from "../core/connector"
 
 /** Type links to libs types */
-export type { Data, Constr } from "../utils/data"
+export type { Data as PlutusData, Constr as PlutusConstr } from "../utils/data"
 export type { Message } from "../utils/message"

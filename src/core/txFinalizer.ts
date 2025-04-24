@@ -1,4 +1,4 @@
-import * as T from "../types"
+import * as CW3Types from "../types"
 import * as L from "../types/links"
 
 export class TxFinalizer {
@@ -34,7 +34,7 @@ export class TxFinalizer {
    * @param password Password to decode xprv key (optional)
    * @returns TxFinalizer instance
    */
-  signWithAccount = (account: L.Account, utxos: T.Utxo[], password?: string) => {
+  signWithAccount = (account: L.Account, utxos: CW3Types.Utxo[], password?: string) => {
     this.queue.push(async () => {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)

@@ -1,11 +1,11 @@
 import * as TypeBox from "@sinclair/typebox"
-import * as T from "../../types"
+import * as CW3Types from "../../types"
 import * as L from "../../types/links"
 
-type Datum = T.Datum
-type Redeemer = T.Redeemer
-type Exact<T> = T.Exact<T>
-type Json = T.Json
+type Datum = CW3Types.Datum
+type Redeemer = CW3Types.Redeemer
+type Exact<T> = CW3Types.Exact<T>
+type Json = CW3Types.Json
 
 export class Constr<T> {
   index: number

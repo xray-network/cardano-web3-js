@@ -15,7 +15,7 @@ import KoiosExplorer from "../explorers/koios"
 import NftcdnExplorer from "../explorers/nftcdn"
 import { Data, Constr } from "../utils/data"
 import { Message } from "../utils/message"
-import * as T from "../types"
+import * as CW3Types from "../types"
 import * as L from "../types/links"
 
 /**
@@ -32,13 +32,13 @@ export class CardanoWeb3 {
     PlutusConstr: typeof Constr // Lucid Plutus Data Construction Lib */
     Message: ReturnType<typeof Message> // Message Signing/Verification Lib
   }
-  explorers: T.Explorers
-  provider: T.Provider
+  explorers: CW3Types.Explorers
+  provider: CW3Types.Provider
   utils: Utils
   __config: {
-    network: T.NetworkConfig
-    protocolParams: T.ProtocolParameters
-    slotConfig: T.SlotConfig
+    network: CW3Types.NetworkConfig
+    protocolParams: CW3Types.ProtocolParameters
+    slotConfig: CW3Types.SlotConfig
     ttl: number
   }
 
@@ -47,7 +47,7 @@ export class CardanoWeb3 {
    * @param config Configuration object
    * @returns CardanoWeb3 instance
    */
-  static init = async (config?: T.InitConfig) => {
+  static init = async (config?: CW3Types.InitConfig) => {
     const cw3 = new CardanoWeb3()
     const network = config?.network || "mainnet"
 
@@ -124,8 +124,8 @@ export class CardanoWeb3 {
      */
     fromMnemonic: (
       mnemonic: string,
-      accountPath: T.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
-      addressPath: T.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
+      accountPath: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
+      addressPath: CW3Types.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
     ) => {
       return Account.fromMnemonic(this, mnemonic, accountPath, addressPath)
     },
@@ -139,8 +139,8 @@ export class CardanoWeb3 {
      */
     fromXprvKey: (
       xprvKey: string,
-      accountPath: T.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
-      addressPath: T.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
+      accountPath: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
+      addressPath: CW3Types.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
     ) => {
       return Account.fromXprvKey(this, xprvKey, accountPath, addressPath)
     },
@@ -151,7 +151,7 @@ export class CardanoWeb3 {
      * @param addressPath  Known Address derivation path (optional, default: [0, 0])
      * @returns Account instance
      */
-    fromXpubKey: (xpubKey: string, addressPath: T.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH) => {
+    fromXpubKey: (xpubKey: string, addressPath: CW3Types.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH) => {
       return Account.fromXpubKey(this, xpubKey, addressPath)
     },
 
@@ -173,11 +173,11 @@ export class CardanoWeb3 {
       return Account.fromAddress(this, address)
     },
 
-    // fromLedgerHW: (path: T.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH) => {
+    // fromLedgerHW: (path: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH) => {
     //   return Account.fromLedgerHW(this, path)
     // },
 
-    // fromTrezorHW: (path: T.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH) => {
+    // fromTrezorHW: (path: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH) => {
     //   return Account.fromTrezorHW(this, path)
     // },
 
@@ -186,7 +186,7 @@ export class CardanoWeb3 {
      * @param config Account export config
      * @returns Account instance
      */
-    importAccount: (config: T.AccountExportV1) => {
+    importAccount: (config: CW3Types.AccountExportV1) => {
       return Account.importAccount(this, config)
     },
   }
@@ -244,7 +244,11 @@ export class CardanoWeb3 {
      * @param password Password for xprv key (optional)
      * @returns Signed message
      */
-    signWithAccount: async (account: L.Account, message: string, password?: string): Promise<T.SignedMessage> => {
+    signWithAccount: async (
+      account: L.Account,
+      message: string,
+      password?: string
+    ): Promise<CW3Types.SignedMessage> => {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)
           throw new Error("Password is required to sign with xprv encoded account")
@@ -281,7 +285,7 @@ export class CardanoWeb3 {
      * @param message Message to sign
      * @returns Signed message
      */
-    signWithVrfKey: (verificationKey: string, address: string, message: string): T.SignedMessage => {
+    signWithVrfKey: (verificationKey: string, address: string, message: string): CW3Types.SignedMessage => {
       const hexAddress = this.libs.CML.Address.from_bech32(address).to_hex()
       const hexMessage = this.utils.misc.fromStringToHex(message)
       const { paymentCred } = this.utils.address.getCredentials(address)
@@ -298,7 +302,7 @@ export class CardanoWeb3 {
      * @param signedMessage Signed message
      * @returns True if message is verified, false otherwise
      */
-    verify: (address: string, message: string, signedMessage: T.SignedMessage): boolean => {
+    verify: (address: string, message: string, signedMessage: CW3Types.SignedMessage): boolean => {
       const hexAddress = this.libs.CML.Address.from_bech32(address).to_hex()
       const hexMessage = this.utils.misc.fromStringToHex(message)
       const { paymentCred, stakingCred } = this.utils.address.getCredentials(address)

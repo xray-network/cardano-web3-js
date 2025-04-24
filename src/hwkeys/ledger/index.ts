@@ -1,4 +1,4 @@
-import * as T from "../types"
+import * as CW3Types from "../../types"
 
 export class Ledger {
   static init = async () => {

@@ -5,7 +5,7 @@ import * as Bip39 from "./bip39"
 import walletChecksum from "./cip4"
 import { Data, Constr } from "./data"
 import * as Cborg from "./cborg"
-import * as T from "../types"
+import * as CW3Types from "../types"
 import * as L from "../types/links"
 
 export class Utils {
@@ -74,8 +74,8 @@ export class Utils {
 
     xprvKeyToXpubKey: (
       xprvKey: string,
-      accountPath?: T.AccountDerivationPath,
-      addressPath?: T.AddressDerivationPath
+      accountPath?: CW3Types.AccountDerivationPath,
+      addressPath?: CW3Types.AddressDerivationPath
     ): string => {
       let key = this.cw3.libs.CML.Bip32PrivateKey.from_bech32(xprvKey)
       if (accountPath) {
@@ -93,8 +93,8 @@ export class Utils {
 
     xprvToVrfKey: (
       xprvKey: string,
-      accountPath?: T.AccountDerivationPath,
-      addressPath?: T.AddressDerivationPath
+      accountPath?: CW3Types.AccountDerivationPath,
+      addressPath?: CW3Types.AddressDerivationPath
     ): string => {
       let key = this.cw3.libs.CML.Bip32PrivateKey.from_bech32(xprvKey)
       if (accountPath) {
@@ -137,15 +137,15 @@ export class Utils {
       }
     },
 
-    getNetwork: (addrBech32: string): T.NetworkId | undefined => {
+    getNetwork: (addrBech32: string): CW3Types.NetworkId | undefined => {
       try {
-        return this.cw3.libs.CML.Address.from_bech32(addrBech32).network_id() as T.NetworkId
+        return this.cw3.libs.CML.Address.from_bech32(addrBech32).network_id() as CW3Types.NetworkId
       } catch {
         return undefined
       }
     },
 
-    deriveBase: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath): string => {
+    deriveBase: (xpubKey: string, addressDerivationPath: CW3Types.AddressDerivationPath): string => {
       const paymentKeyHash = this.cw3.libs.CML.Bip32PublicKey.from_bech32(xpubKey)
         .derive(addressDerivationPath[0])
         .derive(addressDerivationPath[1])
@@ -161,7 +161,7 @@ export class Utils {
         .to_bech32()
     },
 
-    deriveEnterprise: (xpubKey: string, addressDerivationPath: T.AddressDerivationPath): string => {
+    deriveEnterprise: (xpubKey: string, addressDerivationPath: CW3Types.AddressDerivationPath): string => {
       const paymentKeyHash = this.cw3.libs.CML.Bip32PublicKey.from_bech32(xpubKey)
         .derive(addressDerivationPath[0])
         .derive(addressDerivationPath[1])
@@ -191,7 +191,7 @@ export class Utils {
       return this.cw3.libs.CML.RewardAddress.new(address.network_id(), stakingCred).to_address().to_bech32()
     },
 
-    getCredentials: (addrBech32: string): T.AddressPublicCredentials => {
+    getCredentials: (addrBech32: string): CW3Types.AddressPublicCredentials => {
       const address = this.cw3.libs.CML.Address.from_bech32(addrBech32)
       const kind = address.kind() as 0 | 1 | 2 | 3 | 4
       const type = {
@@ -200,7 +200,7 @@ export class Utils {
         2: "enterprise",
         3: "reward",
         4: "byron",
-      }[kind] as T.AddressType
+      }[kind] as CW3Types.AddressType
       if (type === "base") {
         return {
           type,
@@ -302,7 +302,7 @@ export class Utils {
 
     getDetailsFromXpub: (
       xpubKey: string,
-      addressDerivationPath: T.AddressDerivationPath
+      addressDerivationPath: CW3Types.AddressDerivationPath
     ): {
       paymentAddress: string
       paymentCred: string
@@ -320,8 +320,8 @@ export class Utils {
         stakingCred: stakingCred.hash,
       }
     },
-    getBalanceFromUtxos: (utxos: T.Utxo[]): T.Balance => {
-      const balance: T.Balance = {
+    getBalanceFromUtxos: (utxos: CW3Types.Utxo[]): CW3Types.Balance => {
+      const balance: CW3Types.Balance = {
         value: BigInt(0),
         assets: [],
       }
@@ -370,7 +370,7 @@ export class Utils {
    * TX related utils
    */
   tx = {
-    createCostModels: (costModels: T.CostModels): L.CML.CostModels => {
+    createCostModels: (costModels: CW3Types.CostModels): L.CML.CostModels => {
       return this.cw3.libs.CML.CostModels.from_json(
         JSON.stringify({
           0: costModels.PlutusV1,
@@ -380,7 +380,7 @@ export class Utils {
       )
     },
 
-    getTxBuilder: (protocolParams: T.ProtocolParameters): L.CML.TransactionBuilder => {
+    getTxBuilder: (protocolParams: CW3Types.ProtocolParameters): L.CML.TransactionBuilder => {
       const pp = protocolParams
       const txBuilderConfig = this.cw3.libs.CML.TransactionBuilderConfigBuilder.new()
         .fee_algo(
@@ -406,7 +406,7 @@ export class Utils {
       return this.cw3.libs.CML.TransactionBuilder.new(txBuilderConfig)
     },
 
-    assetsToValue: (value?: T.Value, assets?: T.Asset[]): L.CML.Value => {
+    assetsToValue: (value?: CW3Types.Value, assets?: CW3Types.Asset[]): L.CML.Value => {
       const multiAsset = this.cw3.libs.CML.MultiAsset.new()
 
       if (assets) {
@@ -422,21 +422,21 @@ export class Utils {
       return this.cw3.libs.CML.Value.new(value || 0n, multiAsset)
     },
 
-    utxoToCore: (utxo: T.Utxo): L.CML.TransactionUnspentOutput => {
+    utxoToCore: (utxo: CW3Types.Utxo): L.CML.TransactionUnspentOutput => {
       return this.cw3.libs.CML.TransactionUnspentOutput.new(
         this.tx.utxoToTransactionInput(utxo),
         this.tx.utxoToTransactionOutput(utxo)
       )
     },
 
-    utxoToTransactionInput: (utxo: T.Utxo): L.CML.TransactionInput => {
+    utxoToTransactionInput: (utxo: CW3Types.Utxo): L.CML.TransactionInput => {
       return this.cw3.libs.CML.TransactionInput.new(
         this.cw3.libs.CML.TransactionHash.from_hex(utxo.transaction.id),
         BigInt(utxo.index)
       )
     },
 
-    utxoToTransactionOutput: (utxo: T.Utxo): L.CML.TransactionOutput => {
+    utxoToTransactionOutput: (utxo: CW3Types.Utxo): L.CML.TransactionOutput => {
       const value = this.tx.assetsToValue(utxo.value, utxo.assets)
       const outputBuilder = this.tx.outputToTransactionOutputBuilder(
         {
@@ -456,9 +456,9 @@ export class Utils {
     },
 
     outputToTransactionOutputBuilder: (
-      output: T.Output,
-      datum?: T.DatumOutput,
-      script?: T.Script
+      output: CW3Types.Output,
+      datum?: CW3Types.DatumOutput,
+      script?: CW3Types.Script
     ): L.CML.TransactionOutputBuilder => {
       const address = this.cw3.utils.address.getShelleyOrByronAddress(output.address)
       let outputBuilder = this.cw3.libs.CML.TransactionOutputBuilder.new().with_address(address)
@@ -479,7 +479,11 @@ export class Utils {
         : outputBuilder
     },
 
-    discoverOwnUsedTxKeyHashes: (tx: L.CML.Transaction, ownKeyHashes: string[], ownUtxos: T.Utxo[]): string[] => {
+    discoverOwnUsedTxKeyHashes: (
+      tx: L.CML.Transaction,
+      ownKeyHashes: string[],
+      ownUtxos: CW3Types.Utxo[]
+    ): string[] => {
       const usedKeyHashes: string[] = []
       const body = tx.body()
       const inputs = body.inputs()
@@ -623,7 +627,7 @@ export class Utils {
    * Script related utils
    */
   script = {
-    scriptToScriptRef: (script: T.Script): L.CML.Script => {
+    scriptToScriptRef: (script: CW3Types.Script): L.CML.Script => {
       switch (script.language) {
         case "Native":
           return this.cw3.libs.CML.Script.new_native(this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script))
@@ -644,7 +648,7 @@ export class Utils {
       }
     },
 
-    scriptToAddress: (script: T.Script, stakeCredential?: T.Credential): string => {
+    scriptToAddress: (script: CW3Types.Script, stakeCredential?: CW3Types.Credential): string => {
       const validatorHash = this.script.scriptToScriptHash(script)
       if (stakeCredential) {
         return this.cw3.libs.CML.BaseAddress.new(
@@ -666,7 +670,7 @@ export class Utils {
       }
     },
 
-    scriptToPlutusScript: (script: T.Script): L.CML.PlutusScript => {
+    scriptToPlutusScript: (script: CW3Types.Script): L.CML.PlutusScript => {
       switch (script.language) {
         case "PlutusV1":
           return this.cw3.libs.CML.PlutusScript.from_v1(
@@ -685,7 +689,7 @@ export class Utils {
       }
     },
 
-    scriptToScriptHash: (script: T.Script): string => {
+    scriptToScriptHash: (script: CW3Types.Script): string => {
       switch (script.language) {
         case "Native":
           return this.cw3.libs.CML.NativeScript.from_cbor_hex(script.script).hash().to_hex()
@@ -729,12 +733,12 @@ export class Utils {
     },
 
     nativeScriptFromJson: (
-      json: T.NativeConfig
+      json: CW3Types.NativeConfig
     ): {
       policyId: string
-      script: T.Script
+      script: CW3Types.Script
     } => {
-      const parseNativeScript = (json: T.NativeConfig) => {
+      const parseNativeScript = (json: CW3Types.NativeConfig) => {
         switch (json.type) {
           case "sig":
             return this.cw3.libs.CML.NativeScript.new_script_pubkey(
@@ -761,7 +765,7 @@ export class Utils {
           }
         }
       }
-      const script: T.Script = {
+      const script: CW3Types.Script = {
         language: "Native",
         script: parseNativeScript(json).to_cbor_hex(),
       }
@@ -774,7 +778,7 @@ export class Utils {
 
     applyParamsToScript: <T extends unknown[] = Data[]>(
       plutusScript: string,
-      params: T.Exact<[...T]>,
+      params: CW3Types.Exact<[...T]>,
       type?: T
     ): string => {
       const p = (type ? this.cw3.libs.PlutusData.castTo<T>(params, type) : params) as Data[]

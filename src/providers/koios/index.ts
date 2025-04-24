@@ -1,15 +1,15 @@
 import KoiosClient, { KoiosTypes } from "cardano-koios-client"
 import { TTL } from "../../config"
-import * as T from "../../types"
+import * as CW3Types from "../../types"
 
-export class KoiosProvider implements T.Provider {
-  private client: T.KoiosClient
+export class KoiosProvider implements CW3Types.Provider {
+  private client: CW3Types.KoiosClient
 
-  constructor(baseUrl: string, headers?: T.Headers) {
+  constructor(baseUrl: string, headers?: CW3Types.Headers) {
     this.client = KoiosClient(baseUrl, headers)
   }
 
-  getTip = async (): Promise<T.Tip> => {
+  getTip = async (): Promise<CW3Types.Tip> => {
     const response = await this.client.GET("/tip", {})
     const tip = response.data?.[0]
     if (tip) {
@@ -25,7 +25,7 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getTip")
   }
 
-  getProtocolParameters = async (): Promise<T.ProtocolParameters> => {
+  getProtocolParameters = async (): Promise<CW3Types.ProtocolParameters> => {
     const response = await this.client.GET("/epoch_params", {
       params: {
         query: {
@@ -40,9 +40,9 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getProtocolParameters")
   }
 
-  getUtxosByAddresses = async (addresses: string[]): Promise<T.Utxo[]> => {
+  getUtxosByAddresses = async (addresses: string[]): Promise<CW3Types.Utxo[]> => {
     try {
-      const utxos: T.Utxo[] = []
+      const utxos: CW3Types.Utxo[] = []
       let hasMore = true
       while (hasMore) {
         const response = await this.client.POST("/address_utxos", {
@@ -67,11 +67,11 @@ export class KoiosProvider implements T.Provider {
     }
   }
 
-  getUtxosByAddress = async (address: string): Promise<T.Utxo[]> => {
+  getUtxosByAddress = async (address: string): Promise<CW3Types.Utxo[]> => {
     return await this.getUtxosByAddresses([address])
   }
 
-  getUtxoByOutputRef = async (txHash: string, index: number): Promise<T.Utxo> => {
+  getUtxoByOutputRef = async (txHash: string, index: number): Promise<CW3Types.Utxo> => {
     const response = await this.client.POST("/utxo_info", {
       body: {
         _utxo_refs: [`${txHash}#${index}`],
@@ -84,7 +84,7 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getUtxoByTxRef")
   }
 
-  resolveUtxoDatumAndScript = async (utxo: T.Utxo): Promise<T.Utxo> => {
+  resolveUtxoDatumAndScript = async (utxo: CW3Types.Utxo): Promise<CW3Types.Utxo> => {
     return {
       ...utxo,
       datum: utxo.datumHash ? await this.getDatumByHash(utxo.datumHash) : null,
@@ -92,7 +92,7 @@ export class KoiosProvider implements T.Provider {
     }
   }
 
-  resolveUtxosDatumAndScript = async (utxos: T.Utxo[]) => {
+  resolveUtxosDatumAndScript = async (utxos: CW3Types.Utxo[]) => {
     return await Promise.all(
       utxos.map(async (utxo) => {
         return await this.resolveUtxoDatumAndScript(utxo)
@@ -112,7 +112,7 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
-  getScriptByHash = async (scriptHash: string): Promise<T.Script | undefined> => {
+  getScriptByHash = async (scriptHash: string): Promise<CW3Types.Script | undefined> => {
     const response = await this.client.POST("/script_info", {
       body: {
         _script_hashes: [scriptHash],
@@ -127,7 +127,7 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getDatumByhash")
   }
 
-  getDelegation = async (stakingAddress: string): Promise<T.AccountDelegation> => {
+  getDelegation = async (stakingAddress: string): Promise<CW3Types.AccountDelegation> => {
     const response = await this.client.POST("/account_info", {
       body: {
         _stake_addresses: [stakingAddress],
@@ -143,7 +143,7 @@ export class KoiosProvider implements T.Provider {
     throw new Error("Error: KoiosProvider.getDelegation")
   }
 
-  evaluateTx = async (tx: string, additionalUtxos?: T.Utxo[]): Promise<T.RedeemerCost[]> => {
+  evaluateTx = async (tx: string, additionalUtxos?: CW3Types.Utxo[]): Promise<CW3Types.RedeemerCost[]> => {
     const response = await this.client.POST("/ogmios", {
       parseAs: "text",
       headers: {
@@ -159,7 +159,7 @@ export class KoiosProvider implements T.Provider {
       },
     })
     if (response.data) {
-      return (response.data?.result as T.RedeemerCost[]) || []
+      return (response.data?.result as CW3Types.RedeemerCost[]) || []
     }
     if (response.error) {
       throw new Error(JSON.stringify(response.error))
@@ -220,7 +220,7 @@ export class KoiosProvider implements T.Provider {
   }
 }
 
-const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][number]): T.Utxo => {
+const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][number]): CW3Types.Utxo => {
   return {
     transaction: {
       id: utxo.tx_hash,
@@ -237,14 +237,14 @@ const koiosUtxoToUtxo = (utxo: KoiosTypes.components["schemas"]["utxo_infos"][nu
   }
 }
 
-const koiosUtxosToUtxos = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]): T.Utxo[] => {
+const koiosUtxosToUtxos = (utxos: KoiosTypes.components["schemas"]["utxo_infos"]): CW3Types.Utxo[] => {
   return utxos.map((utxo) => koiosUtxoToUtxo(utxo))
 }
 
 const koiosAssetsToAssets = (
   assets: KoiosTypes.components["schemas"]["utxo_infos"][number]["asset_list"]
-): T.Asset[] => {
-  return assets.map((asset): T.Asset => {
+): CW3Types.Asset[] => {
+  return assets.map((asset): CW3Types.Asset => {
     return {
       policyId: asset.policy_id,
       assetName: asset.asset_name || "",

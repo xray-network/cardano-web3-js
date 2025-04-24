@@ -1,5 +1,4 @@
 /** Account types */
-import type { Account } from "./links"
 export type AccountType = "xprv" | "xpub" | "connector" | "address" | "ledger" | "trezor"
 export type AccountConfig = {
   configVersion: number
