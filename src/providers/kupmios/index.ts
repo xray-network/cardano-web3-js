@@ -1,12 +1,12 @@
+import KupoClient, { KupoTypes } from "cardano-kupo-client"
+import OgmiosClient, { OgmiosTypes } from "cardano-ogmios-client"
 import { TTL } from "../../config"
 import * as CW3Types from "../../types"
 import * as KupmiosProviderTypes from "./types"
 
 export class KupmiosProvider implements CW3Types.Provider {
-  private ogmiosUrl: string
-  private ogmiosHeaders: CW3Types.Headers
-  private kupoUrl: string
-  private kupoHeaders: CW3Types.Headers
+  private ogmiosClient: CW3Types.OgmiosClient
+  private kupoClient: CW3Types.KupoClient
 
   constructor({
     ogmiosUrl,
@@ -19,16 +19,14 @@ export class KupmiosProvider implements CW3Types.Provider {
     kupoUrl: string
     kupoHeaders?: CW3Types.Headers
   }) {
-    this.ogmiosUrl = ogmiosUrl
-    this.ogmiosHeaders = ogmiosHeaders
-    this.kupoUrl = kupoUrl
-    this.kupoHeaders = kupoHeaders
+    this.ogmiosClient = OgmiosClient(ogmiosUrl, ogmiosHeaders)
+    this.kupoClient = KupoClient(kupoUrl, kupoHeaders)
   }
 
   getTip = async (): Promise<CW3Types.Tip> => {
-    const response = await fetch(`${this.ogmiosUrl}/health`)
-    if (response.ok) {
-      const tip = (await response.json()) as KupmiosProviderTypes.Health
+    const response = await this.ogmiosClient.GET("/health")
+    if (response.data) {
+      const tip = response.data as KupmiosProviderTypes.Health
       return {
         hash: tip.lastKnownTip.id,
         epochNo: tip.currentEpoch,
@@ -42,17 +40,15 @@ export class KupmiosProvider implements CW3Types.Provider {
   }
 
   getProtocolParameters = async (): Promise<CW3Types.ProtocolParameters> => {
-    const response = await fetch(`${this.ogmiosUrl}`, {
-      method: "POST",
-      headers: this.ogmiosHeaders,
-      body: JSON.stringify({
+    const response = await this.ogmiosClient.POST("/", {
+      body: {
         jsonrpc: "2.0",
         method: "queryLedgerState/protocolParameters",
-      }),
+      } as any, // TODO: fix types,
     })
-    if (response.ok) {
-      const data = await response.json()
-      return ogmiosProtocolParametersToProtocolParameters(data.result)
+    if (response.data) {
+      const data = response.data.result as any // TODD: fix types
+      return ogmiosProtocolParametersToProtocolParameters(data)
     }
     throw new Error("Error: KupmiosProvider.getProtocolParameters")
   }
@@ -61,12 +57,19 @@ export class KupmiosProvider implements CW3Types.Provider {
     try {
       const utxos: CW3Types.Utxo[] = []
       for (const address of addresses) {
-        const response = await fetch(`${this.kupoUrl}/matches/${address}?unspent`, {
-          headers: this.kupoHeaders,
+        // TODO: fix types (?unspent=true problem, https://github.com/CardanoSolutions/kupo/issues/179)
+        const response = await this.kupoClient.GET("/matches/{pattern}?unspent" as any, {
+          params: {
+            path: {
+              pattern: address,
+            },
+            // query: {
+            //   unspent: ""
+            // }
+          },
         })
-        if (response.ok) {
-          const data = await response.json()
-          utxos.push(...kupoUtxosToUtxos(data))
+        if (response.data) {
+          utxos.push(...kupoUtxosToUtxos(response.data))
         }
       }
       return utxos
@@ -80,12 +83,15 @@ export class KupmiosProvider implements CW3Types.Provider {
   }
 
   getUtxoByOutputRef = async (txHash: string, index: number): Promise<CW3Types.Utxo> => {
-    const response = await fetch(`${this.kupoUrl}/matches/${index}@${txHash}?unspent`, {
-      headers: this.kupoHeaders,
+    const response = await this.kupoClient.GET("/matches/{pattern}", {
+      params: {
+        path: {
+          pattern: `${index}@${txHash}`,
+        },
+      },
     })
-    if (response.ok) {
-      const data = await response.json()
-      return kupoUtxoToUtxo(data[0])
+    if (response.data) {
+      return kupoUtxoToUtxo(response.data[0])
     }
     throw new Error("Error: KupmiosProvider.getUtxoByTxRef")
   }
@@ -107,44 +113,48 @@ export class KupmiosProvider implements CW3Types.Provider {
   }
 
   getDatumByHash = async (datumHash: string): Promise<string | undefined> => {
-    const response = await fetch(`${this.kupoUrl}/datums/${datumHash}`, {
-      headers: this.kupoHeaders,
+    const response = await this.kupoClient.GET("/datums/{datum_hash}", {
+      params: {
+        path: {
+          datum_hash: datumHash,
+        },
+      },
     })
-    if (response.ok) {
-      const data = await response.json()
-      return data?.datum
+    if (response.data) {
+      return response.data.datum
     }
     throw new Error("Error: KupmiosProvider.getDatumByhash")
   }
 
   getScriptByHash = async (scriptHash: string): Promise<CW3Types.Script | undefined> => {
-    const response = await fetch(`${this.kupoUrl}/scripts/${scriptHash}`, {
-      headers: this.kupoHeaders,
+    const response = await this.kupoClient.GET("/scripts/{script_hash}", {
+      params: {
+        path: {
+          script_hash: scriptHash,
+        },
+      },
     })
-    if (response.ok) {
-      const data = await response.json()
+    if (response.data) {
       return {
-        language: kupoPlutusVersionToPlutusVersion(data?.language),
-        script: data?.script,
+        language: kupoPlutusVersionToPlutusVersion(response.data.language),
+        script: response.data.script,
       }
     }
     throw new Error("Error: KupmiosProvider.getDatumByhash")
   }
 
   getDelegation = async (stakingAddress: string): Promise<CW3Types.AccountDelegation> => {
-    const response = await fetch(`${this.ogmiosUrl}`, {
-      method: "POST",
-      headers: this.ogmiosHeaders,
-      body: JSON.stringify({
+    const response = await this.ogmiosClient.POST("/", {
+      body: {
         jsonrpc: "2.0",
         method: "queryLedgerState/rewardAccountSummaries",
         params: {
           keys: [stakingAddress],
         },
-      }),
+      } as any, // TODO: fix types
     })
-    if (response.ok) {
-      const data = await response.json()
+    if (response.data) {
+      const data = response.data as KupmiosProviderTypes.Delegation
       const delegation = Object.values((data.result || {}) as KupmiosProviderTypes.Delegation)?.[0]
       return {
         delegation: delegation?.delegate?.id,
@@ -155,29 +165,29 @@ export class KupmiosProvider implements CW3Types.Provider {
   }
 
   evaluateTx = async (tx: string, additionalUtxos?: CW3Types.Utxo[]): Promise<CW3Types.RedeemerCost[]> => {
-    const response = await fetch(`${this.ogmiosUrl}`, {
-      method: "POST",
-      headers: this.ogmiosHeaders,
-      body: JSON.stringify({
+    const response = await this.ogmiosClient.POST("/", {
+      body: {
         jsonrpc: "2.0",
         method: "evaluateTransaction",
         params: {
           transaction: { cbor: tx },
-          // additionalUtxoSet: [] TODO
+          additionalUtxoSet: [], // TODO
         },
-      }),
+      } as any, // TODO: fix types
     })
-    if (response.ok) {
-      return ((await response.json())?.result as CW3Types.RedeemerCost[]) || []
+    if (response.data) {
+      const data = (response.data.result as CW3Types.RedeemerCost[]) || []
+      return data
+    }
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
     }
     throw new Error("Error: KupmiosProvider.evaluateTx")
   }
 
   submitTx = async (tx: string): Promise<string> => {
-    const response = await fetch(`${this.ogmiosUrl}`, {
-      method: "POST",
-      headers: this.ogmiosHeaders,
-      body: JSON.stringify({
+    const response = await this.ogmiosClient.POST("/", {
+      body: {
         jsonrpc: "2.0",
         method: "submitTransaction",
         params: {
@@ -185,30 +195,31 @@ export class KupmiosProvider implements CW3Types.Provider {
             cbor: tx,
           },
         },
-      }),
+      } as any, // TODO: fix types
     })
-    if (response.ok) {
-      const data = await response.json()
-      return data?.result?.transaction?.id
+    if (response.data) {
+      const data = response.data as any // TODO: fix types
+      return data.result?.transaction?.id
     }
-    if (!response.ok) {
-      const data = await response.json()
-      throw new Error(JSON.stringify(data.error))
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error))
     }
     throw new Error("Error: KupmiosProvider.submitTx")
   }
 
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
     const checkTx = async () => {
-      const response = await fetch(`${this.kupoUrl}/matches/*@${txHash}?unspent`, {
-        headers: this.kupoHeaders,
+      const response = await this.kupoClient.GET("/matches/{pattern}", {
+        params: {
+          path: {
+            pattern: `*@${txHash}`,
+          },
+        },
       })
-      if (response.ok) {
-        const data = await response.json()
-        return data.length > 0
-      } else {
-        return false
+      if (response.data) {
+        return response.data.length > 0
       }
+      return false
     }
     return new Promise(async (res) => {
       const resolve = await checkTx()
@@ -228,7 +239,7 @@ export class KupmiosProvider implements CW3Types.Provider {
   }
 }
 
-const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): CW3Types.Utxo => {
+const kupoUtxoToUtxo = (utxo: KupoTypes.components["schemas"]["Match"]): CW3Types.Utxo => {
   return {
     transaction: {
       id: utxo.transaction_id,
@@ -245,11 +256,11 @@ const kupoUtxoToUtxo = (utxo: KupmiosProviderTypes.Utxo): CW3Types.Utxo => {
   }
 }
 
-const kupoUtxosToUtxos = (utxos: KupmiosProviderTypes.Utxo[]): CW3Types.Utxo[] => {
+const kupoUtxosToUtxos = (utxos: KupoTypes.components["schemas"]["Match"][]): CW3Types.Utxo[] => {
   return utxos.map((utxo) => kupoUtxoToUtxo(utxo))
 }
 
-const kupoAssetsToAssets = (assets: KupmiosProviderTypes.Assets): CW3Types.Asset[] => {
+const kupoAssetsToAssets = (assets: KupoTypes.components["schemas"]["Match"]["value"]["assets"]): CW3Types.Asset[] => {
   return Object.entries(assets).map(([id, quantity]): CW3Types.Asset => {
     const [policy_id, asset_name] = id.split(".")
     return {

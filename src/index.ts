@@ -1,5 +1,5 @@
 export type * as CW3Types from "./types"
-export type { Account, Connector, Data, Constr } from "./types/links"
+export type { Account, Connector, PlutusData, PlutusConstr } from "./types/links"
 export * from "./core/cw3"
 export * from "./providers/koios"
 export * from "./providers/kupmios"

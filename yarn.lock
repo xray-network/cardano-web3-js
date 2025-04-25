@@ -598,12 +598,26 @@ cardano-koios-client@^1.0.7:
   dependencies:
     openapi-fetch "^0.13.3"
 
+cardano-kupo-client@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cardano-kupo-client/-/cardano-kupo-client-1.0.1.tgz#caaeea2409cdddad7c44263af5c47da495f0d0ae"
+  integrity sha512-bNInyRDi87MX6SQaYEa0RoNjqPyDiDQXj30wo+Obk5nA+A1GmibESO4tRNICk/RRNhmzI5L+ZpiFd0f8a0LeQA==
+  dependencies:
+    openapi-fetch "^0.13.5"
+
 cardano-nftcdn-client@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cardano-nftcdn-client/-/cardano-nftcdn-client-1.0.6.tgz#6c8b25c48a211bb2d6f4e396ebc973d7596f3ae5"
   integrity sha512-yTZy3oubS68TlHNqI9F2huwT/w3wC9cGKdMzeNKYAL4GkJzF+Dfz1IvuDHzOD7dM94aFQq0Nkaulcm/SYslaNg==
   dependencies:
     openapi-fetch "^0.13.3"
+
+cardano-ogmios-client@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cardano-ogmios-client/-/cardano-ogmios-client-1.0.0.tgz#905598fa96d80c39068350bb3f9f25d41871014d"
+  integrity sha512-sS4a3l16R0RKeGfuny+xh1U+FGHgjVjax+U2MWzgW+TXClRXw1WLt+Bp71gWSdlxKhW2mmPxUIQlR53a0O+p1g==
+  dependencies:
+    openapi-fetch "^0.13.5"
 
 chai@^4.3.10:
   version "4.4.1"
@@ -1286,7 +1300,7 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
-openapi-fetch@^0.13.3:
+openapi-fetch@^0.13.3, openapi-fetch@^0.13.5:
   version "0.13.5"
   resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.13.5.tgz#805606860d85b8ba8c2e7cb36ea30b473d8065d9"
   integrity sha512-AQK8T9GSKFREFlN1DBXTYsLjs7YV2tZcJ7zUWxbjMoQmj8dDSFRrzhLCbHPZWA1TMV3vACqfCxLEZcwf2wxV6Q==

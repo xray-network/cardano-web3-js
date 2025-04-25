@@ -1,6 +1,6 @@
 import * as CW3Types from "./types"
 
-export const SLOT_CONFIG_NETWORK: Record<T.NetworkName, T.SlotConfig> = {
+export const SLOT_CONFIG_NETWORK: Record<CW3Types.NetworkName, CW3Types.SlotConfig> = {
   mainnet: { zeroTime: 1596059091000, zeroSlot: 4492800, slotDuration: 1000 },
   preview: { zeroTime: 1666656000000, zeroSlot: 0, slotDuration: 1000 },
   preprod: { zeroTime: 1654041600000 + 1728000000, zeroSlot: 86400, slotDuration: 1000 },
@@ -9,7 +9,7 @@ export const SLOT_CONFIG_NETWORK: Record<T.NetworkName, T.SlotConfig> = {
 
 export const TTL = 900 // 900 seconds = 15 minutes (1 slot = 1 second)
 
-export const DERIVATION_SCHEME: T.DerivationScheme = {
+export const DERIVATION_SCHEME: CW3Types.DerivationScheme = {
   purpose: {
     hdwallet: 1852,
     multisig: 1854,
@@ -32,18 +32,18 @@ export const DERIVATION_SCHEME: T.DerivationScheme = {
   },
 }
 
-export const DEFAULT_ACCOUNT_DERIVATION_PATH: T.AccountDerivationPath = [
+export const DEFAULT_ACCOUNT_DERIVATION_PATH: CW3Types.AccountDerivationPath = [
   DERIVATION_SCHEME.purpose.hdwallet,
   DERIVATION_SCHEME.coinType.ada,
   DERIVATION_SCHEME.account.first,
 ]
 
-export const DEFAULT_ADDRESS_DERIVATION_PATH: T.AddressDerivationPath = [
+export const DEFAULT_ADDRESS_DERIVATION_PATH: CW3Types.AddressDerivationPath = [
   DERIVATION_SCHEME.role.payment,
   DERIVATION_SCHEME.index.first,
 ]
 
-export const DEFAULT_PROTOCOL_PARAMETERS: T.ProtocolParameters = {
+export const DEFAULT_PROTOCOL_PARAMETERS: CW3Types.ProtocolParameters = {
   minFeeA: 44,
   minFeeB: 155381,
   maxTxSize: 16384,

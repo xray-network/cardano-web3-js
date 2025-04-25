@@ -154,12 +154,16 @@ export class KoiosProvider implements CW3Types.Provider {
         method: "evaluateTransaction",
         params: {
           transaction: { cbor: tx },
-          // additionalUtxoSet: [] TODO
-        } as any,
+          additionalUtxoSet: [], // TODO
+        } as any, // TODO: fix types
       },
     })
     if (response.data) {
-      return (response.data?.result as CW3Types.RedeemerCost[]) || []
+      if (response.data.result) {
+        return response.data.result as CW3Types.RedeemerCost[]
+      } else {
+        throw new Error(JSON.stringify(response.data))
+      }
     }
     if (response.error) {
       throw new Error(JSON.stringify(response.error))
@@ -286,7 +290,7 @@ const koiosProtocolParamsToProtocolParams = (pp: KoiosTypes.components["schemas"
     coinsPerUtxoByte: BigInt(pp.coins_per_utxo_size),
     collateralPercentage: pp.collateral_percent,
     maxCollateralInputs: pp.max_collateral_inputs,
-    minFeeRefScriptCostPerByte: 15, // TODO
+    minFeeRefScriptCostPerByte: pp.min_fee_ref_script_cost_per_byte,
     costModels: pp.cost_models as any,
   }
 }

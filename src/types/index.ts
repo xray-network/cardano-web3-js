@@ -63,8 +63,12 @@ export type Provider = {
 
 /** Explorer types */
 import type KoiosClientInstance from "cardano-koios-client"
+import type OgmiosClientInstance from "cardano-ogmios-client"
+import type KupoClientInstance from "cardano-kupo-client"
 import type NftcdnClientInstance from "cardano-nftcdn-client"
 export type KoiosClient = ReturnType<typeof KoiosClientInstance>
+export type OgmiosClient = ReturnType<typeof OgmiosClientInstance>
+export type KupoClient = ReturnType<typeof KupoClientInstance>
 export type NftcdnClient = ReturnType<typeof NftcdnClientInstance>
 export type Explorers = {
   koios: KoiosClient
