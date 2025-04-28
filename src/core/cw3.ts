@@ -12,6 +12,8 @@ import {
 } from "../config"
 import { KoiosProvider } from "../providers/koios"
 import KoiosExplorer from "../explorers/koios"
+import OgmiosExplorer from "../explorers/ogmios"
+import KupoExplorer from "../explorers/kupo"
 import NftcdnExplorer from "../explorers/nftcdn"
 import { Data, Constr } from "../utils/data"
 import { Message } from "../utils/message"
@@ -63,6 +65,14 @@ export class CardanoWeb3 {
       koios: KoiosExplorer(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
         config?.explorer?.koios?.headers
+      ),
+      ogmios: OgmiosExplorer(
+        config?.explorer?.ogmios?.url || `https://graph.xray.app/output/ogmios/${network}/api/v1`,
+        config?.explorer?.ogmios?.headers
+      ),
+      kupo: KupoExplorer(
+        config?.explorer?.kupo?.url || `https://graph.xray.app/output/kupo/${network}/api/v1`,
+        config?.explorer?.kupo?.headers
       ),
       nftcdn: NftcdnExplorer(
         config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/nftcdn/${network}/api/v1`,

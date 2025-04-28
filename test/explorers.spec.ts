@@ -10,6 +10,22 @@ describe("Explorer", async () => {
       expect(tip.data?.[0]).toHaveProperty("epoch_no")
     })
 
+    it("Ogmios: /health", async () => {
+      const health = await web3.explorers.ogmios.GET("/health")
+      expect(health.data).toHaveProperty("currentEpoch")
+    })
+
+    // it("Kupo: /health", async () => {
+    //   const health = await web3.explorers.kupo.GET("/health", {
+    //     headers: {
+    //       Accept: "application/json",
+    //       Authorization: "Bearer YOUR_API_KEY", // XRAY/Graph API key
+    //     },
+    //   })
+    //   console.log(health.data)
+    //   expect(health.data).toHaveProperty("most_recent_node_tip")
+    // })
+
     it("Nftcdn: /metadata", async () => {
       const metadata = await web3.explorers.nftcdn.GET("/metadata/{id}", {
         params: {
@@ -20,12 +36,6 @@ describe("Explorer", async () => {
       })
       expect(metadata.data).toHaveProperty("fingerprint")
     })
-
-    // TODO: Not available yet
-    // it("Pricing: /orders", async () => {
-    //   const orders = await web3.explorer.pricing.GET("/orders")
-    //   expect(orders.data?.[0]).toHaveProperty("asset_a")
-    // })
   })
 
   describe("Preprod", async () => {
@@ -35,6 +45,21 @@ describe("Explorer", async () => {
       const tip = await web3.explorers.koios.GET("/tip")
       expect(tip.data?.[0]).toHaveProperty("epoch_no")
     })
+
+    it("Ogmios: /health", async () => {
+      const health = await web3.explorers.ogmios.GET("/health")
+      expect(health.data).toHaveProperty("currentEpoch")
+    })
+
+    // it("Kupo: /health", async () => {
+    //   const health = await web3.explorers.kupo.GET("/health", {
+    //     headers: {
+    //       Accept: "application/json",
+    //       Authorization: "Bearer YOUR_API_KEY", // XRAY/Graph API key
+    //     },
+    //   })
+    //   expect(health.data).toHaveProperty("most_recent_node_tip")
+    // })
 
     it("Nftcdn: /metadata", async () => {
       const metadata = await web3.explorers.nftcdn.GET("/metadata/{id}", {
@@ -55,6 +80,21 @@ describe("Explorer", async () => {
       const tip = await web3.explorers.koios.GET("/tip")
       expect(tip.data?.[0]).toHaveProperty("epoch_no")
     })
+
+    it("Ogmios: /health", async () => {
+      const health = await web3.explorers.ogmios.GET("/health")
+      expect(health.data).toHaveProperty("currentEpoch")
+    })
+
+    // it("Kupo: /health", async () => {
+    //   const health = await web3.explorers.kupo.GET("/health", {
+    //     headers: {
+    //       Accept: "application/json",
+    //       Authorization: "Bearer YOUR_API_KEY", // XRAY/Graph API key
+    //     },
+    //   })
+    //   expect(health.data).toHaveProperty("most_recent_node_tip")
+    // })
 
     it("Nftcdn: /metadata", async () => {
       const metadata = await web3.explorers.nftcdn.GET("/metadata/{id}", {

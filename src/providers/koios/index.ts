@@ -3,14 +3,14 @@ import { TTL } from "../../config"
 import * as CW3Types from "../../types"
 
 export class KoiosProvider implements CW3Types.Provider {
-  private client: CW3Types.KoiosClient
+  private koiosClient: CW3Types.KoiosClient
 
   constructor(baseUrl: string, headers?: CW3Types.Headers) {
-    this.client = KoiosClient(baseUrl, headers)
+    this.koiosClient = KoiosClient(baseUrl, headers)
   }
 
   getTip = async (): Promise<CW3Types.Tip> => {
-    const response = await this.client.GET("/tip", {})
+    const response = await this.koiosClient.GET("/tip", {})
     const tip = response.data?.[0]
     if (tip) {
       return {
@@ -26,7 +26,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   getProtocolParameters = async (): Promise<CW3Types.ProtocolParameters> => {
-    const response = await this.client.GET("/epoch_params", {
+    const response = await this.koiosClient.GET("/epoch_params", {
       params: {
         query: {
           _epoch_no: undefined,
@@ -45,7 +45,7 @@ export class KoiosProvider implements CW3Types.Provider {
       const utxos: CW3Types.Utxo[] = []
       let hasMore = true
       while (hasMore) {
-        const response = await this.client.POST("/address_utxos", {
+        const response = await this.koiosClient.POST("/address_utxos", {
           body: {
             _addresses: addresses,
             _extended: true,
@@ -72,7 +72,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   getUtxoByOutputRef = async (txHash: string, index: number): Promise<CW3Types.Utxo> => {
-    const response = await this.client.POST("/utxo_info", {
+    const response = await this.koiosClient.POST("/utxo_info", {
       body: {
         _utxo_refs: [`${txHash}#${index}`],
         _extended: true,
@@ -101,7 +101,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   getDatumByHash = async (datumHash: string): Promise<string | undefined> => {
-    const response = await this.client.POST("/datum_info", {
+    const response = await this.koiosClient.POST("/datum_info", {
       body: {
         _datum_hashes: [datumHash],
       },
@@ -113,7 +113,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   getScriptByHash = async (scriptHash: string): Promise<CW3Types.Script | undefined> => {
-    const response = await this.client.POST("/script_info", {
+    const response = await this.koiosClient.POST("/script_info", {
       body: {
         _script_hashes: [scriptHash],
       },
@@ -128,7 +128,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   getDelegation = async (stakingAddress: string): Promise<CW3Types.AccountDelegation> => {
-    const response = await this.client.POST("/account_info", {
+    const response = await this.koiosClient.POST("/account_info", {
       body: {
         _stake_addresses: [stakingAddress],
       },
@@ -144,7 +144,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   evaluateTx = async (tx: string, additionalUtxos?: CW3Types.Utxo[]): Promise<CW3Types.RedeemerCost[]> => {
-    const response = await this.client.POST("/ogmios", {
+    const response = await this.koiosClient.POST("/ogmios", {
       parseAs: "text",
       headers: {
         "Content-Type": "application/json",
@@ -173,7 +173,7 @@ export class KoiosProvider implements CW3Types.Provider {
 
   observeTx = (txHash: string, checkInterval: number = 3000, maxTime: number = TTL * 1000): Promise<boolean> => {
     const checkTx = async () => {
-      const response = await this.client.POST("/tx_status", {
+      const response = await this.koiosClient.POST("/tx_status", {
         body: {
           _tx_hashes: [txHash],
         },
@@ -198,7 +198,7 @@ export class KoiosProvider implements CW3Types.Provider {
   }
 
   submitTx = async (tx: string): Promise<string> => {
-    const response = await this.client.POST("/submittx", {
+    const response = await this.koiosClient.POST("/submittx", {
       parseAs: "text",
       headers: {
         "Content-Type": "application/cbor",

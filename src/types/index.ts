@@ -72,6 +72,8 @@ export type KupoClient = ReturnType<typeof KupoClientInstance>
 export type NftcdnClient = ReturnType<typeof NftcdnClientInstance>
 export type Explorers = {
   koios: KoiosClient
+  ogmios: OgmiosClient
+  kupo: KupoClient
   nftcdn: NftcdnClient
 }
 
@@ -94,11 +96,15 @@ export type InitConfig = {
       headers?: Headers
       url: string
     }
-    nftcdn: {
+    ogmios: {
       headers?: Headers
       url: string
     }
-    pricing: {
+    kupo: {
+      headers?: Headers
+      url: string
+    }
+    nftcdn: {
       headers?: Headers
       url: string
     }
