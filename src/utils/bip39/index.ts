@@ -53,39 +53,15 @@ export function mnemonicToEntropy(mnemonic: string, wordlist?: Array<string>): s
   return toHex(entropy)
 }
 
-function randomValues(array: Uint8Array) {
-  for (let i = 0, l = array.length; i < l; i++) {
-    array[i] = Math.floor(Math.random() * 256)
+function randomBytes(length: number): Uint8Array {
+  if (typeof window !== "undefined" && window.crypto) {
+    const bytes = new Uint8Array(length)
+    window.crypto.getRandomValues(bytes)
+    return bytes
+  } else {
+    const { randomBytes } = require("crypto")
+    return Uint8Array.from(randomBytes(length))
   }
-  return array
-}
-
-function randomBytes(size: number): Uint8Array {
-  // reimplementation of: https://github.com/crypto-browserify/randombytes/blob/master/browser.js
-  const MAX_UINT32 = 4294967295
-  const MAX_BYTES = 65536
-  const bytes = new Uint8Array(size)
-
-  if (size > MAX_UINT32) {
-    throw new RangeError("requested too many random bytes")
-  }
-
-  if (size > 0) {
-    // getRandomValues fails on IE if size == 0
-    if (size > MAX_BYTES) {
-      // this is the max bytes crypto.getRandomValues
-      // can do at once see https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
-      for (let generated = 0; generated < size; generated += MAX_BYTES) {
-        // buffer.slice automatically checks if the end is past the end of
-        // the buffer so we don't have to here
-        randomValues(bytes.slice(generated, generated + MAX_BYTES))
-      }
-    } else {
-      randomValues(bytes)
-    }
-  }
-
-  return bytes
 }
 
 export function generateMnemonic(

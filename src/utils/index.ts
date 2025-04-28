@@ -850,11 +850,14 @@ export class Utils {
     },
 
     randomBytes: (length: number): Uint8Array => {
-      const bytes = new Uint8Array(length)
-      for (let i = 0; i < length; i++) {
-        bytes[i] = Math.floor(Math.random() * 256)
+      if (typeof window !== "undefined" && window.crypto) {
+        const bytes = new Uint8Array(length)
+        window.crypto.getRandomValues(bytes)
+        return bytes
+      } else {
+        const { randomBytes } = require("crypto")
+        return Uint8Array.from(randomBytes(length))
       }
-      return bytes
     },
   }
 }
