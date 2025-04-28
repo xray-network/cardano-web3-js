@@ -31,6 +31,7 @@ export class TxFinalizer {
   /**
    * Sign TX with account
    * @param account Account to sign with
+   * @param utxos UTXOs to use for signing (trying to find used signing keys)
    * @param password Password to decode xprv key (optional)
    * @returns TxFinalizer instance
    */
@@ -55,20 +56,22 @@ export class TxFinalizer {
         const stakingKey = this.cw3.libs.CML.PrivateKey.from_bech32(stakingVerificationKey)
         const stakingKeyHash = stakingKey.to_public().hash().to_hex()
 
-        const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
-          this.__tx,
-          [stakingKeyHash, paymentKeyHash],
-          utxos
-        )
-        if (foundHashes.includes(paymentKeyHash)) {
-          this.__witnessBuilder.add_vkey(
-            this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), paymentKey)
+        if (utxos.length > 0) {
+          const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
+            this.__tx,
+            [stakingKeyHash, paymentKeyHash],
+            utxos
           )
-        }
-        if (foundHashes.includes(stakingKeyHash)) {
-          this.__witnessBuilder.add_vkey(
-            this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), stakingKey)
-          )
+          if (foundHashes.includes(paymentKeyHash)) {
+            this.__witnessBuilder.add_vkey(
+              this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), paymentKey)
+            )
+          }
+          if (foundHashes.includes(stakingKeyHash)) {
+            this.__witnessBuilder.add_vkey(
+              this.cw3.libs.CML.make_vkey_witness(this.cw3.libs.CML.hash_transaction(this.__tx.body()), stakingKey)
+            )
+          }
         }
       }
       if (account.__config.type === "connector") {

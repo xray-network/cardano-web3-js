@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3, Data, T } from "../src"
+import { CardanoWeb3, PlutusData, CW3Types } from "../src"
 import { testData } from "./__test"
 
 describe("TX", async () => {
@@ -12,7 +12,7 @@ describe("TX", async () => {
   const accountState = await account.getState()
   const accountUtxos = accountState.utxos
   const accountBalance = accountState.balance
-  const alwaysSucceedScript: T.Script = {
+  const alwaysSucceedScript: CW3Types.Script = {
     language: "PlutusV2",
     script: "480100002221200101",
   }
@@ -57,7 +57,7 @@ describe("TX", async () => {
       myVariableA: web3.libs.PlutusData.Bytes(),
       myVariableB: web3.libs.PlutusData.Nullable(web3.libs.PlutusData.Integer()),
     })
-    type MyDatum = Data.Static<typeof MyDatumSchema>
+    type MyDatum = PlutusData.Static<typeof MyDatumSchema>
     const MyDatum = MyDatumSchema as unknown as MyDatum
     const datum = web3.libs.PlutusData.to(
       {

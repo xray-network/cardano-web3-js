@@ -31,11 +31,12 @@ export class Account {
   static fromMnemonic = (
     cw3: L.CardanoWeb3,
     mnemonic: string,
+    password: string | undefined,
     accountPath: CW3Types.AccountDerivationPath,
     addressPath: CW3Types.AddressDerivationPath
   ) => {
     const xprvKey = cw3.utils.keys.mnemonicToXprvKey(mnemonic)
-    return this.fromXprvKey(cw3, xprvKey, accountPath, addressPath)
+    return this.fromXprvKey(cw3, xprvKey, password, accountPath, addressPath)
   }
 
   /**
@@ -49,6 +50,7 @@ export class Account {
   static fromXprvKey = (
     cw3: L.CardanoWeb3,
     xprvKey: string,
+    password: string | undefined,
     accountPath: CW3Types.AccountDerivationPath,
     addressPath: CW3Types.AddressDerivationPath
   ) => {
@@ -61,7 +63,8 @@ export class Account {
     account.__config.accountPath = accountPath
     account.__config.addressPath = addressPath
     account.__config.xpubKey = xpubKey
-    account.__config.xprvKey = xprvKey
+    account.__config.xprvKey = password ? cw3.utils.misc.encryptDataWithPass(xprvKey, password) : xprvKey
+    account.__config.xprvKeyIsEncoded = password ? true : false
     account.__config.type = "xprv"
     account.__config.checksumImage = checksum.checksumImage
     account.__config.checksumId = checksum.checksumId

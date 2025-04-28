@@ -134,10 +134,11 @@ export class CardanoWeb3 {
      */
     fromMnemonic: (
       mnemonic: string,
+      password?: string,
       accountPath: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
       addressPath: CW3Types.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
     ) => {
-      return Account.fromMnemonic(this, mnemonic, accountPath, addressPath)
+      return Account.fromMnemonic(this, mnemonic, password, accountPath, addressPath)
     },
 
     /**
@@ -149,10 +150,11 @@ export class CardanoWeb3 {
      */
     fromXprvKey: (
       xprvKey: string,
+      password?: string,
       accountPath: CW3Types.AccountDerivationPath = DEFAULT_ACCOUNT_DERIVATION_PATH,
       addressPath: CW3Types.AddressDerivationPath = DEFAULT_ADDRESS_DERIVATION_PATH
     ) => {
-      return Account.fromXprvKey(this, xprvKey, accountPath, addressPath)
+      return Account.fromXprvKey(this, xprvKey, password, accountPath, addressPath)
     },
 
     /**

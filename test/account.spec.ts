@@ -17,6 +17,14 @@ describe("Account", async () => {
     expect(account.__config.xpubKey).toHaveLength(114)
   })
 
+  it("FromXprvKeyEncoded", async () => {
+    const xprvKeyGenerated = web3.utils.keys.xprvKeyGenerate()
+    const account = web3.account.fromXprvKey(xprvKeyGenerated, "123456")
+    const encodedXprvKey = account.__config.xprvKey
+    const decodedXprvKey = account.getDecodedXprvKey("123456")
+    expect(xprvKeyGenerated).toBe(decodedXprvKey)
+  })
+
   it("FromXpubKey", async () => {
     const account = web3.account.fromXpubKey(testData.xpubKey)
     expect(account.__config.xpubKey).toHaveLength(114)
