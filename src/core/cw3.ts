@@ -24,9 +24,9 @@ import {
  * Main class for CardanoWeb3 library which provides all the necessary functions to interact with Cardano blockchain
  */
 export class CardanoWeb3 {
-  explorers: CW3Types.Explorers
-  provider: CW3Types.Provider
   utils: Utils
+  provider: CW3Types.Provider
+  explorers: CW3Types.Explorers
   __config: {
     network: CW3Types.NetworkConfig
     protocolParams: CW3Types.ProtocolParameters
@@ -41,14 +41,8 @@ export class CardanoWeb3 {
    */
   constructor(config?: CW3Types.InitConfig) {
     const network = config?.network || "mainnet"
-    // this.libs = {
-    //   CML,
-    //   MSL,
-    //   UPLC,
-    //   PlutusData: PlutusData(),
-    //   PlutusConstr: PlutusConstr,
-    //   Message: Message(this),
-    // }
+    this.utils = new Utils()
+    this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     this.explorers = {
       koios: KoiosExplorer(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
@@ -67,8 +61,6 @@ export class CardanoWeb3 {
         config?.explorer?.nftcdn?.headers
       ),
     }
-    this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
-    this.utils = new Utils()
     this.__config = {
       network: {
         name: network,

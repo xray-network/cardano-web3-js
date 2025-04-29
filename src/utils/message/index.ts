@@ -1,18 +1,18 @@
 import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import M from "@emurgo/cardano-message-signing-nodejs"
-import { CardanoWeb3 } from "../../core/cw3"
+import { Buffer } from "buffer"
 import * as CW3Types from "../../types"
 
-// TODO: Remove and import from utils
-import { Buffer } from "buffer"
 const fromHex = (hex: string): Uint8Array => {
   return new Uint8Array(Buffer.from(hex, "hex"))
 }
+
 const toHex = (bytes: Uint8Array): string => {
   return Buffer.from(bytes).toString("hex")
 }
 
 export const Message = () => {
+
   return {
     signData: (addressHex: string, payload: string, privateKey: string): CW3Types.SignedMessage => {
       const protectedHeaders = M.HeaderMap.new()
