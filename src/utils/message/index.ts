@@ -1,13 +1,20 @@
+import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import M from "@emurgo/cardano-message-signing-nodejs"
+import { CardanoWeb3 } from "../../core/cw3"
 import * as CW3Types from "../../types"
-import * as L from "../../types/links"
 
-export const Message = (cw3: L.CardanoWeb3) => {
+// TODO: Remove and import from utils
+import { Buffer } from "buffer"
+const fromHex = (hex: string): Uint8Array => {
+  return new Uint8Array(Buffer.from(hex, "hex"))
+}
+const toHex = (bytes: Uint8Array): string => {
+  return Buffer.from(bytes).toString("hex")
+}
+
+export const Message = () => {
   return {
     signData: (addressHex: string, payload: string, privateKey: string): CW3Types.SignedMessage => {
-      const M = cw3.libs.MSL
-      const C = cw3.libs.CML
-      const { fromHex, toHex } = cw3.utils.misc
-
       const protectedHeaders = M.HeaderMap.new()
       protectedHeaders.set_algorithm_id(M.Label.from_algorithm_id(M.AlgorithmId.EdDSA))
       protectedHeaders.set_header(M.Label.new_text("address"), M.CBORValue.new_bytes(fromHex(addressHex)))
@@ -17,7 +24,7 @@ export const Message = (cw3: L.CardanoWeb3) => {
       const builder = M.COSESign1Builder.new(headers, fromHex(payload), false)
       const toSign = builder.make_data_to_sign().to_bytes()
 
-      const priv = C.PrivateKey.from_bech32(privateKey)
+      const priv = CML.PrivateKey.from_bech32(privateKey)
 
       const signedSigStruc = priv.sign(toSign).to_raw_bytes()
       const coseSign1 = builder.build(signedSigStruc)
@@ -48,10 +55,6 @@ export const Message = (cw3: L.CardanoWeb3) => {
       payload: string,
       signedMessage: CW3Types.SignedMessage
     ): boolean => {
-      const M = cw3.libs.MSL
-      const C = cw3.libs.CML
-      const { fromHex, toHex } = cw3.utils.misc
-
       const cose1 = M.COSESign1.from_bytes(fromHex(signedMessage.signature))
       const key = M.COSEKey.from_bytes(fromHex(signedMessage.key))
 
@@ -107,7 +110,7 @@ export const Message = (cw3: L.CardanoWeb3) => {
 
       const publicKey = (() => {
         try {
-          return C.PublicKey.from_bytes(
+          return CML.PublicKey.from_bytes(
             key.header(M.Label.new_int(M.Int.new_negative(M.BigNum.from_str("2"))))?.as_bytes()!
           )
         } catch (_e) {
@@ -123,7 +126,7 @@ export const Message = (cw3: L.CardanoWeb3) => {
         }
       })()
 
-      const signature = C.Ed25519Signature.from_raw_bytes(cose1.signature())
+      const signature = CML.Ed25519Signature.from_raw_bytes(cose1.signature())
 
       const data = cose1.signed_data(undefined, undefined).to_bytes()
 

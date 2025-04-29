@@ -3,7 +3,7 @@ import { CardanoWeb3 } from "../src"
 import { testData } from "./__test"
 
 describe("Message", async () => {
-  const web3 = await CardanoWeb3.init({
+  const web3 = new CardanoWeb3({
     network: "preview",
   })
 

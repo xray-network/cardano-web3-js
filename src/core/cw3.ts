@@ -1,8 +1,15 @@
+import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import { TxBuilder } from "./txBuilder"
 import { TxFinalizer } from "./txFinalizer"
 import { Utils } from "../utils"
 import { Account } from "./account"
 import { Connector } from "./connector"
+import { KoiosProvider } from "../providers/koios"
+import KoiosExplorer from "../explorers/koios"
+import OgmiosExplorer from "../explorers/ogmios"
+import KupoExplorer from "../explorers/kupo"
+import NftcdnExplorer from "../explorers/nftcdn"
+import * as CW3Types from "../types"
 import {
   DEFAULT_ACCOUNT_DERIVATION_PATH,
   DEFAULT_ADDRESS_DERIVATION_PATH,
@@ -10,15 +17,6 @@ import {
   SLOT_CONFIG_NETWORK,
   TTL,
 } from "../config"
-import { KoiosProvider } from "../providers/koios"
-import KoiosExplorer from "../explorers/koios"
-import OgmiosExplorer from "../explorers/ogmios"
-import KupoExplorer from "../explorers/kupo"
-import NftcdnExplorer from "../explorers/nftcdn"
-import { Data, Constr } from "../utils/data"
-import { Message } from "../utils/message"
-import * as CW3Types from "../types"
-import * as L from "../types/links"
 
 /**
  * CardanoWeb3 class
@@ -26,14 +24,6 @@ import * as L from "../types/links"
  * Main class for CardanoWeb3 library which provides all the necessary functions to interact with Cardano blockchain
  */
 export class CardanoWeb3 {
-  libs: {
-    CML: typeof L.CML // dcSpark @ Cardano Multiplatform Library
-    MSL: typeof L.MSL // Emurgo @ Message Signing Library
-    UPLC: typeof L.UPLC // UPLC @ Untyped Plutus Core Library
-    PlutusData: ReturnType<typeof Data> // Lucid Plutus Data Serialization Lib
-    PlutusConstr: typeof Constr // Lucid Plutus Data Construction Lib */
-    Message: ReturnType<typeof Message> // Message Signing/Verification Lib
-  }
   explorers: CW3Types.Explorers
   provider: CW3Types.Provider
   utils: Utils
@@ -49,19 +39,17 @@ export class CardanoWeb3 {
    * @param config Configuration object
    * @returns CardanoWeb3 instance
    */
-  static init = async (config?: CW3Types.InitConfig) => {
-    const cw3 = new CardanoWeb3()
+  constructor(config?: CW3Types.InitConfig) {
     const network = config?.network || "mainnet"
-
-    cw3.libs = {
-      CML: await import("@dcspark/cardano-multiplatform-lib-nodejs"),
-      MSL: await import("@emurgo/cardano-message-signing-nodejs"),
-      UPLC: await import("uplc-node"),
-      PlutusData: Data(cw3),
-      PlutusConstr: Constr,
-      Message: Message(cw3),
-    }
-    cw3.explorers = {
+    // this.libs = {
+    //   CML,
+    //   MSL,
+    //   UPLC,
+    //   PlutusData: PlutusData(),
+    //   PlutusConstr: PlutusConstr,
+    //   Message: Message(this),
+    // }
+    this.explorers = {
       koios: KoiosExplorer(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
         config?.explorer?.koios?.headers
@@ -79,9 +67,9 @@ export class CardanoWeb3 {
         config?.explorer?.nftcdn?.headers
       ),
     }
-    cw3.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
-    cw3.utils = new Utils(cw3)
-    cw3.__config = {
+    this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
+    this.utils = new Utils()
+    this.__config = {
       network: {
         name: network,
         type: network === "mainnet" ? "mainnet" : "testnet",
@@ -91,8 +79,6 @@ export class CardanoWeb3 {
       slotConfig: config?.slotConfig || SLOT_CONFIG_NETWORK[network],
       ttl: config?.ttl || TTL,
     }
-
-    return cw3
   }
 
   connector = {
@@ -172,7 +158,7 @@ export class CardanoWeb3 {
      * @param connector Connector instance
      * @returns Account instance
      */
-    fromConnector: (connector: L.Connector) => {
+    fromConnector: (connector: Connector) => {
       return Account.fromConnector(this, connector)
     },
 
@@ -256,11 +242,7 @@ export class CardanoWeb3 {
      * @param password Password for xprv key (optional)
      * @returns Signed message
      */
-    signWithAccount: async (
-      account: L.Account,
-      message: string,
-      password?: string
-    ): Promise<CW3Types.SignedMessage> => {
+    signWithAccount: async (account: Account, message: string, password?: string): Promise<CW3Types.SignedMessage> => {
       if (account.__config.type === "xprv") {
         if (account.__config.xprvKeyIsEncoded && !password)
           throw new Error("Password is required to sign with xprv encoded account")
@@ -278,7 +260,7 @@ export class CardanoWeb3 {
         throw new Error("Can't sign TX with xpub account type")
       }
       if (account.__config.type === "connector") {
-        const hexAddress = this.libs.CML.Address.from_bech32(account.__config.paymentAddress).to_hex()
+        const hexAddress = CML.Address.from_bech32(account.__config.paymentAddress).to_hex()
         const hexMessage = this.utils.misc.fromStringToHex(message)
         return await account.__config.connector.signData(hexAddress, hexMessage)
       }
@@ -298,13 +280,13 @@ export class CardanoWeb3 {
      * @returns Signed message
      */
     signWithVrfKey: (verificationKey: string, address: string, message: string): CW3Types.SignedMessage => {
-      const hexAddress = this.libs.CML.Address.from_bech32(address).to_hex()
+      const hexAddress = CML.Address.from_bech32(address).to_hex()
       const hexMessage = this.utils.misc.fromStringToHex(message)
       const { paymentCred } = this.utils.address.getCredentials(address)
-      const hash = this.libs.CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
+      const hash = CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
       if (!paymentCred?.hash || paymentCred?.hash !== hash)
         throw new Error("Verification key does not match the address")
-      return this.libs.Message.signData(hexAddress, hexMessage, verificationKey)
+      return this.utils.libs.Message.signData(hexAddress, hexMessage, verificationKey)
     },
 
     /**
@@ -315,12 +297,12 @@ export class CardanoWeb3 {
      * @returns True if message is verified, false otherwise
      */
     verify: (address: string, message: string, signedMessage: CW3Types.SignedMessage): boolean => {
-      const hexAddress = this.libs.CML.Address.from_bech32(address).to_hex()
+      const hexAddress = this.utils.libs.CML.Address.from_bech32(address).to_hex()
       const hexMessage = this.utils.misc.fromStringToHex(message)
       const { paymentCred, stakingCred } = this.utils.address.getCredentials(address)
       const hash = paymentCred?.hash || stakingCred?.hash
       if (!hash) throw new Error("Invalid address")
-      return this.libs.Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
+      return this.utils.libs.Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
     },
   }
 }

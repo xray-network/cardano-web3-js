@@ -2,9 +2,9 @@ import { expect, it, describe } from "vitest"
 import { CardanoWeb3, PlutusData } from "../src"
 
 describe("Data", async () => {
-  const web3 = await CardanoWeb3.init()
-  const PlutusData = web3.libs.PlutusData
-  const Constr = web3.libs.PlutusConstr
+  const web3 = new CardanoWeb3()
+  const PlutusData = web3.utils.libs.PlutusData
+  const Constr = web3.utils.libs.PlutusConstr
   const {
     script: { applyParamsToScript },
   } = web3.utils

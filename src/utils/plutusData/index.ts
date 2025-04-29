@@ -1,6 +1,18 @@
+import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import * as TypeBox from "@sinclair/typebox"
 import * as CW3Types from "../../types"
-import * as L from "../../types/links"
+
+// TODO: Remove and import from utils
+import { Buffer } from "buffer"
+const fromHex = (hex: string): Uint8Array => {
+  return new Uint8Array(Buffer.from(hex, "hex"))
+}
+const toHex = (bytes: Uint8Array): string => {
+  return Buffer.from(bytes).toString("hex")
+}
+const fromStringToHex = (text: string): string => {
+  return Buffer.from(text).toString("hex")
+}
 
 type Datum = CW3Types.Datum
 type Redeemer = CW3Types.Redeemer
@@ -28,7 +40,7 @@ export type Data =
   | Map<Data, Data> // AssocList
   | Constr<Data>
 
-export const Data = (cw3: L.CardanoWeb3) => {
+export const Data = () => {
   return {
     // Types
     // Note: Recursive types are not supported (yet)
@@ -211,18 +223,18 @@ export const Data = (cw3: L.CardanoWeb3) => {
      * Convert PlutusData to Cbor encoded data.
      * Or apply a shape and convert the provided data struct to Cbor encoded data.
      */
-    to: <T = Data>(data: Exact<T>, type?: T) => to(cw3, data, type),
+    to,
     /** Convert Cbor encoded data to PlutusData */
-    from: <T = Data>(raw: Datum | Redeemer, type?: T) => from(cw3, raw, type),
+    from,
     /**
      * Note Constr cannot be used here.
      * Strings prefixed with '0x' are not UTF-8 encoded.
      */
-    fromJson: (json: Json) => fromJson(cw3, json),
+    fromJson,
     /**
      * Note Constr cannot be used here, also only bytes/integers as Json keys.
      */
-    toJson: (plutusData: Data) => toJson(cw3, plutusData),
+    toJson,
     void: function (): Datum | Redeemer {
       return "d87980"
     },
@@ -235,36 +247,36 @@ export const Data = (cw3: L.CardanoWeb3) => {
  * Convert PlutusData to Cbor encoded data.
  * Or apply a shape and convert the provided data struct to Cbor encoded data.
  */
-function to<T = Data>(cw3: L.CardanoWeb3, data: Exact<T>, type?: T): Datum | Redeemer {
-  function serialize(data: Data): L.CML.PlutusData {
+function to<T = Data>(data: Exact<T>, type?: T): Datum | Redeemer {
+  function serialize(data: Data): CML.PlutusData {
     try {
       if (typeof data === "bigint") {
-        return cw3.libs.CML.PlutusData.new_integer(cw3.libs.CML.BigInteger.from_str(data.toString()))
+        return CML.PlutusData.new_integer(CML.BigInteger.from_str(data.toString()))
       } else if (typeof data === "string") {
-        return cw3.libs.CML.PlutusData.new_bytes(cw3.utils.misc.fromHex(data))
+        return CML.PlutusData.new_bytes(fromHex(data))
       } else if (data instanceof Constr) {
         const { index, fields } = data
-        const plutusList = cw3.libs.CML.PlutusDataList.new()
+        const plutusList = CML.PlutusDataList.new()
 
         fields.forEach((field) => plutusList.add(serialize(field)))
 
-        return cw3.libs.CML.PlutusData.new_constr_plutus_data(
-          cw3.libs.CML.ConstrPlutusData.new(cw3.libs.CML.BigInteger.from_str(index.toString()).as_u64()!, plutusList)
+        return CML.PlutusData.new_constr_plutus_data(
+          CML.ConstrPlutusData.new(CML.BigInteger.from_str(index.toString()).as_u64()!, plutusList)
         )
       } else if (data instanceof Array) {
-        const plutusList = cw3.libs.CML.PlutusDataList.new()
+        const plutusList = CML.PlutusDataList.new()
 
         data.forEach((arg) => plutusList.add(serialize(arg)))
 
-        return cw3.libs.CML.PlutusData.new_list(plutusList)
+        return CML.PlutusData.new_list(plutusList)
       } else if (data instanceof Map) {
-        const plutusMap = cw3.libs.CML.PlutusMap.new()
+        const plutusMap = CML.PlutusMap.new()
 
         for (const [key, value] of data.entries()) {
           plutusMap.set(serialize(key), serialize(value))
         }
 
-        return cw3.libs.CML.PlutusData.new_map(plutusMap)
+        return CML.PlutusData.new_map(plutusMap)
       }
       throw new Error("Unsupported type")
     } catch (error) {
@@ -279,8 +291,8 @@ function to<T = Data>(cw3: L.CardanoWeb3, data: Exact<T>, type?: T): Datum | Red
  *  Convert Cbor encoded data to Data.
  *  Or apply a shape and cast the cbor encoded data to a certain type.
  */
-function from<T = Data>(cw3: L.CardanoWeb3, raw: Datum | Redeemer, type?: T): T {
-  function deserialize(data: L.CML.PlutusData): Data {
+function from<T = Data>(raw: Datum | Redeemer, type?: T): T {
+  function deserialize(data: CML.PlutusData): Data {
     if (data.kind() === 0) {
       const constr = data.as_constr_plutus_data()!
       const l = constr.fields()
@@ -307,11 +319,11 @@ function from<T = Data>(cw3: L.CardanoWeb3, raw: Datum | Redeemer, type?: T): T 
     } else if (data.kind() === 3) {
       return BigInt(data.as_integer()!.to_str())
     } else if (data.kind() === 4) {
-      return cw3.utils.misc.toHex(data.as_bytes()!)
+      return toHex(data.as_bytes()!)
     }
     throw new Error("Unsupported type")
   }
-  const data = deserialize(cw3.libs.CML.PlutusData.from_cbor_hex(raw))
+  const data = deserialize(CML.PlutusData.from_cbor_hex(raw))
 
   return type ? castFrom<T>(data, type) : (data as T)
 }
@@ -320,12 +332,10 @@ function from<T = Data>(cw3: L.CardanoWeb3, raw: Datum | Redeemer, type?: T): T 
  * Note Constr cannot be used here.
  * Strings prefixed with '0x' are not UTF-8 encoded.
  */
-function fromJson(cw3: L.CardanoWeb3, json: Json): Data {
+function fromJson(json: Json): Data {
   function toData(json: Json): Data {
     if (typeof json === "string") {
-      return json.startsWith("0x")
-        ? cw3.utils.misc.toHex(cw3.utils.misc.fromHex(json.slice(2)))
-        : cw3.utils.misc.fromStringToHex(json)
+      return json.startsWith("0x") ? toHex(fromHex(json.slice(2))) : fromStringToHex(json)
     }
     if (typeof json === "number") return BigInt(json)
     if (typeof json === "bigint") return json
@@ -345,7 +355,7 @@ function fromJson(cw3: L.CardanoWeb3, json: Json): Data {
 /**
  * Note Constr cannot be used here, also only bytes/integers as Json keys.
  */
-function toJson(cw3: L.CardanoWeb3, plutusData: Data): Json {
+function toJson(plutusData: Data): Json {
   function fromData(data: Data): Json {
     if (
       typeof data === "bigint" ||
@@ -357,9 +367,9 @@ function toJson(cw3: L.CardanoWeb3, plutusData: Data): Json {
     }
     if (typeof data === "string") {
       try {
-        return new TextDecoder(undefined, { fatal: true }).decode(cw3.utils.misc.fromHex(data))
+        return new TextDecoder(undefined, { fatal: true }).decode(fromHex(data))
       } catch (_) {
-        return "0x" + cw3.utils.misc.toHex(cw3.utils.misc.fromHex(data))
+        return "0x" + toHex(fromHex(data))
       }
     }
     if (data instanceof Array) return data.map((v) => fromData(v))

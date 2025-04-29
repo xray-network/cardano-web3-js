@@ -2,7 +2,7 @@ import { expect, it, describe } from "vitest"
 import { CardanoWeb3 } from "../src"
 
 describe("Provider", async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = new CardanoWeb3()
 
   it("getTip()", async () => {
     const tip = await web3.provider.getTip()
@@ -39,6 +39,4 @@ describe("Provider", async () => {
     const script = await web3.provider.getScriptByHash("bd2119ee2bfb8c8d7c427e8af3c35d537534281e09e23013bca5b138")
     expect(script).toHaveProperty("script")
   })
-
-  // Etc...
 })

@@ -1,5 +1,4 @@
 import * as CW3Types from "../types"
-import * as L from "../types/links"
 
 declare global {
   interface Window {
@@ -37,7 +36,7 @@ export class Connector {
    * @param extensions Wallet extensions
    * @returns Connector instance
    */
-  static init = async (wallet: string, extensions?: any): Promise<L.Connector | undefined> => {
+  static init = async (wallet: string, extensions?: any): Promise<Connector | undefined> => {
     if (typeof window === "undefined") throw new Error("Connector is only available in the browser environment")
     const connector = new Connector()
     if (!window?.cardano?.[wallet]) throw new Error(`Wallet ${wallet} not found`)

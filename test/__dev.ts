@@ -1,8 +1,8 @@
-import { CardanoWeb3, KupmiosProvider, Account } from "../src"
+import { CardanoWeb3, KupmiosProvider } from "../src"
 import { testData } from "./__test"
 
 const app = async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = new CardanoWeb3()
   // const web3 = await CardanoWeb3.init({
   //   provider: new KupmiosProvider({
   //     ogmiosUrl: "https://graph.xray.app/output/ogmios/mainnet/api/v1",

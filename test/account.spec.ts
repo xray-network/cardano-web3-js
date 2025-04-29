@@ -3,7 +3,7 @@ import { CardanoWeb3 } from "../src"
 import { testData } from "./__test"
 
 describe("Account", async () => {
-  const web3 = await CardanoWeb3.init()
+  const web3 = new CardanoWeb3()
 
   it("FromMnemonic", async () => {
     const mnemonicGenerated = web3.utils.keys.mnemonicGenerate()

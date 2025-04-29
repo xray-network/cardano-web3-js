@@ -3,7 +3,7 @@ import { CardanoWeb3 } from "../src"
 import { testData } from "./__test"
 
 describe("Utils", async () => {
-  const web3 = await CardanoWeb3.init({
+  const web3 = new CardanoWeb3({
     network: "preview",
   })
 
@@ -65,17 +65,25 @@ describe("Utils", async () => {
 
   describe("Address", async () => {
     it("deriveBase()", async () => {
-      const addressGenerated = web3.utils.address.deriveBase(testData.xpubKey, testData.addressPath)
+      const addressGenerated = web3.utils.address.deriveBase(
+        testData.xpubKey,
+        testData.addressPath,
+        web3.__config.network.id
+      )
       expect(addressGenerated).toEqual(testData.paymentAddress)
     })
 
     it("deriveEnterprise()", async () => {
-      const addressGenerated = web3.utils.address.deriveEnterprise(testData.xpubKey, testData.addressPath)
+      const addressGenerated = web3.utils.address.deriveEnterprise(
+        testData.xpubKey,
+        testData.addressPath,
+        web3.__config.network.id
+      )
       expect(addressGenerated).toEqual(testData.paymentAddressEnterprise)
     })
 
     it("deriveStaking()", async () => {
-      const addressGenerated = web3.utils.address.deriveStaking(testData.xpubKey)
+      const addressGenerated = web3.utils.address.deriveStaking(testData.xpubKey, web3.__config.network.id)
       expect(addressGenerated).toEqual(testData.stakingAddress)
     })
 
@@ -121,7 +129,11 @@ describe("Utils", async () => {
     })
 
     it("getDetailsFromXpub()", async () => {
-      const details = web3.utils.account.getDetailsFromXpub(testData.xpubKey, testData.addressPath)
+      const details = web3.utils.account.getDetailsFromXpub(
+        testData.xpubKey,
+        testData.addressPath,
+        web3.__config.network.id
+      )
       expect(details.paymentAddress).toEqual(testData.paymentAddress)
       expect(details.stakingAddress).toEqual(testData.stakingAddress)
     })
@@ -146,8 +158,8 @@ describe("Utils", async () => {
   describe("Time", async () => {
     it("Roundtrip unixTimeToSlot() slotToUnixTime()", async () => {
       const unixTime = Date.now()
-      const slot = web3.utils.time.unixTimeToSlot(unixTime)
-      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot)
+      const slot = web3.utils.time.unixTimeToSlot(unixTime, web3.__config.slotConfig)
+      const unixTimeGenerated = web3.utils.time.slotToUnixTime(slot, web3.__config.slotConfig)
       expect(unixTimeGenerated).toEqual(Math.floor(unixTime / 1000) * 1000)
     })
   })

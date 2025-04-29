@@ -1,8 +1,10 @@
+import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import { CardanoWeb3 } from "./cw3"
+import { Connector } from "./connector"
 import * as CW3Types from "../types"
-import * as L from "../types/links"
 
 export class Account {
-  private cw3: L.CardanoWeb3
+  private cw3: CardanoWeb3
   __config: CW3Types.AccountConfig = {
     configVersion: 1,
     type: undefined,
@@ -29,7 +31,7 @@ export class Account {
    * @returns Account instance
    */
   static fromMnemonic = (
-    cw3: L.CardanoWeb3,
+    cw3: CardanoWeb3,
     mnemonic: string,
     password: string | undefined,
     accountPath: CW3Types.AccountDerivationPath,
@@ -48,7 +50,7 @@ export class Account {
    * @returns Account instance
    */
   static fromXprvKey = (
-    cw3: L.CardanoWeb3,
+    cw3: CardanoWeb3,
     xprvKey: string,
     password: string | undefined,
     accountPath: CW3Types.AccountDerivationPath,
@@ -57,7 +59,7 @@ export class Account {
     const account = new Account()
     const xpubKey = cw3.utils.keys.xprvKeyToXpubKey(xprvKey, accountPath)
     const checksum = cw3.utils.account.checksum(xpubKey)
-    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath)
+    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath, cw3.__config.network.id)
 
     account.cw3 = cw3
     account.__config.accountPath = accountPath
@@ -83,11 +85,11 @@ export class Account {
    * @param addressPath Address derivation path (e.g. [0, 0])
    * @returns Account instance
    */
-  static fromXpubKey = (cw3: L.CardanoWeb3, xpubKey: string, addressPath: CW3Types.AddressDerivationPath) => {
+  static fromXpubKey = (cw3: CardanoWeb3, xpubKey: string, addressPath: CW3Types.AddressDerivationPath) => {
     if (!cw3.utils.keys.xpubKeyValidate(xpubKey)) throw new Error("Invalid public key")
     const account = new Account()
     const checksum = cw3.utils.account.checksum(xpubKey)
-    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath)
+    const accountDetails = cw3.utils.account.getDetailsFromXpub(xpubKey, addressPath, cw3.__config.network.id)
 
     account.cw3 = cw3
     account.__config.accountPath = undefined
@@ -111,15 +113,15 @@ export class Account {
    * @param connector Connector instance
    * @returns Account instance
    */
-  static fromConnector = async (cw3: L.CardanoWeb3, connector: L.Connector) => {
+  static fromConnector = async (cw3: CardanoWeb3, connector: Connector) => {
     const connectorNetwork = await connector.getNetworkId()
     if (connectorNetwork !== cw3.__config.network.id) throw new Error("Connector network mismatch")
 
     const account = new Account()
     const mainAddress = (await connector.getUsedAddresses())?.[0] || (await connector.getUnusedAddresses())?.[0]
-    const paymentAddress = cw3.libs.CML.Address.from_hex(mainAddress).to_bech32()
+    const paymentAddress = CML.Address.from_hex(mainAddress).to_bech32()
     const { paymentCred, stakingCred } = cw3.utils.address.getCredentials(paymentAddress)
-    const stakingAddress = cw3.libs.CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
+    const stakingAddress = CML.Address.from_hex((await connector.getRewardAddresses())[0]).to_bech32()
 
     account.cw3 = cw3
     account.__config.accountPath = undefined
@@ -144,7 +146,7 @@ export class Account {
    * @param address Bech32 address
    * @returns Account instance
    */
-  static fromAddress = (cw3: L.CardanoWeb3, address: string) => {
+  static fromAddress = (cw3: CardanoWeb3, address: string) => {
     const account = new Account()
     const { paymentCred, stakingCred } = cw3.utils.address.getCredentials(address)
     const stakingAddress = cw3.utils.address.getStakingAddress(address)
@@ -193,7 +195,7 @@ export class Account {
    * @param config Account configuration
    * @returns Account instance
    */
-  static importAccount = (cw3: L.CardanoWeb3, config: CW3Types.AccountExportV1) => {
+  static importAccount = (cw3: CardanoWeb3, config: CW3Types.AccountExportV1) => {
     if (config.configVersion === 1) {
       if (config.type === "xprv") {
         const account = new Account()

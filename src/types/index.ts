@@ -78,7 +78,7 @@ export type Explorers = {
 }
 
 /** Connector types */
-import type { Connector } from "./links"
+import type { Connector } from "../core/connector"
 export type ConnectorPaginate = {
   page: number
   limit: number

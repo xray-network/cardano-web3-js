@@ -3,7 +3,7 @@ import { CardanoWeb3 } from "../src"
 
 describe("Explorer", async () => {
   describe("Mainnet", async () => {
-    const web3 = await CardanoWeb3.init()
+    const web3 = new CardanoWeb3()
 
     it("Koios: /tip", async () => {
       const tip = await web3.explorers.koios.GET("/tip")
@@ -39,7 +39,7 @@ describe("Explorer", async () => {
   })
 
   describe("Preprod", async () => {
-    const web3 = await CardanoWeb3.init({ network: "preprod" })
+    const web3 = new CardanoWeb3({ network: "preprod" })
 
     it("Koios: /tip", async () => {
       const tip = await web3.explorers.koios.GET("/tip")
@@ -74,7 +74,7 @@ describe("Explorer", async () => {
   })
 
   describe("Preview", async () => {
-    const web3 = await CardanoWeb3.init({ network: "preview" })
+    const web3 = new CardanoWeb3({ network: "preview" })
 
     it("Koios: /tip", async () => {
       const tip = await web3.explorers.koios.GET("/tip")
