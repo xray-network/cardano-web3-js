@@ -603,10 +603,10 @@ cac@^6.7.12, cac@^6.7.14:
   resolved "https://registry.yarnpkg.com/cac/-/cac-6.7.14.tgz#804e1e6f506ee363cb0e3ccbb09cad5dd9870959"
   integrity sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==
 
-cardano-koios-client@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/cardano-koios-client/-/cardano-koios-client-1.0.7.tgz#124276df2cd1325785ab2fa91e8f9e948bb37215"
-  integrity sha512-rjN2432302m1HnYJ6leU5c2w6FOn9v/PFUIwp8FR1gJ3WUMvW/OQ8Od5u+zDFDTwge2FeLMFz/HVrgwL5Jce3w==
+cardano-koios-client@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/cardano-koios-client/-/cardano-koios-client-1.0.10.tgz#abb6842d67c002712678c072c2e4c97bf3aa70c9"
+  integrity sha512-mXHsyUtQc++ERoaGUuSYwtb0WF01j6eaQkv3QF1ZSYCVRHr9duGIx6gr25MxJdPEOTMovsHKaPlUAHFPoSaKIA==
   dependencies:
     openapi-fetch "^0.13.3"
 

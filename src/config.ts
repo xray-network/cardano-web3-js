@@ -50,6 +50,8 @@ export const DEFAULT_PROTOCOL_PARAMETERS: CW3Types.ProtocolParameters = {
   maxValSize: 5000,
   keyDeposit: 2000000n,
   poolDeposit: 500000000n,
+  drepDeposit: 500000000n,
+  govActionDeposit: 10000000000n,
   priceMem: 0.0577,
   priceStep: 0.0000721,
   maxTxExMem: 14000000n,

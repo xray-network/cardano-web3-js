@@ -246,7 +246,7 @@ describe("TX", async () => {
       .createTx()
       .setChangeAddress(changeAddress)
       .addInputs(accountUtxos)
-      .registerStake(stakingAddress!)
+      .stake.register(stakingAddress!)
       // .delegateTo("pool1pn9sffcqqzkx70m0gujks4h3wf8p4y706t2f0cjcyreekg83wtf") // you can also use delegate stake in one TX
       .applyAndBuild()
 
@@ -266,7 +266,7 @@ describe("TX", async () => {
       .createTx()
       .setChangeAddress(changeAddress)
       .addInputs(accountUtxos)
-      .delegateTo(stakingAddress!, "pool1pn9sffcqqzkx70m0gujks4h3wf8p4y706t2f0cjcyreekg83wtf")
+      .stake.delegateTo(stakingAddress!, "pool1pn9sffcqqzkx70m0gujks4h3wf8p4y706t2f0cjcyreekg83wtf")
       .applyAndBuild()
 
     const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
@@ -285,7 +285,7 @@ describe("TX", async () => {
       .createTx()
       .setChangeAddress(changeAddress)
       .addInputs(accountUtxos)
-      .withdrawRewards(stakingAddress!, 0n) // 0n for testing, you must use exact amount of existing rewards to withdraw
+      .stake.withdrawRewards(stakingAddress!, 0n) // 0n for testing, you must use exact amount of existing rewards to withdraw
       .applyAndBuild()
 
     const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()
@@ -304,7 +304,7 @@ describe("TX", async () => {
       .createTx()
       .setChangeAddress(changeAddress)
       .addInputs(accountUtxos)
-      .deregisterStake(stakingAddress!)
+      .stake.deregister(stakingAddress!)
       .applyAndBuild()
 
     const tx_signed = await tx_build.signWithAccount(account, accountUtxos).applyAndToJson()

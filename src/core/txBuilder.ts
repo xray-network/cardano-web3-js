@@ -4,6 +4,7 @@ import { TTL } from "../config"
 import { CardanoWeb3 } from "./cw3"
 import { TxFinalizer } from "./txFinalizer"
 import * as CW3Types from "../types"
+import { TxRedeemerBuilder } from "@dcspark/cardano-multiplatform-lib-browser"
 
 export class TxBuilder {
   private cw3: CardanoWeb3
@@ -100,6 +101,7 @@ export class TxBuilder {
             )
             break
           case "PlutusV2":
+          case "PlutusV3":
             if (!redeemer) {
               throw new Error(
                 "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
@@ -115,8 +117,6 @@ export class TxBuilder {
               )
             )
             break
-          case "PlutusV3":
-            throw new Error("PlutusV3 scripts are not supported yet")
         }
       }
     })
@@ -271,7 +271,7 @@ export class TxBuilder {
    * @param keyHash Key hash of required signer
    * @returns TxBuilder instance
    */
-  addRequiredSignerByKey = (keyHash: string) => {
+  addRequiredSignerByKeyHash = (keyHash: string) => {
     this.queue.push(() => {
       this.__txBuilder.add_required_signer(CML.Ed25519KeyHash.from_hex(keyHash))
     })
@@ -310,6 +310,7 @@ export class TxBuilder {
           break
         case "PlutusV1":
         case "PlutusV2":
+        case "PlutusV3":
           if (!redeemer) {
             throw new Error(
               "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
@@ -322,8 +323,6 @@ export class TxBuilder {
             )
           )
           break
-        case "PlutusV3":
-          throw new Error("PlutusV3 scripts are not supported yet")
       }
     })
     return this
@@ -367,217 +366,475 @@ export class TxBuilder {
   }
 
   /**
-   * Add withdrawal of rewards
-   * @param rewardAddress Reward address to withdraw from
-   * @param amount Amount to withdraw
-   * @param script Script to attach (optional)
-   * @param redeemer Redeemer to use (optional)
-   * @returns TxBuilder instance
+   * Stake related methods
    */
-  withdrawRewards = (rewardAddress: string, amount: bigint, redeemer?: string) => {
-    this.queue.push(async () => {
-      const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
-      if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
-      const withdrawBuilder = CML.SingleWithdrawalBuilder.new(
-        CML.RewardAddress.from_address(CML.Address.from_bech32(rewardAddress)),
-        amount
-      )
-      switch (stakingCred.type) {
-        case "key": {
-          this.__txBuilder.add_withdrawal(withdrawBuilder.payment_key())
-          break
+
+  stake: {
+    withdrawRewards: (rewardAddress: string, amount: bigint, redeemer?: string) => TxBuilder
+    delegateTo: (rewardAddress: string, poolId: string, redeemer?: string) => TxBuilder
+    register: (rewardAddress: string) => TxBuilder
+    deregister: (rewardAddress: string, redeemer?: string) => TxBuilder
+  } = {
+    /**
+     * Add withdrawal of rewards
+     * @param rewardAddress Reward address to withdraw from
+     * @param amount Amount to withdraw
+     * @param script Script to attach (optional)
+     * @param redeemer Redeemer to use (optional)
+     * @returns TxBuilder instance
+     */
+    withdrawRewards: (rewardAddress: string, amount: bigint, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
+        const withdrawBuilder = CML.SingleWithdrawalBuilder.new(
+          CML.RewardAddress.from_address(CML.Address.from_bech32(rewardAddress)),
+          amount
+        )
+        switch (stakingCred.type) {
+          case "key": {
+            this.__txBuilder.add_withdrawal(withdrawBuilder.payment_key())
+            break
+          }
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for stake.withdrawRewards() method. Attach script with attachScript() or readFrom() method"
+              )
+            }
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_withdrawal(
+                  withdrawBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
+                )
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_withdrawal(
+                  withdrawBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
+                )
+                break
+            }
+            break
+          }
         }
-        case "script": {
-          const script = this.scripts.get(stakingCred.hash)
-          if (!script) {
-            throw new Error(
-              "Script is required for withdrawRewards() method. Attach script with attachScript() or readFrom() method"
+      })
+      return this
+    },
+    /**
+     * Delegate to pool
+     * @param rewardAddress Reward address to delegate from
+     * @param poolId Pool ID to delegate to
+     * @param script Script to attach (optional)
+     * @param redeemer Redeemer to use (optional)
+     * @returns TxBuilder instance
+     */
+    delegateTo: (rewardAddress: string, poolId: string, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        if (!stakingCred) throw new Error("Invalid address for rewards delegation (no staking credential)")
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_stake_delegation(credential, CML.Ed25519KeyHash.from_bech32(poolId))
             )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
           }
-          switch (script.language) {
-            case "Native":
-              this.__txBuilder.add_withdrawal(
-                withdrawBuilder.native_script(
-                  CML.NativeScript.from_cbor_hex(script.script),
-                  CML.NativeScriptWitnessInfo.assume_signature_count()
-                )
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for stake.delegateTo() method. Attach script with attachScript() or readFrom() method"
               )
-            case "PlutusV1":
-            case "PlutusV2":
-              if (!redeemer) {
-                throw new Error(
-                  "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_stake_delegation(credential, CML.Ed25519KeyHash.from_bech32(poolId))
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
                 )
-              }
-              this.__txBuilder.add_withdrawal(
-                withdrawBuilder.plutus_script(
-                  this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(script),
-                    redeemer
-                  ),
-                  CML.Ed25519KeyHashList.new()
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
                 )
-              )
-              break
-            case "PlutusV3":
-              throw new Error("PlutusV3 scripts are not supported yet")
+                break
+            }
+            break
           }
-          break
         }
-      }
-    })
-    return this
+      })
+      return this
+    },
+    /**
+     * Register stake address
+     * @param rewardAddress Reward address to register
+     * @returns TxBuilder instance
+     */
+    register: (rewardAddress: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
+        const credential =
+          stakingCred.type === "key"
+            ? CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            : CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+        const certificateBuilder = CML.SingleCertificateBuilder.new(CML.Certificate.new_stake_registration(credential))
+        this.__txBuilder.add_cert(certificateBuilder.skip_witness())
+      })
+      return this
+    },
+    /**
+     * Deregister stake address
+     * @param rewardAddress Reward address to deregister
+     * @param script Script to attach (optional)
+     * @param redeemer Redeemer to use (optional)
+     * @returns TxBuilder instance
+     */
+    deregister: (rewardAddress: string, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        if (!stakingCred) throw new Error("Invalid address for rewards deregistration (no staking credential)")
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_stake_deregistration(credential)
+            )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
+          }
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for stake.deregister() method. Attach script with attachScript() or readFrom() method"
+              )
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_stake_deregistration(credential)
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
+                )
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
+                )
+                break
+            }
+          }
+        }
+      })
+      return this
+    },
   }
 
   /**
-   * Delegate to pool
-   * @param rewardAddress Reward address to delegate from
-   * @param poolId Pool ID to delegate to
-   * @param script Script to attach (optional)
-   * @param redeemer Redeemer to use (optional)
-   * @returns TxBuilder instance
+   * Governance related methods
    */
-  delegateTo = (rewardAddress: string, poolId: string, redeemer?: string) => {
-    this.queue.push(async () => {
-      const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
-      if (!stakingCred) throw new Error("Invalid address for rewards delegation (no staking credential)")
-      switch (stakingCred.type) {
-        case "key": {
-          const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          const certificateBuilder = CML.SingleCertificateBuilder.new(
-            CML.Certificate.new_stake_delegation(credential, CML.Ed25519KeyHash.from_bech32(poolId))
-          )
-          this.__txBuilder.add_cert(certificateBuilder.payment_key())
-          break
-        }
-        case "script": {
-          const script = this.scripts.get(stakingCred.hash)
-          if (!script) {
-            throw new Error(
-              "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
-            )
-          }
-          const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
-          const certificateBuilder = CML.SingleCertificateBuilder.new(
-            CML.Certificate.new_stake_delegation(credential, CML.Ed25519KeyHash.from_bech32(poolId))
-          )
-          switch (script.language) {
-            case "Native":
-              this.__txBuilder.add_cert(
-                certificateBuilder.native_script(
-                  CML.NativeScript.from_cbor_hex(script.script),
-                  CML.NativeScriptWitnessInfo.assume_signature_count()
-                )
-              )
-            case "PlutusV1":
-            case "PlutusV2":
-              if (!redeemer) {
-                throw new Error(
-                  "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
-                )
-              }
-              this.__txBuilder.add_cert(
-                certificateBuilder.plutus_script(
-                  this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(script),
-                    redeemer
-                  ),
-                  CML.Ed25519KeyHashList.new()
-                )
-              )
-              break
-            case "PlutusV3":
-              throw new Error("PlutusV3 scripts are not supported yet")
-          }
-          break
-        }
-      }
-    })
-    return this
-  }
+  governance: {
+    delegateToDRep: (rewardAddress: string, drep: CW3Types.DRep, redeemer?: string) => TxBuilder
+    registerDRep: (rewardAddress: string, drepInfo: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
+    deregisterDRep: (rewardAddress: string, redeemer?: string) => TxBuilder
+    updateDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
+  } = {
+    delegateToDRep: (rewardAddress: string, drep: CW3Types.DRep, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const drepInstance = this.cw3.utils.drep.toDrep(drep)
 
-  /**
-   * Register stake address
-   * @param rewardAddress Reward address to register
-   * @returns TxBuilder instance
-   */
-  registerStake = (rewardAddress: string) => {
-    this.queue.push(async () => {
-      const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
-      if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
-      const credential =
-        stakingCred.type === "key"
-          ? CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          : CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
-      const certificateBuilder = CML.SingleCertificateBuilder.new(CML.Certificate.new_stake_registration(credential))
-      this.__txBuilder.add_cert(certificateBuilder.skip_witness())
-    })
-    return this
-  }
-
-  /**
-   * Deregister stake address
-   * @param rewardAddress Reward address to deregister
-   * @param script Script to attach (optional)
-   * @param redeemer Redeemer to use (optional)
-   * @returns TxBuilder instance
-   */
-  deregisterStake = (rewardAddress: string, redeemer?: string) => {
-    this.queue.push(async () => {
-      const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
-      if (!stakingCred) throw new Error("Invalid address for rewards deregistration (no staking credential)")
-      switch (stakingCred.type) {
-        case "key": {
-          const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
-          const certificateBuilder = CML.SingleCertificateBuilder.new(
-            CML.Certificate.new_stake_deregistration(credential)
-          )
-          this.__txBuilder.add_cert(certificateBuilder.payment_key())
-          break
-        }
-        case "script": {
-          const script = this.scripts.get(stakingCred.hash)
-          if (!script) {
-            throw new Error(
-              "Script is required for delegateTo() method. Attach script with attachScript() or readFrom() method"
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_vote_deleg_cert(credential, drepInstance)
             )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
           }
-          const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
-          const certificateBuilder = CML.SingleCertificateBuilder.new(
-            CML.Certificate.new_stake_deregistration(credential)
-          )
-          switch (script.language) {
-            case "Native":
-              this.__txBuilder.add_cert(
-                certificateBuilder.native_script(
-                  CML.NativeScript.from_cbor_hex(script.script),
-                  CML.NativeScriptWitnessInfo.assume_signature_count()
-                )
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for governance.delegateToDRep() method. Attach script with attachScript() or readFrom() method"
               )
-            case "PlutusV1":
-            case "PlutusV2":
-              if (!redeemer) {
-                throw new Error(
-                  "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_vote_deleg_cert(credential, drepInstance)
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
                 )
-              }
-              this.__txBuilder.add_cert(
-                certificateBuilder.plutus_script(
-                  this.cw3.utils.script.partialPlutusWitness(
-                    this.cw3.utils.script.scriptToPlutusScript(script),
-                    redeemer
-                  ),
-                  CML.Ed25519KeyHashList.new()
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
                 )
-              )
-              break
-            case "PlutusV3":
-              throw new Error("PlutusV3 scripts are not supported yet")
+                break
+            }
           }
         }
-      }
-    })
-    return this
+      })
+      return this
+    },
+
+    registerDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const drepAnchorInstance = drepAnchor
+          ? CML.Anchor.new(CML.Url.from_json(drepAnchor.url), CML.AnchorDocHash.from_hex(drepAnchor.dataHash))
+          : undefined
+
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_reg_drep_cert(
+                credential,
+                this.cw3.__config.protocolParams.drepDeposit,
+                drepAnchorInstance
+              )
+            )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
+          }
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for governance.registerDRep() method. Attach script with attachScript() or readFrom() method"
+              )
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_reg_drep_cert(
+                credential,
+                this.cw3.__config.protocolParams.drepDeposit,
+                drepAnchorInstance
+              )
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
+                )
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
+                )
+                break
+            }
+          }
+        }
+      })
+      return this
+    },
+
+    deregisterDRep: (rewardAddress: string, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_unreg_drep_cert(credential, this.cw3.__config.protocolParams.drepDeposit)
+            )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
+          }
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for governance.registerDRep() method. Attach script with attachScript() or readFrom() method"
+              )
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_unreg_drep_cert(credential, this.cw3.__config.protocolParams.drepDeposit)
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
+                )
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
+                )
+                break
+            }
+          }
+        }
+      })
+      return this
+    },
+
+    updateDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => {
+      this.queue.push(async () => {
+        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const drepAnchorInstance = drepAnchor
+          ? CML.Anchor.new(CML.Url.from_json(drepAnchor.url), CML.AnchorDocHash.from_hex(drepAnchor.dataHash))
+          : undefined
+
+        switch (stakingCred.type) {
+          case "key": {
+            const credential = CML.Credential.new_pub_key(CML.Ed25519KeyHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_update_drep_cert(credential, drepAnchorInstance)
+            )
+            this.__txBuilder.add_cert(certificateBuilder.payment_key())
+            break
+          }
+          case "script": {
+            const script = this.scripts.get(stakingCred.hash)
+            if (!script) {
+              throw new Error(
+                "Script is required for governance.registerDRep() method. Attach script with attachScript() or readFrom() method"
+              )
+            }
+            const credential = CML.Credential.new_script(CML.ScriptHash.from_hex(stakingCred.hash))
+            const certificateBuilder = CML.SingleCertificateBuilder.new(
+              CML.Certificate.new_update_drep_cert(credential, drepAnchorInstance)
+            )
+            switch (script.language) {
+              case "Native":
+                this.__txBuilder.add_cert(
+                  certificateBuilder.native_script(
+                    CML.NativeScript.from_cbor_hex(script.script),
+                    CML.NativeScriptWitnessInfo.assume_signature_count()
+                  )
+                )
+              case "PlutusV1":
+              case "PlutusV2":
+              case "PlutusV3":
+                if (!redeemer) {
+                  throw new Error(
+                    "Redeemer is required for Plutus scripts. Use Data.void() if script doesn't require a redeemer"
+                  )
+                }
+                this.__txBuilder.add_cert(
+                  certificateBuilder.plutus_script(
+                    this.cw3.utils.script.partialPlutusWitness(
+                      this.cw3.utils.script.scriptToPlutusScript(script),
+                      redeemer
+                    ),
+                    CML.Ed25519KeyHashList.new()
+                  )
+                )
+                break
+            }
+          }
+        }
+      })
+      return this
+    },
   }
 
   /**

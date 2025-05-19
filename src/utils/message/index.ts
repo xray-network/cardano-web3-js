@@ -12,7 +12,6 @@ const toHex = (bytes: Uint8Array): string => {
 }
 
 export const Message = () => {
-
   return {
     signData: (addressHex: string, payload: string, privateKey: string): CW3Types.SignedMessage => {
       const protectedHeaders = M.HeaderMap.new()

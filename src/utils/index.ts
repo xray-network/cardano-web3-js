@@ -641,6 +641,42 @@ export class Utils {
   }
 
   /**
+   * DRep related utils
+   */
+
+  drep = {
+    isDRepCredential: (drep: CW3Types.DRep): drep is CW3Types.Credential => {
+      return !("__typename" in drep)
+    },
+
+    isDRepAlwaysAbstain: (drep: CW3Types.DRep): drep is CW3Types.AlwaysAbstain => {
+      return !this.drep.isDRepCredential(drep) && drep.__typename === "AlwaysAbstain"
+    },
+
+    isDRepAlwaysNoConfidence: (drep: CW3Types.DRep): drep is CW3Types.AlwaysNoConfidence => {
+      return !this.drep.isDRepCredential(drep) && drep.__typename === "AlwaysAbstain"
+    },
+
+    toDrep: (drep: CW3Types.DRep): CML.DRep => {
+      if (this.drep.isDRepAlwaysAbstain(drep)) {
+        return CML.DRep.new_always_abstain()
+      } else if (this.drep.isDRepAlwaysNoConfidence(drep)) {
+        return CML.DRep.new_always_no_confidence()
+      } else if (this.drep.isDRepCredential(drep)) {
+        switch (drep.type) {
+          case "key":
+            return CML.DRep.new_key(CML.Ed25519KeyHash.from_hex(drep.hash))
+          case "script":
+            return CML.DRep.new_script(CML.ScriptHash.from_hex(drep.hash))
+          default:
+            throw new Error(`Unsupported DRep type: ${drep.type}`)
+        }
+      }
+      throw new Error(`Unexpected DRep type: ${drep}`)
+    },
+  }
+
+  /**
    * Script related utils
    */
   script = {

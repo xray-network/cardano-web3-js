@@ -44,6 +44,18 @@ export type AccountMultiAddressing = {
   utxos: Utxo[]
   derivation: AccountAddressDerivation[]
 }
+/** DRep */
+export type AlwaysAbstain = {
+  __typename: "AlwaysAbstain"
+}
+export type AlwaysNoConfidence = {
+  __typename: "AlwaysNoConfidence"
+}
+export type DRep = Credential | AlwaysAbstain | AlwaysNoConfidence
+export type DrepAnchor = {
+  url: string
+  dataHash: string
+}
 
 /** Provider types */
 export type Provider = {
@@ -167,6 +179,8 @@ export type ProtocolParameters = {
   maxValSize: number
   keyDeposit: bigint
   poolDeposit: bigint
+  drepDeposit: bigint
+  govActionDeposit: bigint
   priceMem: number
   priceStep: number
   maxTxExMem: bigint

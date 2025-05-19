@@ -296,6 +296,8 @@ const ogmiosProtocolParametersToProtocolParameters = (pp: any): CW3Types.Protoco
     maxValSize: parseInt(pp.maxValueSize.bytes),
     keyDeposit: BigInt(pp.stakeCredentialDeposit.ada.lovelace),
     poolDeposit: BigInt(pp.stakePoolDeposit.ada.lovelace),
+    drepDeposit: BigInt(pp.delegateRepresentativeDeposit.ada.lovelace),
+    govActionDeposit: BigInt(pp.governanceActionDeposit.ada.lovelace),
     priceMem: parseInt(scriptExecutionPricesMemory[0]) / parseInt(scriptExecutionPricesMemory[1]),
     priceStep: parseInt(scriptExecutionPricesCpu[0]) / parseInt(scriptExecutionPricesCpu[1]),
     maxTxExMem: BigInt(pp.maxExecutionUnitsPerTransaction.memory),

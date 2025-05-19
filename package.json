@@ -57,7 +57,7 @@
     "bip39": "^3.1.0",
     "blake2b": "^2.1.4",
     "buffer": "^6.0.3",
-    "cardano-koios-client": "^1.0.7",
+    "cardano-koios-client": "^1.0.10",
     "cardano-kupo-client": "^1.0.1",
     "cardano-nftcdn-client": "^1.0.6",
     "cardano-ogmios-client": "^1.0.0",

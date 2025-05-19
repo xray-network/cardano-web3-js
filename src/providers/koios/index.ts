@@ -275,7 +275,9 @@ const koiosPlutusVersionToPlutusVersion = (plutusVersion: string) => {
   }
 }
 
-const koiosProtocolParamsToProtocolParams = (pp: KoiosTypes.components["schemas"]["epoch_params"][number]) => {
+const koiosProtocolParamsToProtocolParams = (
+  pp: KoiosTypes.components["schemas"]["epoch_params"][number]
+): CW3Types.ProtocolParameters => {
   return {
     minFeeA: pp.min_fee_a,
     minFeeB: pp.min_fee_b,
@@ -283,6 +285,8 @@ const koiosProtocolParamsToProtocolParams = (pp: KoiosTypes.components["schemas"
     maxValSize: pp.max_val_size,
     keyDeposit: BigInt(pp.key_deposit),
     poolDeposit: BigInt(pp.pool_deposit),
+    drepDeposit: BigInt(pp.drep_deposit),
+    govActionDeposit: BigInt(pp.gov_action_deposit),
     priceMem: pp.price_mem,
     priceStep: pp.price_step,
     maxTxExMem: BigInt(pp.max_tx_ex_mem),
