@@ -1,4 +1,4 @@
-import { CardanoWeb3, CW3Types } from "../src"
+import { CardanoWeb3, CW3Types } from "@"
 
 // Preview Network
 export const testData = {
@@ -39,15 +39,15 @@ export const testData = {
             quantity: 1_000n, // Dummy 1K Test Token
           },
         ],
-        datumHash: null,
-        datumType: null,
-        scriptHash: null,
-        datum: null,
-        script: null,
+        datumHash: null as any,
+        datumType: null as any,
+        scriptHash: null as any,
+        datum: null as any,
+        script: null as any,
       },
     ],
-    balance: { value: 5_000_000_000n, assets: [] }, // Dummy 5K ADA
-    delegation: null,
+    balance: { value: 5_000_000_000n, assets: [] as any[] }, // Dummy 5K ADA
+    delegation: null as any,
     rewards: 10_000_000n, // Dumnmy 10 ADA
   },
 }

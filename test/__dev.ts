@@ -1,4 +1,4 @@
-import { CardanoWeb3, KupmiosProvider, Account } from "../src"
+import { CardanoWeb3, KupmiosProvider, Account } from "@"
 import { testData } from "./__test"
 
 const app = async () => {

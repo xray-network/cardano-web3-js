@@ -1,7 +1,8 @@
 import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import { CardanoWeb3 } from "./cw3"
 import { Account } from "./account"
-import * as CW3Types from "../types"
+import utils from "@/utils"
+import * as CW3Types from "@/types"
 
 export class TxFinalizer {
   private cw3: CardanoWeb3
@@ -44,7 +45,7 @@ export class TxFinalizer {
           ? account.getDecodedXprvKey(password)
           : account.__config.xprvKey
 
-        const paymentVerificationKey = this.cw3.utils.keys.xprvToVrfKey(
+        const paymentVerificationKey = utils.keys.xprvToVrfKey(
           xprvKey,
           account.__config.accountPath,
           account.__config.addressPath
@@ -52,16 +53,12 @@ export class TxFinalizer {
         const paymentKey = CML.PrivateKey.from_bech32(paymentVerificationKey)
         const paymentKeyHash = paymentKey.to_public().hash().to_hex()
 
-        const stakingVerificationKey = this.cw3.utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, [2, 0])
+        const stakingVerificationKey = utils.keys.xprvToVrfKey(xprvKey, account.__config.accountPath, [2, 0])
         const stakingKey = CML.PrivateKey.from_bech32(stakingVerificationKey)
         const stakingKeyHash = stakingKey.to_public().hash().to_hex()
 
         if (utxos.length > 0) {
-          const foundHashes = this.cw3.utils.tx.discoverOwnUsedTxKeyHashes(
-            this.__tx,
-            [stakingKeyHash, paymentKeyHash],
-            utxos
-          )
+          const foundHashes = utils.tx.discoverOwnUsedTxKeyHashes(this.__tx, [stakingKeyHash, paymentKeyHash], utxos)
           if (foundHashes.includes(paymentKeyHash)) {
             this.__witnessBuilder.add_vkey(CML.make_vkey_witness(CML.hash_transaction(this.__tx.body()), paymentKey))
           }

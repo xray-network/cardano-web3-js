@@ -1,4 +1,4 @@
-import * as CW3Types from "./types"
+import * as CW3Types from "@/types"
 
 export const SLOT_CONFIG_NETWORK: Record<CW3Types.NetworkName, CW3Types.SlotConfig> = {
   mainnet: { zeroTime: 1596059091000, zeroSlot: 4492800, slotDuration: 1000 },

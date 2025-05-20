@@ -1,4 +1,4 @@
-import * as CW3Types from "../../types"
+import * as CW3Types from "@/types"
 
 export class Trezor {
   static init = async () => {

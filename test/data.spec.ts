@@ -1,13 +1,11 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3, PlutusData } from "../src"
+import { CardanoWeb3, PlutusData, PlutusConstr, utils } from "@"
 
 describe("Data", async () => {
   const web3 = new CardanoWeb3()
-  const PlutusData = web3.utils.libs.PlutusData
-  const Constr = web3.utils.libs.PlutusConstr
   const {
     script: { applyParamsToScript },
-  } = web3.utils
+  } = utils
 
   it("Roundtrip data bigint", () => {
     /*
@@ -229,7 +227,7 @@ describe("Data", async () => {
   
       type MyDatum = Data
     */
-    const datum: PlutusData = new Constr(0, [])
+    const datum: PlutusData = new PlutusConstr(0, [])
     const newDatum = PlutusData.from(
       PlutusData.to(datum, PlutusData.Any() as unknown as PlutusData),
       PlutusData.Any() as unknown as PlutusData

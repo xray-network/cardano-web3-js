@@ -1,30 +1,30 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import { TxBuilder } from "./txBuilder"
-import { TxFinalizer } from "./txFinalizer"
-import { Utils } from "../utils"
-import { Account } from "./account"
-import { Connector } from "./connector"
-import { KoiosProvider } from "../providers/koios"
-import KoiosExplorer from "../explorers/koios"
-import OgmiosExplorer from "../explorers/ogmios"
-import KupoExplorer from "../explorers/kupo"
-import NftcdnExplorer from "../explorers/nftcdn"
-import * as CW3Types from "../types"
 import {
   DEFAULT_ACCOUNT_DERIVATION_PATH,
   DEFAULT_ADDRESS_DERIVATION_PATH,
   DEFAULT_PROTOCOL_PARAMETERS,
   SLOT_CONFIG_NETWORK,
   TTL,
-} from "../config"
+} from "@/config"
+
+import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import { Message } from "@"
+import { TxBuilder } from "./txBuilder"
+import { TxFinalizer } from "./txFinalizer"
+import { Account } from "./account"
+import { Connector } from "./connector"
+import { KoiosProvider } from "@/providers/koios"
+import KoiosExplorer from "@/explorers/koios"
+import OgmiosExplorer from "@/explorers/ogmios"
+import KupoExplorer from "@/explorers/kupo"
+import NftcdnExplorer from "@/explorers/nftcdn"
+import utils from "@/utils"
+import * as CW3Types from "@/types"
 
 /**
  * CardanoWeb3 class
- *
  * Main class for CardanoWeb3 library which provides all the necessary functions to interact with Cardano blockchain
  */
 export class CardanoWeb3 {
-  utils: Utils
   provider: CW3Types.Provider
   explorers: CW3Types.Explorers
   __config: {
@@ -41,7 +41,6 @@ export class CardanoWeb3 {
    */
   constructor(config?: CW3Types.InitConfig) {
     const network = config?.network || "mainnet"
-    this.utils = new Utils()
     this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     this.explorers = {
       koios: KoiosExplorer(
@@ -241,7 +240,7 @@ export class CardanoWeb3 {
         const xprvKey = account.__config.xprvKeyIsEncoded
           ? account.getDecodedXprvKey(password)
           : account.__config.xprvKey
-        const verificationKey = this.utils.keys.xprvToVrfKey(
+        const verificationKey = utils.keys.xprvToVrfKey(
           xprvKey,
           account.__config.accountPath,
           account.__config.addressPath
@@ -253,7 +252,7 @@ export class CardanoWeb3 {
       }
       if (account.__config.type === "connector") {
         const hexAddress = CML.Address.from_bech32(account.__config.paymentAddress).to_hex()
-        const hexMessage = this.utils.misc.fromStringToHex(message)
+        const hexMessage = utils.misc.fromStringToHex(message)
         return await account.__config.connector.signData(hexAddress, hexMessage)
       }
       if (account.__config.type === "ledger") {
@@ -273,12 +272,12 @@ export class CardanoWeb3 {
      */
     signWithVrfKey: (verificationKey: string, address: string, message: string): CW3Types.SignedMessage => {
       const hexAddress = CML.Address.from_bech32(address).to_hex()
-      const hexMessage = this.utils.misc.fromStringToHex(message)
-      const { paymentCred } = this.utils.address.getCredentials(address)
+      const hexMessage = utils.misc.fromStringToHex(message)
+      const { paymentCred } = utils.address.getCredentials(address)
       const hash = CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
       if (!paymentCred?.hash || paymentCred?.hash !== hash)
         throw new Error("Verification key does not match the address")
-      return this.utils.libs.Message.signData(hexAddress, hexMessage, verificationKey)
+      return Message().signData(hexAddress, hexMessage, verificationKey)
     },
 
     /**
@@ -289,12 +288,12 @@ export class CardanoWeb3 {
      * @returns True if message is verified, false otherwise
      */
     verify: (address: string, message: string, signedMessage: CW3Types.SignedMessage): boolean => {
-      const hexAddress = this.utils.libs.CML.Address.from_bech32(address).to_hex()
-      const hexMessage = this.utils.misc.fromStringToHex(message)
-      const { paymentCred, stakingCred } = this.utils.address.getCredentials(address)
+      const hexAddress = CML.Address.from_bech32(address).to_hex()
+      const hexMessage = utils.misc.fromStringToHex(message)
+      const { paymentCred, stakingCred } = utils.address.getCredentials(address)
       const hash = paymentCred?.hash || stakingCred?.hash
       if (!hash) throw new Error("Invalid address")
-      return this.utils.libs.Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
+      return Message().verifyData(hexAddress, hash, hexMessage, signedMessage)
     },
   }
 }

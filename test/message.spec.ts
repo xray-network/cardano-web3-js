@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3 } from "../src"
+import { CardanoWeb3, utils } from "@"
 import { testData } from "./__test"
 
 describe("Message", async () => {
@@ -17,7 +17,7 @@ describe("Message", async () => {
 
   it("SignAndVerify: with XprvKey", async () => {
     const message = "Hello, World!"
-    const verificationKey = web3.utils.keys.xprvToVrfKey(testData.xprvKey, testData.accountPath, testData.addressPath)
+    const verificationKey = utils.keys.xprvToVrfKey(testData.xprvKey, testData.accountPath, testData.addressPath)
     const signature = web3.message.signWithVrfKey(verificationKey, testData.paymentAddress, message)
     const verified = web3.message.verify(testData.paymentAddress, message, signature)
     expect(verified).toBe(true)

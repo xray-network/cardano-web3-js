@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3, PlutusData, CW3Types } from "../src"
+import { CardanoWeb3, PlutusData, CW3Types, utils } from "@"
 import { testData } from "./__test"
 
 describe("TX", async () => {
@@ -53,13 +53,13 @@ describe("TX", async () => {
   })
 
   it("Pay to address with data", async () => {
-    const MyDatumSchema = web3.utils.libs.PlutusData.Object({
-      myVariableA: web3.utils.libs.PlutusData.Bytes(),
-      myVariableB: web3.utils.libs.PlutusData.Nullable(web3.utils.libs.PlutusData.Integer()),
+    const MyDatumSchema = PlutusData.Object({
+      myVariableA: PlutusData.Bytes(),
+      myVariableB: PlutusData.Nullable(PlutusData.Integer()),
     })
     type MyDatum = PlutusData.Static<typeof MyDatumSchema>
     const MyDatum = MyDatumSchema as unknown as MyDatum
-    const datum = web3.utils.libs.PlutusData.to(
+    const datum = PlutusData.to(
       {
         myVariableA: "313131",
         myVariableB: 5555n,
@@ -101,8 +101,8 @@ describe("TX", async () => {
   })
 
   it("Deposit to contract", async () => {
-    const datum = web3.utils.libs.PlutusData.void()
-    const scriptAddress = web3.utils.script.scriptToAddress(alwaysSucceedScript, web3.__config.network.id)
+    const datum = PlutusData.void()
+    const scriptAddress = utils.script.scriptToAddress(alwaysSucceedScript, web3.__config.network.id)
 
     const tx_build = await web3
       .createTx()
@@ -132,11 +132,11 @@ describe("TX", async () => {
   })
 
   it("Collect from contract", async () => {
-    const scriptAddress = web3.utils.script.scriptToAddress(alwaysSucceedScript, web3.__config.network.id)
+    const scriptAddress = utils.script.scriptToAddress(alwaysSucceedScript, web3.__config.network.id)
     const utxos = await web3.provider.getUtxosByAddress(scriptAddress)
     const utxoRef = utxos.find((utxo) => utxo.scriptHash)
     const utxoToCollect = utxos.find((utxo) => utxo.datumType === "inline" && !utxo.scriptHash)
-    const emptyRedeemer = web3.utils.libs.PlutusData.void()
+    const emptyRedeemer = PlutusData.void()
 
     const tx_build = await web3
       .createTx()
@@ -159,14 +159,14 @@ describe("TX", async () => {
   })
 
   it("Mint token and add metadata", async () => {
-    const { paymentCred } = account.__config // or get from address with web3.utils.address.getCredentials("addr1...").paymentCred.hash
-    const { policyId, script } = web3.utils.script.nativeScriptFromJson({
+    const { paymentCred } = account.__config // or get from address with utils.address.getCredentials("addr1...").paymentCred.hash
+    const { policyId, script } = utils.script.nativeScriptFromJson({
       type: "all",
       scripts: [
         { type: "sig", keyHash: paymentCred },
         {
           type: "before",
-          slot: web3.utils.time.unixTimeToSlot(1759168016669, web3.__config.slotConfig), // 1759168016669 = Mon Sep 29 2025 17:46:56 GMT+0000
+          slot: utils.time.unixTimeToSlot(1759168016669, web3.__config.slotConfig), // 1759168016669 = Mon Sep 29 2025 17:46:56 GMT+0000
         },
       ],
     })
@@ -204,14 +204,14 @@ describe("TX", async () => {
   })
 
   it("Burn token", async () => {
-    const { paymentCred } = account.__config // or get from address with web3.utils.address.getCredentials("addr1...").paymentCred.hash
-    const { policyId, script } = web3.utils.script.nativeScriptFromJson({
+    const { paymentCred } = account.__config // or get from address with utils.address.getCredentials("addr1...").paymentCred.hash
+    const { policyId, script } = utils.script.nativeScriptFromJson({
       type: "all",
       scripts: [
         { type: "sig", keyHash: paymentCred },
         {
           type: "before",
-          slot: web3.utils.time.unixTimeToSlot(1759168016669, web3.__config.slotConfig), // 1759168016669 = Mon Sep 29 2025 17:46:56 GMT+0000
+          slot: utils.time.unixTimeToSlot(1759168016669, web3.__config.slotConfig), // 1759168016669 = Mon Sep 29 2025 17:46:56 GMT+0000
         },
       ],
     })

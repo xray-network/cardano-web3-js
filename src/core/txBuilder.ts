@@ -1,10 +1,11 @@
+import { TTL } from "@/config"
+
 import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import UPLC from "uplc-node"
-import { TTL } from "../config"
 import { CardanoWeb3 } from "./cw3"
 import { TxFinalizer } from "./txFinalizer"
-import * as CW3Types from "../types"
-import { TxRedeemerBuilder } from "@dcspark/cardano-multiplatform-lib-browser"
+import utils from "@/utils"
+import * as CW3Types from "@/types"
 
 export class TxBuilder {
   private cw3: CardanoWeb3
@@ -29,7 +30,7 @@ export class TxBuilder {
    * @returns TxBuilder instance
    */
   attachScript = (script: CW3Types.Script) => {
-    const scriptHash = this.cw3.utils.script.scriptToScriptHash(script)
+    const scriptHash = utils.script.scriptToScriptHash(script)
     this.scripts.set(scriptHash, script)
     return this
   }
@@ -47,7 +48,7 @@ export class TxBuilder {
           this.scripts.set(utxo.scriptHash, utxo.script)
         }
         this.readInputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
-        const input = this.cw3.utils.tx.utxoToCore(utxo)
+        const input = utils.tx.utxoToCore(utxo)
         this.__txBuilder.add_reference_input(input)
       }
     })
@@ -64,7 +65,7 @@ export class TxBuilder {
     this.queue.push(async () => {
       for (const utxoUnresolved of utxos) {
         const utxo = await this.cw3.provider.resolveUtxoDatumAndScript(utxoUnresolved)
-        const { paymentCred } = this.cw3.utils.address.getCredentials(utxo.address)
+        const { paymentCred } = utils.address.getCredentials(utxo.address)
         const script = this.scripts.get(paymentCred.hash)
         if (!script) {
           throw new Error(
@@ -72,7 +73,7 @@ export class TxBuilder {
           )
         }
         this.collectInputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
-        const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
+        const coreUtxo = utils.tx.utxoToCore(utxo)
         const inputBuilder = CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         switch (script.language) {
           case "Native":
@@ -91,10 +92,7 @@ export class TxBuilder {
             }
             this.__txBuilder.add_input(
               inputBuilder.plutus_script(
-                this.cw3.utils.script.partialPlutusWitness(
-                  this.cw3.utils.script.scriptToPlutusScript(script),
-                  redeemer
-                ),
+                utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                 CML.Ed25519KeyHashList.new(),
                 CML.PlutusData.from_cbor_hex(utxo.datum!)
               )
@@ -109,10 +107,7 @@ export class TxBuilder {
             }
             this.__txBuilder.add_input(
               inputBuilder.plutus_script_inline_datum(
-                this.cw3.utils.script.partialPlutusWitness(
-                  this.cw3.utils.script.scriptToPlutusScript(script),
-                  redeemer
-                ),
+                utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                 CML.Ed25519KeyHashList.new()
               )
             )
@@ -132,7 +127,7 @@ export class TxBuilder {
     this.queue.push(async () => {
       for (const utxo of utxos) {
         this.inputs.set(`${utxo.index.toString()}@${utxo.transaction.id}`, utxo)
-        const coreUtxo = this.cw3.utils.tx.utxoToCore(utxo)
+        const coreUtxo = utils.tx.utxoToCore(utxo)
         const inputBuilder = CML.SingleInputBuilder.from_transaction_unspent_output(coreUtxo)
         this.__txBuilder.add_input(inputBuilder.payment_key())
       }
@@ -150,14 +145,14 @@ export class TxBuilder {
    */
   private payTo = (output: CW3Types.Output, datum?: CW3Types.DatumOutput, script?: CW3Types.Script) => {
     this.queue.push(async () => {
-      const outputBuilder = this.cw3.utils.tx.outputToTransactionOutputBuilder(output, datum, script)
+      const outputBuilder = utils.tx.outputToTransactionOutputBuilder(output, datum, script)
       const outputBuilderResult =
         output.value > 0n
-          ? outputBuilder.next().with_value(this.cw3.utils.tx.assetsToValue(output.value, output.assets)).build()
+          ? outputBuilder.next().with_value(utils.tx.assetsToValue(output.value, output.assets)).build()
           : outputBuilder
               .next()
               .with_asset_and_min_required_coin(
-                this.cw3.utils.tx.assetsToValue(output.value, output.assets).multi_asset(),
+                utils.tx.assetsToValue(output.value, output.assets).multi_asset(),
                 this.protocolParams.coinsPerUtxoByte
               )
               .build()
@@ -175,7 +170,7 @@ export class TxBuilder {
    * @throws Error if address is not script type
    */
   payToContract = (output: CW3Types.Output, datum: CW3Types.DatumOutput, script?: CW3Types.Script) => {
-    const { paymentCred } = this.cw3.utils.address.getCredentials(output.address)
+    const { paymentCred } = utils.address.getCredentials(output.address)
     if (!paymentCred || paymentCred.type !== "script") {
       throw new Error("Invalid address for contract")
     }
@@ -204,7 +199,7 @@ export class TxBuilder {
    */
   validFrom = (unixTime: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
+      const slot = utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
       this.__txBuilder.set_validity_start_interval(BigInt(slot))
     })
     return this
@@ -217,7 +212,7 @@ export class TxBuilder {
    */
   validTo = (unixTime: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
+      const slot = utils.time.unixTimeToSlot(unixTime, this.cw3.__config.slotConfig)
       this.__txBuilder.set_ttl(BigInt(slot))
     })
     return this
@@ -230,7 +225,7 @@ export class TxBuilder {
    */
   setTtl = (slotsOffset: number) => {
     this.queue.push(async () => {
-      const slot = this.cw3.utils.time.unixTimeToSlot(Date.now() + slotsOffset * 1000, this.cw3.__config.slotConfig)
+      const slot = utils.time.unixTimeToSlot(Date.now() + slotsOffset * 1000, this.cw3.__config.slotConfig)
       this.__txBuilder.set_ttl(BigInt(slot))
     })
     return this
@@ -253,7 +248,7 @@ export class TxBuilder {
    */
   addRequiredSignerByAddress = (address: string) => {
     this.queue.push(() => {
-      const { paymentCred, stakingCred, type } = this.cw3.utils.address.getCredentials(address)
+      const { paymentCred, stakingCred, type } = utils.address.getCredentials(address)
       if (!paymentCred && !stakingCred) {
         throw new Error("Invalid address for required signer")
       }
@@ -318,7 +313,7 @@ export class TxBuilder {
           }
           this.__txBuilder.add_mint(
             mintBuilder.plutus_script(
-              this.cw3.utils.script.partialPlutusWitness(this.cw3.utils.script.scriptToPlutusScript(script), redeemer),
+              utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
               CML.Ed25519KeyHashList.new()
             )
           )
@@ -385,7 +380,7 @@ export class TxBuilder {
      */
     withdrawRewards: (rewardAddress: string, amount: bigint, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
         const withdrawBuilder = CML.SingleWithdrawalBuilder.new(
           CML.RewardAddress.from_address(CML.Address.from_bech32(rewardAddress)),
@@ -421,10 +416,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_withdrawal(
                   withdrawBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -446,7 +438,7 @@ export class TxBuilder {
      */
     delegateTo: (rewardAddress: string, poolId: string, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         if (!stakingCred) throw new Error("Invalid address for rewards delegation (no staking credential)")
         switch (stakingCred.type) {
           case "key": {
@@ -486,10 +478,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -508,7 +497,7 @@ export class TxBuilder {
      */
     register: (rewardAddress: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         if (!stakingCred) throw new Error("Invalid address for rewards withdrawal (no staking credential)")
         const credential =
           stakingCred.type === "key"
@@ -528,7 +517,7 @@ export class TxBuilder {
      */
     deregister: (rewardAddress: string, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         if (!stakingCred) throw new Error("Invalid address for rewards deregistration (no staking credential)")
         switch (stakingCred.type) {
           case "key": {
@@ -568,10 +557,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -595,8 +581,8 @@ export class TxBuilder {
   } = {
     delegateToDRep: (rewardAddress: string, drep: CW3Types.DRep, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
-        const drepInstance = this.cw3.utils.drep.toDrep(drep)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
+        const drepInstance = utils.governance.toDrep(drep)
 
         switch (stakingCred.type) {
           case "key": {
@@ -636,10 +622,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -653,7 +636,7 @@ export class TxBuilder {
 
     registerDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         const drepAnchorInstance = drepAnchor
           ? CML.Anchor.new(CML.Url.from_json(drepAnchor.url), CML.AnchorDocHash.from_hex(drepAnchor.dataHash))
           : undefined
@@ -704,10 +687,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -721,7 +701,7 @@ export class TxBuilder {
 
     deregisterDRep: (rewardAddress: string, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
 
         switch (stakingCred.type) {
           case "key": {
@@ -761,10 +741,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -778,7 +755,7 @@ export class TxBuilder {
 
     updateDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => {
       this.queue.push(async () => {
-        const { stakingCred } = this.cw3.utils.address.getCredentials(rewardAddress)
+        const { stakingCred } = utils.address.getCredentials(rewardAddress)
         const drepAnchorInstance = drepAnchor
           ? CML.Anchor.new(CML.Url.from_json(drepAnchor.url), CML.AnchorDocHash.from_hex(drepAnchor.dataHash))
           : undefined
@@ -821,10 +798,7 @@ export class TxBuilder {
                 }
                 this.__txBuilder.add_cert(
                   certificateBuilder.plutus_script(
-                    this.cw3.utils.script.partialPlutusWitness(
-                      this.cw3.utils.script.scriptToPlutusScript(script),
-                      redeemer
-                    ),
+                    utils.script.partialPlutusWitness(utils.script.scriptToPlutusScript(script), redeemer),
                     CML.Ed25519KeyHashList.new()
                   )
                 )
@@ -894,15 +868,13 @@ export class TxBuilder {
       this.protocolParams = this.remoteProtocolParams
         ? await this.cw3.provider.getProtocolParameters()
         : this.cw3.__config.protocolParams
-      this.__txBuilder = this.cw3.utils.tx.getTxBuilder(this.protocolParams)
+      this.__txBuilder = utils.tx.getTxBuilder(this.protocolParams)
       // Set Network ID
       this.__txBuilder.set_network_id(
         this.cw3.__config.network.type === "mainnet" ? CML.NetworkId.mainnet() : CML.NetworkId.testnet()
       )
       // Set default TTL
-      this.__txBuilder.set_ttl(
-        BigInt(this.cw3.utils.time.unixTimeToSlot(Date.now() + TTL * 1000, this.cw3.__config.slotConfig))
-      )
+      this.__txBuilder.set_ttl(BigInt(utils.time.unixTimeToSlot(Date.now() + TTL * 1000, this.cw3.__config.slotConfig)))
     }
 
     // Execute queue tasks
@@ -923,14 +895,14 @@ export class TxBuilder {
       if (!collateral) throw new Error("Suitable collateral > 5 ADA not found")
       // Add Collateral
       this.__txBuilder.add_collateral(
-        CML.SingleInputBuilder.from_transaction_unspent_output(this.cw3.utils.tx.utxoToCore(collateral)).payment_key()
+        CML.SingleInputBuilder.from_transaction_unspent_output(utils.tx.utxoToCore(collateral)).payment_key()
       )
       // Add Collateral Return
       this.__txBuilder.set_collateral_return(
         CML.TransactionOutputBuilder.new()
           .with_address(CML.Address.from_bech32(this.changeAddress))
           .next()
-          .with_value(this.cw3.utils.tx.assetsToValue(collateral.value - BigInt(3_000_000), collateral.assets))
+          .with_value(utils.tx.assetsToValue(collateral.value - BigInt(3_000_000), collateral.assets))
           .build()
           .output()
       )
@@ -946,7 +918,7 @@ export class TxBuilder {
     const draftTxRedeemers = draftTx.witness_set().redeemers()
     if (draftTxRedeemers) {
       if (!this.remoteTxEvaluate) {
-        const costModels = this.cw3.utils.tx.createCostModels(this.protocolParams.costModels)
+        const costModels = utils.tx.createCostModels(this.protocolParams.costModels)
         const slotConfig = this.cw3.__config.slotConfig
         const zeroRedeemers = CML.LegacyRedeemerList.new()
         for (let i = 0; i < draftTxRedeemers.as_arr_legacy_redeemer()!.len(); i++) {
@@ -963,8 +935,8 @@ export class TxBuilder {
         draftTxWitnesses.set_redeemers(CML.Redeemers.new_arr_legacy_redeemer(zeroRedeemers))
         const newTx = CML.Transaction.new(draftTx.body(), draftTxWitnesses, true, draftTx.auxiliary_data())
         const allInputs = [...this.inputs.values(), ...this.readInputs.values(), ...this.collectInputs.values()]
-        const inputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionInput(utxo).to_cbor_bytes())
-        const outputs = allInputs.map((utxo) => this.cw3.utils.tx.utxoToTransactionOutput(utxo).to_cbor_bytes())
+        const inputs = allInputs.map((utxo) => utils.tx.utxoToTransactionInput(utxo).to_cbor_bytes())
+        const outputs = allInputs.map((utxo) => utils.tx.utxoToTransactionOutput(utxo).to_cbor_bytes())
         const uplcEvaluatedRedeemers = UPLC.eval_phase_two_raw(
           newTx.to_cbor_bytes(),
           inputs,

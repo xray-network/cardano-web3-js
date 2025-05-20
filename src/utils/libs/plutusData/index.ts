@@ -1,7 +1,7 @@
 import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import { Buffer } from "buffer"
 import * as TypeBox from "@sinclair/typebox"
-import * as CW3Types from "../../types"
+import * as CW3Types from "@/types"
 
 const fromHex = (hex: string): Uint8Array => {
   return new Uint8Array(Buffer.from(hex, "hex"))
@@ -41,7 +41,7 @@ export type Data =
   | Map<Data, Data> // AssocList
   | Constr<Data>
 
-export const Data = () => {
+export const DataFunc = () => {
   return {
     // Types
     // Note: Recursive types are not supported (yet)
@@ -758,3 +758,5 @@ function replaceProperties(object: Json, properties: Json) {
   })
   Object.assign(object, properties)
 }
+
+export const Data = DataFunc()

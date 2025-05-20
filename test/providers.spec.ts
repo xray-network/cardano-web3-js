@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest"
-import { CardanoWeb3 } from "../src"
+import { CardanoWeb3 } from "@"
 
 describe("Provider", async () => {
   const web3 = new CardanoWeb3()
