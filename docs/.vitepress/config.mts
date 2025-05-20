@@ -10,6 +10,7 @@ export default defineConfig({
     "CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain",
   lastUpdated: true,
   cleanUrls: true,
+  ignoreDeadLinks: [/^\/api/],
   sitemap: {
     hostname: "https://carano-web3-js.org",
   },
@@ -108,7 +109,10 @@ export default defineConfig({
       docsSidebar,
       {
         text: "Typedoc API",
-        items: [{ text: "API Reference", link: "/api/" }, ...typedocSidebar],
+        items: [
+          { text: "API Reference", link: "/api/" },
+          { text: "Documentation", collapsed: true, items: typedocSidebar },
+        ],
       },
     ],
 

@@ -2,51 +2,59 @@
 
 # Class: KoiosProvider
 
+Defined in: [providers/koios/index.ts:6](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L6)
+
 ## Implements
 
-- [`Provider`](../namespaces/T/type-aliases/Provider.md)
+- [`Provider`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Provider.md)
 
 ## Constructors
 
-### new KoiosProvider()
+### Constructor
 
-> **new KoiosProvider**(`baseUrl`, `headers`?): [`KoiosProvider`](KoiosProvider.md)
+> **new KoiosProvider**(`baseUrl`, `headers?`): `KoiosProvider`
+
+Defined in: [providers/koios/index.ts:9](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L9)
 
 #### Parameters
 
-• **baseUrl**: `string`
+##### baseUrl
 
-• **headers?**: [`Headers`](../namespaces/T/type-aliases/Headers.md)
+`string`
+
+##### headers?
+
+[`Headers`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Headers.md)
 
 #### Returns
 
-[`KoiosProvider`](KoiosProvider.md)
-
-#### Defined in
-
-[src/provider/koios/index.ts:8](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L8)
+`KoiosProvider`
 
 ## Methods
 
 ### evaluateTx()
 
-> **evaluateTx**(`tx`): `Promise`\<[`RedeemerCost`](../namespaces/T/type-aliases/RedeemerCost.md)[]\>
+> **evaluateTx**(`tx`, `additionalUtxos?`): `Promise`\<[`RedeemerCost`](../cardano-web3-js/namespaces/CW3Types/type-aliases/RedeemerCost.md)[]\>
+
+Defined in: [providers/koios/index.ts:147](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L147)
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
+
+##### additionalUtxos?
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]
 
 #### Returns
 
-`Promise`\<[`RedeemerCost`](../namespaces/T/type-aliases/RedeemerCost.md)[]\>
+`Promise`\<[`RedeemerCost`](../cardano-web3-js/namespaces/CW3Types/type-aliases/RedeemerCost.md)[]\>
 
 #### Implementation of
 
-`T.Provider.evaluateTx`
-
-#### Defined in
-
-[src/provider/koios/index.ts:146](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L146)
+`CW3Types.Provider.evaluateTx`
 
 ***
 
@@ -54,9 +62,13 @@
 
 > **getDatumByHash**(`datumHash`): `Promise`\<`string`\>
 
+Defined in: [providers/koios/index.ts:104](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L104)
+
 #### Parameters
 
-• **datumHash**: `string`
+##### datumHash
+
+`string`
 
 #### Returns
 
@@ -64,159 +76,153 @@
 
 #### Implementation of
 
-`T.Provider.getDatumByHash`
-
-#### Defined in
-
-[src/provider/koios/index.ts:103](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L103)
+`CW3Types.Provider.getDatumByHash`
 
 ***
 
 ### getDelegation()
 
-> **getDelegation**(`stakingAddress`): `Promise`\<[`AccountDelegation`](../namespaces/T/type-aliases/AccountDelegation.md)\>
+> **getDelegation**(`stakingAddress`): `Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
+
+Defined in: [providers/koios/index.ts:131](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L131)
 
 #### Parameters
 
-• **stakingAddress**: `string`
+##### stakingAddress
+
+`string`
 
 #### Returns
 
-`Promise`\<[`AccountDelegation`](../namespaces/T/type-aliases/AccountDelegation.md)\>
+`Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
 
 #### Implementation of
 
-`T.Provider.getDelegation`
-
-#### Defined in
-
-[src/provider/koios/index.ts:130](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L130)
+`CW3Types.Provider.getDelegation`
 
 ***
 
 ### getProtocolParameters()
 
-> **getProtocolParameters**(): `Promise`\<[`ProtocolParameters`](../namespaces/T/type-aliases/ProtocolParameters.md)\>
+> **getProtocolParameters**(): `Promise`\<[`ProtocolParameters`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ProtocolParameters.md)\>
+
+Defined in: [providers/koios/index.ts:29](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L29)
 
 #### Returns
 
-`Promise`\<[`ProtocolParameters`](../namespaces/T/type-aliases/ProtocolParameters.md)\>
+`Promise`\<[`ProtocolParameters`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ProtocolParameters.md)\>
 
 #### Implementation of
 
-`T.Provider.getProtocolParameters`
-
-#### Defined in
-
-[src/provider/koios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L28)
+`CW3Types.Provider.getProtocolParameters`
 
 ***
 
 ### getScriptByHash()
 
-> **getScriptByHash**(`scriptHash`): `Promise`\<[`Script`](../namespaces/T/type-aliases/Script.md)\>
+> **getScriptByHash**(`scriptHash`): `Promise`\<[`Script`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Script.md)\>
+
+Defined in: [providers/koios/index.ts:116](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L116)
 
 #### Parameters
 
-• **scriptHash**: `string`
+##### scriptHash
+
+`string`
 
 #### Returns
 
-`Promise`\<[`Script`](../namespaces/T/type-aliases/Script.md)\>
+`Promise`\<[`Script`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Script.md)\>
 
 #### Implementation of
 
-`T.Provider.getScriptByHash`
-
-#### Defined in
-
-[src/provider/koios/index.ts:115](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L115)
+`CW3Types.Provider.getScriptByHash`
 
 ***
 
 ### getTip()
 
-> **getTip**(): `Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+> **getTip**(): `Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
+
+Defined in: [providers/koios/index.ts:13](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L13)
 
 #### Returns
 
-`Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+`Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
 
 #### Implementation of
 
-`T.Provider.getTip`
-
-#### Defined in
-
-[src/provider/koios/index.ts:12](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L12)
+`CW3Types.Provider.getTip`
 
 ***
 
 ### getUtxoByOutputRef()
 
-> **getUtxoByOutputRef**(`txHash`, `index`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+> **getUtxoByOutputRef**(`txHash`, `index`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
+
+Defined in: [providers/koios/index.ts:75](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L75)
 
 #### Parameters
 
-• **txHash**: `string`
+##### txHash
 
-• **index**: `number`
+`string`
+
+##### index
+
+`number`
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
 
 #### Implementation of
 
-`T.Provider.getUtxoByOutputRef`
-
-#### Defined in
-
-[src/provider/koios/index.ts:74](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L74)
+`CW3Types.Provider.getUtxoByOutputRef`
 
 ***
 
 ### getUtxosByAddress()
 
-> **getUtxosByAddress**(`address`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **getUtxosByAddress**(`address`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/koios/index.ts:71](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L71)
 
 #### Parameters
 
-• **address**: `string`
+##### address
+
+`string`
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 #### Implementation of
 
-`T.Provider.getUtxosByAddress`
-
-#### Defined in
-
-[src/provider/koios/index.ts:70](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L70)
+`CW3Types.Provider.getUtxosByAddress`
 
 ***
 
 ### getUtxosByAddresses()
 
-> **getUtxosByAddresses**(`addresses`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **getUtxosByAddresses**(`addresses`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/koios/index.ts:44](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L44)
 
 #### Parameters
 
-• **addresses**: `string`[]
+##### addresses
+
+`string`[]
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 #### Implementation of
 
-`T.Provider.getUtxosByAddresses`
-
-#### Defined in
-
-[src/provider/koios/index.ts:43](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L43)
+`CW3Types.Provider.getUtxosByAddresses`
 
 ***
 
@@ -224,13 +230,21 @@
 
 > **observeTx**(`txHash`, `checkInterval`, `maxTime`): `Promise`\<`boolean`\>
 
+Defined in: [providers/koios/index.ts:175](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L175)
+
 #### Parameters
 
-• **txHash**: `string`
+##### txHash
 
-• **checkInterval**: `number` = `3000`
+`string`
 
-• **maxTime**: `number` = `...`
+##### checkInterval
+
+`number` = `3000`
+
+##### maxTime
+
+`number` = `...`
 
 #### Returns
 
@@ -238,51 +252,47 @@
 
 #### Implementation of
 
-`T.Provider.observeTx`
-
-#### Defined in
-
-[src/provider/koios/index.ts:163](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L163)
+`CW3Types.Provider.observeTx`
 
 ***
 
 ### resolveUtxoDatumAndScript()
 
-> **resolveUtxoDatumAndScript**(`utxo`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+> **resolveUtxoDatumAndScript**(`utxo`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
+
+Defined in: [providers/koios/index.ts:88](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L88)
 
 #### Parameters
 
-• **utxo**: [`Utxo`](../namespaces/T/type-aliases/Utxo.md)
+##### utxo
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
 
 #### Implementation of
 
-`T.Provider.resolveUtxoDatumAndScript`
-
-#### Defined in
-
-[src/provider/koios/index.ts:87](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L87)
+`CW3Types.Provider.resolveUtxoDatumAndScript`
 
 ***
 
 ### resolveUtxosDatumAndScript()
 
-> **resolveUtxosDatumAndScript**(`utxos`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **resolveUtxosDatumAndScript**(`utxos`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/koios/index.ts:96](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L96)
 
 #### Parameters
 
-• **utxos**: [`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]
+##### utxos
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
-
-#### Defined in
-
-[src/provider/koios/index.ts:95](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L95)
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 ***
 
@@ -290,25 +300,25 @@
 
 > **submitAndObserveTx**(`tx`, `checkInterval`, `maxTime`): `Promise`\<`boolean`\>
 
+Defined in: [providers/koios/index.ts:218](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L218)
+
 #### Parameters
 
-• **tx**: `string`
+##### tx
 
-• **checkInterval**: `number` = `3000`
+`string`
 
-• **maxTime**: `number` = `...`
+##### checkInterval
+
+`number` = `3000`
+
+##### maxTime
+
+`number` = `...`
 
 #### Returns
 
 `Promise`\<`boolean`\>
-
-#### Implementation of
-
-`T.Provider.submitAndObserveTx`
-
-#### Defined in
-
-[src/provider/koios/index.ts:206](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L206)
 
 ***
 
@@ -316,9 +326,13 @@
 
 > **submitTx**(`tx`): `Promise`\<`string`\>
 
+Defined in: [providers/koios/index.ts:201](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/koios/index.ts#L201)
+
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 #### Returns
 
@@ -326,8 +340,4 @@
 
 #### Implementation of
 
-`T.Provider.submitTx`
-
-#### Defined in
-
-[src/provider/koios/index.ts:189](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/koios/index.ts#L189)
+`CW3Types.Provider.submitTx`

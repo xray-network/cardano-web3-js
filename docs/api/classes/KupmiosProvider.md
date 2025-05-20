@@ -2,57 +2,69 @@
 
 # Class: KupmiosProvider
 
+Defined in: [providers/kupmios/index.ts:8](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L8)
+
 ## Implements
 
-- [`Provider`](../namespaces/T/type-aliases/Provider.md)
+- [`Provider`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Provider.md)
 
 ## Constructors
 
-### new KupmiosProvider()
+### Constructor
 
-> **new KupmiosProvider**(`__namedParameters`): [`KupmiosProvider`](KupmiosProvider.md)
+> **new KupmiosProvider**(`__namedParameters`): `KupmiosProvider`
+
+Defined in: [providers/kupmios/index.ts:12](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L12)
 
 #### Parameters
 
-• **\_\_namedParameters**
+##### \_\_namedParameters
 
-• **\_\_namedParameters.kupoHeaders?**: [`Headers`](../namespaces/T/type-aliases/Headers.md)
+###### kupoHeaders?
 
-• **\_\_namedParameters.kupoUrl**: `string`
+[`Headers`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Headers.md)
 
-• **\_\_namedParameters.ogmiosHeaders?**: [`Headers`](../namespaces/T/type-aliases/Headers.md)
+###### kupoUrl
 
-• **\_\_namedParameters.ogmiosUrl**: `string`
+`string`
+
+###### ogmiosHeaders?
+
+[`Headers`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Headers.md)
+
+###### ogmiosUrl
+
+`string`
 
 #### Returns
 
-[`KupmiosProvider`](KupmiosProvider.md)
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:11](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L11)
+`KupmiosProvider`
 
 ## Methods
 
 ### evaluateTx()
 
-> **evaluateTx**(`tx`): `Promise`\<[`RedeemerCost`](../namespaces/T/type-aliases/RedeemerCost.md)[]\>
+> **evaluateTx**(`tx`, `additionalUtxos?`): `Promise`\<[`RedeemerCost`](../cardano-web3-js/namespaces/CW3Types/type-aliases/RedeemerCost.md)[]\>
+
+Defined in: [providers/kupmios/index.ts:168](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L168)
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
+
+##### additionalUtxos?
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]
 
 #### Returns
 
-`Promise`\<[`RedeemerCost`](../namespaces/T/type-aliases/RedeemerCost.md)[]\>
+`Promise`\<[`RedeemerCost`](../cardano-web3-js/namespaces/CW3Types/type-aliases/RedeemerCost.md)[]\>
 
 #### Implementation of
 
-`T.Provider.evaluateTx`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:157](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L157)
+`CW3Types.Provider.evaluateTx`
 
 ***
 
@@ -60,9 +72,13 @@
 
 > **getDatumByHash**(`datumHash`): `Promise`\<`string`\>
 
+Defined in: [providers/kupmios/index.ts:116](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L116)
+
 #### Parameters
 
-• **datumHash**: `string`
+##### datumHash
+
+`string`
 
 #### Returns
 
@@ -70,159 +86,153 @@
 
 #### Implementation of
 
-`T.Provider.getDatumByHash`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:109](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L109)
+`CW3Types.Provider.getDatumByHash`
 
 ***
 
 ### getDelegation()
 
-> **getDelegation**(`stakingAddress`): `Promise`\<[`AccountDelegation`](../namespaces/T/type-aliases/AccountDelegation.md)\>
+> **getDelegation**(`stakingAddress`): `Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
+
+Defined in: [providers/kupmios/index.ts:147](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L147)
 
 #### Parameters
 
-• **stakingAddress**: `string`
+##### stakingAddress
+
+`string`
 
 #### Returns
 
-`Promise`\<[`AccountDelegation`](../namespaces/T/type-aliases/AccountDelegation.md)\>
+`Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
 
 #### Implementation of
 
-`T.Provider.getDelegation`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:134](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L134)
+`CW3Types.Provider.getDelegation`
 
 ***
 
 ### getProtocolParameters()
 
-> **getProtocolParameters**(): `Promise`\<[`ProtocolParameters`](../namespaces/T/type-aliases/ProtocolParameters.md)\>
+> **getProtocolParameters**(): `Promise`\<[`ProtocolParameters`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ProtocolParameters.md)\>
+
+Defined in: [providers/kupmios/index.ts:43](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L43)
 
 #### Returns
 
-`Promise`\<[`ProtocolParameters`](../namespaces/T/type-aliases/ProtocolParameters.md)\>
+`Promise`\<[`ProtocolParameters`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ProtocolParameters.md)\>
 
 #### Implementation of
 
-`T.Provider.getProtocolParameters`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:44](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L44)
+`CW3Types.Provider.getProtocolParameters`
 
 ***
 
 ### getScriptByHash()
 
-> **getScriptByHash**(`scriptHash`): `Promise`\<[`Script`](../namespaces/T/type-aliases/Script.md)\>
+> **getScriptByHash**(`scriptHash`): `Promise`\<[`Script`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Script.md)\>
+
+Defined in: [providers/kupmios/index.ts:130](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L130)
 
 #### Parameters
 
-• **scriptHash**: `string`
+##### scriptHash
+
+`string`
 
 #### Returns
 
-`Promise`\<[`Script`](../namespaces/T/type-aliases/Script.md)\>
+`Promise`\<[`Script`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Script.md)\>
 
 #### Implementation of
 
-`T.Provider.getScriptByHash`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:120](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L120)
+`CW3Types.Provider.getScriptByHash`
 
 ***
 
 ### getTip()
 
-> **getTip**(): `Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+> **getTip**(): `Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
+
+Defined in: [providers/kupmios/index.ts:27](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L27)
 
 #### Returns
 
-`Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+`Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
 
 #### Implementation of
 
-`T.Provider.getTip`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:28](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L28)
+`CW3Types.Provider.getTip`
 
 ***
 
 ### getUtxoByOutputRef()
 
-> **getUtxoByOutputRef**(`txHash`, `index`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+> **getUtxoByOutputRef**(`txHash`, `index`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
+
+Defined in: [providers/kupmios/index.ts:86](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L86)
 
 #### Parameters
 
-• **txHash**: `string`
+##### txHash
 
-• **index**: `number`
+`string`
+
+##### index
+
+`number`
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
 
 #### Implementation of
 
-`T.Provider.getUtxoByOutputRef`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:82](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L82)
+`CW3Types.Provider.getUtxoByOutputRef`
 
 ***
 
 ### getUtxosByAddress()
 
-> **getUtxosByAddress**(`address`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **getUtxosByAddress**(`address`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/kupmios/index.ts:82](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L82)
 
 #### Parameters
 
-• **address**: `string`
+##### address
+
+`string`
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 #### Implementation of
 
-`T.Provider.getUtxosByAddress`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:78](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L78)
+`CW3Types.Provider.getUtxosByAddress`
 
 ***
 
 ### getUtxosByAddresses()
 
-> **getUtxosByAddresses**(`addresses`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **getUtxosByAddresses**(`addresses`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/kupmios/index.ts:57](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L57)
 
 #### Parameters
 
-• **addresses**: `string`[]
+##### addresses
+
+`string`[]
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 #### Implementation of
 
-`T.Provider.getUtxosByAddresses`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:60](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L60)
+`CW3Types.Provider.getUtxosByAddresses`
 
 ***
 
@@ -230,13 +240,21 @@
 
 > **observeTx**(`txHash`, `checkInterval`, `maxTime`): `Promise`\<`boolean`\>
 
+Defined in: [providers/kupmios/index.ts:211](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L211)
+
 #### Parameters
 
-• **txHash**: `string`
+##### txHash
 
-• **checkInterval**: `number` = `3000`
+`string`
 
-• **maxTime**: `number` = `...`
+##### checkInterval
+
+`number` = `3000`
+
+##### maxTime
+
+`number` = `...`
 
 #### Returns
 
@@ -244,77 +262,47 @@
 
 #### Implementation of
 
-`T.Provider.observeTx`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:173](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L173)
+`CW3Types.Provider.observeTx`
 
 ***
 
 ### resolveUtxoDatumAndScript()
 
-> **resolveUtxoDatumAndScript**(`utxo`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+> **resolveUtxoDatumAndScript**(`utxo`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
+
+Defined in: [providers/kupmios/index.ts:100](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L100)
 
 #### Parameters
 
-• **utxo**: [`Utxo`](../namespaces/T/type-aliases/Utxo.md)
+##### utxo
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)\>
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)\>
 
 #### Implementation of
 
-`T.Provider.resolveUtxoDatumAndScript`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:93](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L93)
+`CW3Types.Provider.resolveUtxoDatumAndScript`
 
 ***
 
 ### resolveUtxosDatumAndScript()
 
-> **resolveUtxosDatumAndScript**(`utxos`): `Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
+> **resolveUtxosDatumAndScript**(`utxos`): `Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
+
+Defined in: [providers/kupmios/index.ts:108](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L108)
 
 #### Parameters
 
-• **utxos**: [`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]
+##### utxos
+
+[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]
 
 #### Returns
 
-`Promise`\<[`Utxo`](../namespaces/T/type-aliases/Utxo.md)[]\>
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:101](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L101)
-
-***
-
-### submitAndObserveTx()
-
-> **submitAndObserveTx**(`tx`, `checkInterval`, `maxTime`): `Promise`\<`boolean`\>
-
-#### Parameters
-
-• **tx**: `string`
-
-• **checkInterval**: `number` = `3000`
-
-• **maxTime**: `number` = `...`
-
-#### Returns
-
-`Promise`\<`boolean`\>
-
-#### Implementation of
-
-`T.Provider.submitAndObserveTx`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:227](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L227)
+`Promise`\<[`Utxo`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Utxo.md)[]\>
 
 ***
 
@@ -322,9 +310,13 @@
 
 > **submitTx**(`tx`): `Promise`\<`string`\>
 
+Defined in: [providers/kupmios/index.ts:189](https://github.com/xray-network/cardano-web3-js/blob/main/src/providers/kupmios/index.ts#L189)
+
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 #### Returns
 
@@ -332,8 +324,4 @@
 
 #### Implementation of
 
-`T.Provider.submitTx`
-
-#### Defined in
-
-[src/provider/kupmios/index.ts:202](https://github.com/xray-network/cardano-web3-js/blob/main/src/provider/kupmios/index.ts#L202)
+`CW3Types.Provider.submitTx`

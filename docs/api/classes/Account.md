@@ -2,71 +2,57 @@
 
 # Class: Account
 
+Defined in: [core/account.ts:7](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L7)
+
 ## Constructors
 
-### new Account()
+### Constructor
 
-> **new Account**(): [`Account`](Account.md)
+> **new Account**(): `Account`
 
 #### Returns
 
-[`Account`](Account.md)
+`Account`
 
 ## Properties
 
 ### \_\_config
 
-> **\_\_config**: [`AccountConfig`](../namespaces/T/type-aliases/AccountConfig.md)
+> **\_\_config**: [`AccountConfig`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountConfig.md)
 
-#### Defined in
-
-[src/core/account.ts:6](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L6)
-
-***
-
-### \_\_state
-
-> **\_\_state**: [`AccountState`](../namespaces/T/type-aliases/AccountState.md)
-
-#### Defined in
-
-[src/core/account.ts:22](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L22)
+Defined in: [core/account.ts:9](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L9)
 
 ## Methods
 
-### decodeAndUpdateXprvKey()
+### exportAccount()
 
-> **decodeAndUpdateXprvKey**(`password`): `string`
+> **exportAccount**(): [`AccountExportV1`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountExportV1.md)
 
-Decode key from encrypted state and update internal state
+Defined in: [core/account.ts:230](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L230)
 
-#### Parameters
-
-• **password**: `string`
-
-Password to decrypt the key
+Export account configuration
 
 #### Returns
 
-`string`
+[`AccountExportV1`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountExportV1.md)
 
-Decoded xprv key
-
-#### Defined in
-
-[src/core/account.ts:264](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L264)
+Account configuration
 
 ***
 
-### decodeXprvKey()
+### getDecodedXprvKey()
 
-> **decodeXprvKey**(`password`): `string`
+> **getDecodedXprvKey**(`password`): `string`
+
+Defined in: [core/account.ts:264](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L264)
 
 Decode key from encrypted state
 
 #### Parameters
 
-• **password**: `string`
+##### password
+
+`string`
 
 Password to decrypt the key
 
@@ -80,45 +66,33 @@ Decoded xprv key
 
 Error if account is not encrypted or account type is wrong
 
-#### Defined in
-
-[src/core/account.ts:252](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L252)
-
 ***
 
-### encodeAndUpdateXprvKey()
+### getDelegation()
 
-> **encodeAndUpdateXprvKey**(`password`): `string`
+> **getDelegation**(): `Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
 
-Encode key to encrypted state and update internal state
-
-#### Parameters
-
-• **password**: `string`
-
-Password to encrypt the key
+Defined in: [core/account.ts:316](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L316)
 
 #### Returns
 
-`string`
-
-Encoded xprv key
-
-#### Defined in
-
-[src/core/account.ts:239](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L239)
+`Promise`\<[`AccountDelegation`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDelegation.md)\>
 
 ***
 
-### encodeXprvKey()
+### getEncodedXprvKey()
 
-> **encodeXprvKey**(`password`): `string`
+> **getEncodedXprvKey**(`password`): `string`
+
+Defined in: [core/account.ts:251](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L251)
 
 Encode key to encrypted state
 
 #### Parameters
 
-• **password**: `string`
+##### password
+
+`string`
 
 Password to encrypt the key
 
@@ -136,206 +110,236 @@ Error if account type is wrong or xprv key is not found
 
 Error if account is already encrypted
 
-#### Defined in
-
-[src/core/account.ts:227](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L227)
-
 ***
 
-### exportAccount()
+### getState()
 
-> **exportAccount**(): [`AccountExportV1`](../namespaces/T/type-aliases/AccountExportV1.md)
+> **getState**(): `Promise`\<[`AccountState`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountState.md)\>
 
-Export account configuration
-
-#### Returns
-
-[`AccountExportV1`](../namespaces/T/type-aliases/AccountExportV1.md)
-
-Account configuration
-
-#### Throws
-
-Error if account type is not exportable
-
-#### Defined in
-
-[src/core/account.ts:204](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L204)
-
-***
-
-### updateState()
-
-> **updateState**(): `Promise`\<[`AccountState`](../namespaces/T/type-aliases/AccountState.md)\>
+Defined in: [core/account.ts:276](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L276)
 
 Get account state and update internal state
 
 #### Returns
 
-`Promise`\<[`AccountState`](../namespaces/T/type-aliases/AccountState.md)\>
+`Promise`\<[`AccountState`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountState.md)\>
 
 Account state
 
-#### Defined in
+***
 
-[src/core/account.ts:275](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L275)
+### fromAddress()
+
+> `static` **fromAddress**(`cw3`, `address`): `Account`
+
+Defined in: [core/account.ts:150](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L150)
+
+Create a new account from address
+
+#### Parameters
+
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
+
+CardanoWeb3 instance
+
+##### address
+
+`string`
+
+Bech32 address
+
+#### Returns
+
+`Account`
+
+Account instance
 
 ***
 
 ### fromConnector()
 
-> `static` **fromConnector**(`cw3`, `connector`): `Promise`\<[`Account`](Account.md)\>
+> `static` **fromConnector**(`cw3`, `connector`): `Promise`\<`Account`\>
+
+Defined in: [core/account.ts:117](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L117)
 
 Create a new account from connector
 
 #### Parameters
 
-• **cw3**: [`CardanoWeb3`](CardanoWeb3.md)
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
 
 CardanoWeb3 instance
 
-• **connector**: [`Connector`](Connector.md)
+##### connector
+
+[`Connector`](Connector.md)
 
 Connector instance
 
 #### Returns
 
-`Promise`\<[`Account`](Account.md)\>
+`Promise`\<`Account`\>
 
 Account instance
-
-#### Defined in
-
-[src/core/account.ts:120](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L120)
 
 ***
 
 ### fromMnemonic()
 
-> `static` **fromMnemonic**(`cw3`, `mnemonic`, `accountPath`, `addressPath`): [`Account`](Account.md)
+> `static` **fromMnemonic**(`cw3`, `mnemonic`, `password`, `accountPath`, `addressPath`): `Account`
+
+Defined in: [core/account.ts:34](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L34)
 
 Create a new account from mnemonic
 
 #### Parameters
 
-• **cw3**: [`CardanoWeb3`](CardanoWeb3.md)
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
 
 CardanoWeb3 instance
 
-• **mnemonic**: `string`
+##### mnemonic
+
+`string`
 
 24-word mnemonic
 
-• **accountPath**: [`AccountDerivationPath`](../namespaces/T/type-aliases/AccountDerivationPath.md)
+##### password
+
+`string`
+
+##### accountPath
+
+[`AccountDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDerivationPath.md)
 
 Account derivation path (e.g. [1852, 1815, 0])
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md)
+##### addressPath
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md)
 
 Address derivation path (e.g. [0, 0])
 
 #### Returns
 
-[`Account`](Account.md)
+`Account`
 
 Account instance
-
-#### Defined in
-
-[src/core/account.ts:40](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L40)
 
 ***
 
 ### fromXprvKey()
 
-> `static` **fromXprvKey**(`cw3`, `xprvKey`, `accountPath`, `addressPath`): [`Account`](Account.md)
+> `static` **fromXprvKey**(`cw3`, `xprvKey`, `password`, `accountPath`, `addressPath`): `Account`
+
+Defined in: [core/account.ts:53](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L53)
 
 Create a new account from xprv key
 
 #### Parameters
 
-• **cw3**: [`CardanoWeb3`](CardanoWeb3.md)
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
 
 CardanoWeb3 instance
 
-• **xprvKey**: `string`
+##### xprvKey
+
+`string`
 
 Extended private key
 
-• **accountPath**: [`AccountDerivationPath`](../namespaces/T/type-aliases/AccountDerivationPath.md)
+##### password
+
+`string`
+
+##### accountPath
+
+[`AccountDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDerivationPath.md)
 
 Account derivation path (e.g. [1852, 1815, 0])
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md)
+##### addressPath
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md)
 
 Address derivation path (e.g. [0, 0])
 
 #### Returns
 
-[`Account`](Account.md)
+`Account`
 
 Account instance
-
-#### Defined in
-
-[src/core/account.ts:58](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L58)
 
 ***
 
 ### fromXpubKey()
 
-> `static` **fromXpubKey**(`cw3`, `xpubKey`, `addressPath`): [`Account`](Account.md)
+> `static` **fromXpubKey**(`cw3`, `xpubKey`, `addressPath`): `Account`
+
+Defined in: [core/account.ts:89](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L89)
 
 Create a new account from xpub key (limited functionality)
 
 #### Parameters
 
-• **cw3**: [`CardanoWeb3`](CardanoWeb3.md)
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
 
 CardanoWeb3 instance
 
-• **xpubKey**: `string`
+##### xpubKey
+
+`string`
 
 Extended public key
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md)
+##### addressPath
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md)
 
 Address derivation path (e.g. [0, 0])
 
 #### Returns
 
-[`Account`](Account.md)
+`Account`
 
 Account instance
-
-#### Defined in
-
-[src/core/account.ts:92](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L92)
 
 ***
 
 ### importAccount()
 
-> `static` **importAccount**(`cw3`, `config`): [`Account`](Account.md)
+> `static` **importAccount**(`cw3`, `config`): `Account`
+
+Defined in: [core/account.ts:199](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L199)
 
 Import an account from configuration
 
 #### Parameters
 
-• **cw3**: [`CardanoWeb3`](CardanoWeb3.md)
+##### cw3
+
+[`CardanoWeb3`](CardanoWeb3.md)
 
 CardanoWeb3 instance
 
-• **config**: [`AccountExportV1`](../namespaces/T/type-aliases/AccountExportV1.md)
+##### config
+
+[`AccountExportV1`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountExportV1.md)
 
 Account configuration
 
 #### Returns
 
-[`Account`](Account.md)
+`Account`
 
 Account instance
-
-#### Defined in
-
-[src/core/account.ts:175](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/account.ts#L175)

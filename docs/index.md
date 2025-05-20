@@ -85,16 +85,20 @@ Building an SDK is always a compromise between functionality, ease of code under
 ## Environment Support
 
 <table style="width: 100%; display: table">
-  <tr>
-    <td style="width: 33%">Node.js</td>
-    <td style="width: 33%">Browser (CSR)</td>
-    <td style="width: 33%">SSR</td>
-  </tr>
-  <tr>
-    <td>✅</td>
-    <td>✅</td>
-    <td>✅</td>
-  </tr>
+  <thead>
+    <tr>
+      <th style="width: 33%">Node.js</th>
+      <th style="width: 33%">Browser (CSR)</th>
+      <th style="width: 33%">SSR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+  </tbody>
 </table>
 
 <small>SSR involves prerendering pages with Node.js and executing them in the browser environment. Related concepts include SSR (Server-Side Rendering), SSG (Static Site Generation), ISR (Incremental Static Regeneration), and CSR (Client-Side Rendering)</small>

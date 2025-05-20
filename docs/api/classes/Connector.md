@@ -2,15 +2,17 @@
 
 # Class: Connector
 
+Defined in: [core/connector.ts:9](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L9)
+
 ## Constructors
 
-### new Connector()
+### Constructor
 
-> **new Connector**(): [`Connector`](Connector.md)
+> **new Connector**(): `Connector`
 
 #### Returns
 
-[`Connector`](Connector.md)
+`Connector`
 
 ## Properties
 
@@ -18,15 +20,15 @@
 
 > **\_\_api**: `any`
 
-#### Defined in
-
-[src/core/connector.ts:11](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L11)
+Defined in: [core/connector.ts:10](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L10)
 
 ## Methods
 
 ### getBalance()
 
 > **getBalance**(): `Promise`\<`string`\>
+
+Defined in: [core/connector.ts:86](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L86)
 
 Get wallet balance
 
@@ -36,15 +38,13 @@ Get wallet balance
 
 Wallet balance
 
-#### Defined in
-
-[src/core/connector.ts:85](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L85)
-
 ***
 
 ### getChangeAddress()
 
 > **getChangeAddress**(): `Promise`\<`string`\>
+
+Defined in: [core/connector.ts:111](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L111)
 
 Get wallet change address
 
@@ -54,15 +54,13 @@ Get wallet change address
 
 Change address
 
-#### Defined in
-
-[src/core/connector.ts:110](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L110)
-
 ***
 
 ### getCollateral()
 
 > **getCollateral**(): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:78](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L78)
 
 Get wallet collaterals
 
@@ -72,15 +70,13 @@ Get wallet collaterals
 
 List of collaterals
 
-#### Defined in
-
-[src/core/connector.ts:77](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L77)
-
 ***
 
 ### getExtensions()
 
 > **getExtensions**(): `Promise`\<`any`[]\>
+
+Defined in: [core/connector.ts:52](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L52)
 
 Get wallet extensions
 
@@ -90,33 +86,29 @@ Get wallet extensions
 
 Wallet extensions
 
-#### Defined in
-
-[src/core/connector.ts:51](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L51)
-
 ***
 
 ### getNetworkId()
 
-> **getNetworkId**(): `Promise`\<`number`\>
+> **getNetworkId**(): `Promise`\<`0` \| `1`\>
+
+Defined in: [core/connector.ts:60](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L60)
 
 Get wallet network ID
 
 #### Returns
 
-`Promise`\<`number`\>
+`Promise`\<`0` \| `1`\>
 
 Wallet network ID (0 or 1)
-
-#### Defined in
-
-[src/core/connector.ts:59](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L59)
 
 ***
 
 ### getRewardAddresses()
 
 > **getRewardAddresses**(): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:119](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L119)
 
 Get wallet staking addresses
 
@@ -126,15 +118,13 @@ Get wallet staking addresses
 
 Staking addresses
 
-#### Defined in
-
-[src/core/connector.ts:118](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L118)
-
 ***
 
 ### getUnusedAddresses()
 
 > **getUnusedAddresses**(): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:103](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L103)
 
 Get wallet unused addresses
 
@@ -144,21 +134,21 @@ Get wallet unused addresses
 
 Array of unused addresses
 
-#### Defined in
-
-[src/core/connector.ts:102](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L102)
-
 ***
 
 ### getUsedAddresses()
 
-> **getUsedAddresses**(`paginate`?): `Promise`\<`string`[]\>
+> **getUsedAddresses**(`paginate?`): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:95](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L95)
 
 Get wallet used addresses
 
 #### Parameters
 
-• **paginate?**: [`ConnectorPaginate`](../namespaces/T/type-aliases/ConnectorPaginate.md)
+##### paginate?
+
+[`ConnectorPaginate`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ConnectorPaginate.md)
 
 Pagination options
 
@@ -168,25 +158,27 @@ Pagination options
 
 Array of used addresses
 
-#### Defined in
-
-[src/core/connector.ts:94](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L94)
-
 ***
 
 ### getUtxos()
 
-> **getUtxos**(`amount`?, `paginate`?): `Promise`\<`string`[]\>
+> **getUtxos**(`amount?`, `paginate?`): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:70](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L70)
 
 Get wallet UTXOs
 
 #### Parameters
 
-• **amount?**: `string`
+##### amount?
+
+`string`
 
 Amount to filter UTXOs
 
-• **paginate?**: [`ConnectorPaginate`](../namespaces/T/type-aliases/ConnectorPaginate.md)
+##### paginate?
+
+[`ConnectorPaginate`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ConnectorPaginate.md)
 
 Pagination options
 
@@ -196,37 +188,35 @@ Pagination options
 
 List of UTXOs
 
-#### Defined in
-
-[src/core/connector.ts:69](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L69)
-
 ***
 
 ### signData()
 
-> **signData**(`addr`, `payload`): `Promise`\<[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)\>
+> **signData**(`addr`, `payload`): `Promise`\<[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)\>
+
+Defined in: [core/connector.ts:139](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L139)
 
 Sign a message
 
 #### Parameters
 
-• **addr**: `string`
+##### addr
+
+`string`
 
 Address to sign message
 
-• **payload**: `string`
+##### payload
+
+`string`
 
 Message to sign
 
 #### Returns
 
-`Promise`\<[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)\>
+`Promise`\<[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)\>
 
 Signed message
-
-#### Defined in
-
-[src/core/connector.ts:138](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L138)
 
 ***
 
@@ -234,15 +224,21 @@ Signed message
 
 > **signTx**(`tx`, `partialSign`): `Promise`\<`string`\>
 
+Defined in: [core/connector.ts:129](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L129)
+
 Sign a transaction
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 Transaction to sign in CBOR format
 
-• **partialSign**: `boolean` = `false`
+##### partialSign
+
+`boolean` = `false`
 
 Partial sign flag (boolean)
 
@@ -252,21 +248,21 @@ Partial sign flag (boolean)
 
 Staking key
 
-#### Defined in
-
-[src/core/connector.ts:128](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L128)
-
 ***
 
 ### submitTx()
 
 > **submitTx**(`tx`): `Promise`\<`string`\>
 
+Defined in: [core/connector.ts:148](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L148)
+
 Submit a transaction
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 Transaction to submit in CBOR format
 
@@ -276,67 +272,67 @@ Transaction to submit in CBOR format
 
 Transaction hash
 
-#### Defined in
-
-[src/core/connector.ts:147](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L147)
-
 ***
 
 ### init()
 
-> `static` **init**(`wallet`, `extensions`?): `Promise`\<[`Connector`](Connector.md)\>
+> `static` **init**(`wallet`, `extensions?`): `Promise`\<`Connector`\>
+
+Defined in: [core/connector.ts:39](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L39)
 
 Initialize a wallet connector
 
 #### Parameters
 
-• **wallet**: `string`
+##### wallet
+
+`string`
 
 Wallet name
 
-• **extensions?**: `any`
+##### extensions?
+
+`any`
 
 Wallet extensions
 
 #### Returns
 
-`Promise`\<[`Connector`](Connector.md)\>
+`Promise`\<`Connector`\>
 
 Connector instance
-
-#### Defined in
-
-[src/core/connector.ts:38](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L38)
 
 ***
 
 ### isEnabled()
 
-> `static` **isEnabled**(`wallet`): `Promise`\<`string`[]\>
+> `static` **isEnabled**(`wallet`): `Promise`\<`boolean`\>
+
+Defined in: [core/connector.ts:28](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L28)
 
 Check if a wallet is enabled
 
 #### Parameters
 
-• **wallet**: `string`
+##### wallet
+
+`string`
 
 Wallet name
 
 #### Returns
 
-`Promise`\<`string`[]\>
+`Promise`\<`boolean`\>
 
 True if wallet is enabled
-
-#### Defined in
-
-[src/core/connector.ts:27](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L27)
 
 ***
 
 ### list()
 
 > `static` **list**(): `Promise`\<`string`[]\>
+
+Defined in: [core/connector.ts:16](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L16)
 
 List available wallets
 
@@ -345,7 +341,3 @@ List available wallets
 `Promise`\<`string`[]\>
 
 List of available wallets
-
-#### Defined in
-
-[src/core/connector.ts:17](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/connector.ts#L17)

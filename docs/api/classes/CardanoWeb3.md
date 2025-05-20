@@ -2,461 +2,58 @@
 
 # Class: CardanoWeb3
 
-CardanoWeb3 class
+Defined in: [core/cw3.ts:27](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L27)
 
+CardanoWeb3 class
 Main class for CardanoWeb3 library which provides all the necessary functions to interact with Cardano blockchain
 
 ## Constructors
 
-### new CardanoWeb3()
+### Constructor
 
-> **new CardanoWeb3**(): [`CardanoWeb3`](CardanoWeb3.md)
+> **new CardanoWeb3**(`config?`): `CardanoWeb3`
+
+Defined in: [core/cw3.ts:42](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L42)
+
+Initialize CardanoWeb3 library
+
+#### Parameters
+
+##### config?
+
+[`InitConfig`](../cardano-web3-js/namespaces/CW3Types/type-aliases/InitConfig.md)
+
+Configuration object
 
 #### Returns
 
-[`CardanoWeb3`](CardanoWeb3.md)
+`CardanoWeb3`
+
+CardanoWeb3 instance
 
 ## Properties
-
-### CML
-
-> **CML**: `__module`
-
-dcSpark @ Cardano Multiplatform Library
-
-#### Defined in
-
-[src/core/cw3.ts:29](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L29)
-
-***
-
-### Constr
-
-> **Constr**: *typeof* [`Constr`](Constr.md)
-
-Lucid Plutus Data Construction Lib
-
-#### Defined in
-
-[src/core/cw3.ts:37](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L37)
-
-***
-
-### Data
-
-> **Data**: `object`
-
-#### Any()
-
-> **Any**: () => `TUnsafe`\<[`Data`](../type-aliases/Data.md)\>
-
-##### Returns
-
-`TUnsafe`\<[`Data`](../type-aliases/Data.md)\>
-
-#### Array()
-
-> **Array**: \<`T`\>(`items`, `options`?) => `TArray`\<`T`\>
-
-##### Type Parameters
-
-• **T** *extends* `TSchema`
-
-##### Parameters
-
-• **items**: `T`
-
-• **options?**
-
-• **options.maxItems?**: `number`
-
-• **options.minItems?**: `number`
-
-• **options.uniqueItems?**: `boolean`
-
-##### Returns
-
-`TArray`\<`T`\>
-
-#### Boolean()
-
-> **Boolean**: () => `TUnsafe`\<`boolean`\>
-
-##### Returns
-
-`TUnsafe`\<`boolean`\>
-
-#### Bytes()
-
-> **Bytes**: (`options`?) => `TUnsafe`\<`string`\>
-
-##### Parameters
-
-• **options?**
-
-• **options.enum?**: `string`[]
-
-• **options.maxLength?**: `number`
-
-• **options.minLength?**: `number`
-
-##### Returns
-
-`TUnsafe`\<`string`\>
-
-#### Enum()
-
-> **Enum**: \<`T`\>(`items`) => `TUnion`\<`T`[]\>
-
-##### Type Parameters
-
-• **T** *extends* `TSchema`
-
-##### Parameters
-
-• **items**: `T`[]
-
-##### Returns
-
-`TUnion`\<`T`[]\>
-
-#### Integer()
-
-> **Integer**: (`options`?) => `TUnsafe`\<`bigint`\>
-
-##### Parameters
-
-• **options?**
-
-• **options.exclusiveMaximum?**: `number`
-
-• **options.exclusiveMinimum?**: `number`
-
-• **options.maximum?**: `number`
-
-• **options.minimum?**: `number`
-
-##### Returns
-
-`TUnsafe`\<`bigint`\>
-
-#### Literal()
-
-> **Literal**: \<`T`\>(`title`) => `TLiteral`\<`T`\>
-
-##### Type Parameters
-
-• **T** *extends* `TLiteralValue`
-
-##### Parameters
-
-• **title**: `T`
-
-##### Returns
-
-`TLiteral`\<`T`\>
-
-#### Map()
-
-> **Map**: \<`T`, `U`\>(`keys`, `values`, `options`?) => `TUnsafe`\<`Map`\<[`Static`](../namespaces/Data/type-aliases/Static.md)\<`T`, []\>, [`Static`](../namespaces/Data/type-aliases/Static.md)\<`U`, []\>\>\>
-
-##### Type Parameters
-
-• **T** *extends* `TSchema`
-
-• **U** *extends* `TSchema`
-
-##### Parameters
-
-• **keys**: `T`
-
-• **values**: `U`
-
-• **options?**
-
-• **options.maxItems?**: `number`
-
-• **options.minItems?**: `number`
-
-##### Returns
-
-`TUnsafe`\<`Map`\<[`Static`](../namespaces/Data/type-aliases/Static.md)\<`T`, []\>, [`Static`](../namespaces/Data/type-aliases/Static.md)\<`U`, []\>\>\>
-
-#### Nullable()
-
-> **Nullable**: \<`T`\>(`item`) => `TUnsafe`\<[`Static`](../namespaces/Data/type-aliases/Static.md)\<`T`, []\>\>
-
-##### Type Parameters
-
-• **T** *extends* `TSchema`
-
-##### Parameters
-
-• **item**: `T`
-
-##### Returns
-
-`TUnsafe`\<[`Static`](../namespaces/Data/type-aliases/Static.md)\<`T`, []\>\>
-
-#### Object()
-
-> **Object**: \<`T`\>(`properties`, `options`?) => `TObject`\<`T`\>
-
-Object applies by default a PlutusData Constr with index 0.
-Set 'hasConstr' to false to serialize Object as PlutusData List.
-
-##### Type Parameters
-
-• **T** *extends* `TProperties`
-
-##### Parameters
-
-• **properties**: `T`
-
-• **options?**
-
-• **options.hasConstr?**: `boolean`
-
-##### Returns
-
-`TObject`\<`T`\>
-
-#### Tuple()
-
-> **Tuple**: \<`T`\>(`items`, `options`?) => `TTuple`\<`T`\>
-
-Tuple is by default a PlutusData List.
-Set 'hasConstr' to true to apply a PlutusData Constr with index 0.
-
-##### Type Parameters
-
-• **T** *extends* `TSchema`[]
-
-##### Parameters
-
-• **items**: [`...T[]`]
-
-• **options?**
-
-• **options.hasConstr?**: `boolean`
-
-##### Returns
-
-`TTuple`\<`T`\>
-
-#### castFrom()
-
-> **castFrom**: \<`T`\>(`data`, `type`) => `T`
-
-##### Type Parameters
-
-• **T** = [`Data`](../type-aliases/Data.md)
-
-##### Parameters
-
-• **data**: [`Data`](../type-aliases/Data.md)
-
-• **type**: `T`
-
-##### Returns
-
-`T`
-
-#### castTo()
-
-> **castTo**: \<`T`\>(`struct`, `type`) => [`Data`](../type-aliases/Data.md)
-
-##### Type Parameters
-
-• **T**
-
-##### Parameters
-
-• **struct**: [`Exact`](../namespaces/T/type-aliases/Exact.md)\<`T`\>
-
-• **type**: `T`
-
-##### Returns
-
-[`Data`](../type-aliases/Data.md)
-
-#### from()
-
-> **from**: \<`T`\>(`raw`, `type`?) => `T`
-
-Convert Cbor encoded data to PlutusData
-
-##### Type Parameters
-
-• **T** = [`Data`](../type-aliases/Data.md)
-
-##### Parameters
-
-• **raw**: `string`
-
-• **type?**: `T`
-
-##### Returns
-
-`T`
-
-#### fromJson()
-
-> **fromJson**: (`json`) => [`Data`](../type-aliases/Data.md)
-
-Note Constr cannot be used here.
-Strings prefixed with '0x' are not UTF-8 encoded.
-
-##### Parameters
-
-• **json**: `any`
-
-##### Returns
-
-[`Data`](../type-aliases/Data.md)
-
-#### to()
-
-> **to**: \<`T`\>(`data`, `type`?) => `string`
-
-Convert PlutusData to Cbor encoded data.
-Or apply a shape and convert the provided data struct to Cbor encoded data.
-
-##### Type Parameters
-
-• **T** = [`Data`](../type-aliases/Data.md)
-
-##### Parameters
-
-• **data**: [`Exact`](../namespaces/T/type-aliases/Exact.md)\<`T`\>
-
-• **type?**: `T`
-
-##### Returns
-
-`string`
-
-#### toJson()
-
-> **toJson**: (`plutusData`) => `any`
-
-Note Constr cannot be used here, also only bytes/integers as Json keys.
-
-##### Parameters
-
-• **plutusData**: [`Data`](../type-aliases/Data.md)
-
-##### Returns
-
-`any`
-
-#### void()
-
-> **void**: () => `string`
-
-##### Returns
-
-`string`
-
-#### Defined in
-
-[src/core/cw3.ts:35](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L35)
-
-***
-
-### MSL
-
-> **MSL**: `__module`
-
-Emurgo @ Message Signing Library
-
-#### Defined in
-
-[src/core/cw3.ts:31](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L31)
-
-***
-
-### Message
-
-> **Message**: `object`
-
-Message Signing/Verification Lib
-
-#### signData()
-
-> **signData**: (`addressHex`, `payload`, `privateKey`) => [`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-##### Parameters
-
-• **addressHex**: `string`
-
-• **payload**: `string`
-
-• **privateKey**: `string`
-
-##### Returns
-
-[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-#### verifyData()
-
-> **verifyData**: (`addressHex`, `keyHash`, `payload`, `signedMessage`) => `boolean`
-
-##### Parameters
-
-• **addressHex**: `string`
-
-• **keyHash**: `string`
-
-• **payload**: `string`
-
-• **signedMessage**: [`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-##### Returns
-
-`boolean`
-
-#### Defined in
-
-[src/core/cw3.ts:39](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L39)
-
-***
-
-### UPLC
-
-> **UPLC**: `__module`
-
-UPLC @ Untyped Plutus Core Library
-
-#### Defined in
-
-[src/core/cw3.ts:33](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L33)
-
-***
 
 ### \_\_config
 
 > **\_\_config**: `object`
 
+Defined in: [core/cw3.ts:30](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L30)
+
 #### network
 
-> **network**: [`NetworkConfig`](../namespaces/T/type-aliases/NetworkConfig.md)
+> **network**: [`NetworkConfig`](../cardano-web3-js/namespaces/CW3Types/type-aliases/NetworkConfig.md)
 
 #### protocolParams
 
-> **protocolParams**: [`ProtocolParameters`](../namespaces/T/type-aliases/ProtocolParameters.md)
+> **protocolParams**: [`ProtocolParameters`](../cardano-web3-js/namespaces/CW3Types/type-aliases/ProtocolParameters.md)
 
 #### slotConfig
 
-> **slotConfig**: [`SlotConfig`](../namespaces/T/type-aliases/SlotConfig.md)
+> **slotConfig**: [`SlotConfig`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SlotConfig.md)
 
 #### ttl
 
 > **ttl**: `number`
-
-#### Defined in
-
-[src/core/cw3.ts:43](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L43)
 
 ***
 
@@ -464,13 +61,39 @@ UPLC @ Untyped Plutus Core Library
 
 > **account**: `object`
 
+Defined in: [core/cw3.ts:104](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L104)
+
+#### fromAddress()
+
+> **fromAddress**: (`address`) => [`Account`](Account.md)
+
+Create a new account from address
+
+##### Parameters
+
+###### address
+
+`string`
+
+Bech32 address
+
+##### Returns
+
+[`Account`](Account.md)
+
+Account instance
+
 #### fromConnector()
 
 > **fromConnector**: (`connector`) => `Promise`\<[`Account`](Account.md)\>
 
+Create new account from wallet connector
+
 ##### Parameters
 
-• **connector**: [`Connector`](Connector.md)
+###### connector
+
+[`Connector`](Connector.md)
 
 Connector instance
 
@@ -482,19 +105,31 @@ Account instance
 
 #### fromMnemonic()
 
-> **fromMnemonic**: (`mnemonic`, `accountPath`, `addressPath`) => [`Account`](Account.md)
+> **fromMnemonic**: (`mnemonic`, `password?`, `accountPath`, `addressPath`) => [`Account`](Account.md)
+
+Create new account from mnemonic
 
 ##### Parameters
 
-• **mnemonic**: `string`
+###### mnemonic
+
+`string`
 
 Mnemonic
 
-• **accountPath**: [`AccountDerivationPath`](../namespaces/T/type-aliases/AccountDerivationPath.md) = `DEFAULT_ACCOUNT_DERIVATION_PATH`
+###### password?
+
+`string`
+
+###### accountPath?
+
+[`AccountDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDerivationPath.md) = `DEFAULT_ACCOUNT_DERIVATION_PATH`
 
 Account derivation path
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
+###### addressPath?
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
 
 Address derivation path
 
@@ -506,19 +141,31 @@ Account instance
 
 #### fromXprvKey()
 
-> **fromXprvKey**: (`xprvKey`, `accountPath`, `addressPath`) => [`Account`](Account.md)
+> **fromXprvKey**: (`xprvKey`, `password?`, `accountPath`, `addressPath`) => [`Account`](Account.md)
+
+Create new account from xprv key
 
 ##### Parameters
 
-• **xprvKey**: `string`
+###### xprvKey
+
+`string`
 
 Extended private key
 
-• **accountPath**: [`AccountDerivationPath`](../namespaces/T/type-aliases/AccountDerivationPath.md) = `DEFAULT_ACCOUNT_DERIVATION_PATH`
+###### password?
+
+`string`
+
+###### accountPath?
+
+[`AccountDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountDerivationPath.md) = `DEFAULT_ACCOUNT_DERIVATION_PATH`
 
 Account derivation path (optioanl, default: [1852, 1815, 0])
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
+###### addressPath?
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
 
 Address derivation path (optional, default: [0, 0])
 
@@ -532,13 +179,19 @@ Account instance
 
 > **fromXpubKey**: (`xpubKey`, `addressPath`) => [`Account`](Account.md)
 
+Create new account from xpub key
+
 ##### Parameters
 
-• **xpubKey**: `string`
+###### xpubKey
+
+`string`
 
 Extended public key
 
-• **addressPath**: [`AddressDerivationPath`](../namespaces/T/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
+###### addressPath
+
+[`AddressDerivationPath`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AddressDerivationPath.md) = `DEFAULT_ADDRESS_DERIVATION_PATH`
 
 Known Address derivation path (optional, default: [0, 0])
 
@@ -552,9 +205,13 @@ Account instance
 
 > **importAccount**: (`config`) => [`Account`](Account.md)
 
+Import account from JSON config
+
 ##### Parameters
 
-• **config**: [`AccountExportV1`](../namespaces/T/type-aliases/AccountExportV1.md)
+###### config
+
+[`AccountExportV1`](../cardano-web3-js/namespaces/CW3Types/type-aliases/AccountExportV1.md)
 
 Account export config
 
@@ -564,27 +221,31 @@ Account export config
 
 Account instance
 
-#### Defined in
-
-[src/core/cw3.ts:124](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L124)
-
 ***
 
 ### connector
 
 > **connector**: `object`
 
+Defined in: [core/cw3.ts:75](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L75)
+
 #### init()
 
-> **init**: (`wallet`, `extensions`?) => `Promise`\<[`Connector`](Connector.md)\>
+> **init**: (`wallet`, `extensions?`) => `Promise`\<[`Connector`](Connector.md)\>
+
+Initialize wallet connector
 
 ##### Parameters
 
-• **wallet**: `string`
+###### wallet
+
+`string`
 
 Wallet name
 
-• **extensions?**: `any`
+###### extensions?
+
+`any`
 
 Wallet extensions
 
@@ -596,17 +257,21 @@ Wallet connector instance
 
 #### isEnabled()
 
-> **isEnabled**: (`wallet`) => `Promise`\<`string`[]\>
+> **isEnabled**: (`wallet`) => `Promise`\<`boolean`\>
+
+Check if wallet connector is enabled
 
 ##### Parameters
 
-• **wallet**: `string`
+###### wallet
+
+`string`
 
 Wallet name
 
 ##### Returns
 
-`Promise`\<`string`[]\>
+`Promise`\<`boolean`\>
 
 True if wallet is enabled, false otherwise
 
@@ -614,83 +279,141 @@ True if wallet is enabled, false otherwise
 
 > **list**: () => `Promise`\<`string`[]\>
 
+List available wallet connectors
+
 ##### Returns
 
 `Promise`\<`string`[]\>
 
 List of available connectors in window object
 
-#### Defined in
+***
 
-[src/core/cw3.ts:95](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L95)
+### explorers
+
+> **explorers**: [`Explorers`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Explorers.md)
+
+Defined in: [core/cw3.ts:29](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L29)
 
 ***
 
-### explorer
+### message
 
-> **explorer**: [`Explorer`](../namespaces/T/type-aliases/Explorer.md)
+> **message**: `object`
 
-#### Defined in
+Defined in: [core/cw3.ts:228](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L228)
 
-[src/core/cw3.ts:40](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L40)
+#### signWithAccount()
+
+> **signWithAccount**: (`account`, `message`, `password?`) => `Promise`\<[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)\>
+
+Sign message with account private key
+
+##### Parameters
+
+###### account
+
+[`Account`](Account.md)
+
+Account instance
+
+###### message
+
+`string`
+
+Message to sign
+
+###### password?
+
+`string`
+
+Password for xprv key (optional)
+
+##### Returns
+
+`Promise`\<[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)\>
+
+Signed message
+
+#### signWithVrfKey()
+
+> **signWithVrfKey**: (`verificationKey`, `address`, `message`) => [`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)
+
+Sign message with payment key
+
+##### Parameters
+
+###### verificationKey
+
+`string`
+
+Payment key
+
+###### address
+
+`string`
+
+Payment address
+
+###### message
+
+`string`
+
+Message to sign
+
+##### Returns
+
+[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)
+
+Signed message
+
+#### verify()
+
+> **verify**: (`address`, `message`, `signedMessage`) => `boolean`
+
+Verify signed message
+
+##### Parameters
+
+###### address
+
+`string`
+
+Payment address
+
+###### message
+
+`string`
+
+Message to verify
+
+###### signedMessage
+
+[`SignedMessage`](../cardano-web3-js/namespaces/CW3Types/type-aliases/SignedMessage.md)
+
+Signed message
+
+##### Returns
+
+`boolean`
+
+True if message is verified, false otherwise
 
 ***
 
 ### provider
 
-> **provider**: [`Provider`](../namespaces/T/type-aliases/Provider.md)
+> **provider**: [`Provider`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Provider.md)
 
-#### Defined in
-
-[src/core/cw3.ts:41](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L41)
-
-***
-
-### utils
-
-> **utils**: `Utils`
-
-#### Defined in
-
-[src/core/cw3.ts:42](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L42)
+Defined in: [core/cw3.ts:28](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L28)
 
 ## Methods
-
-### createNativeScript()
-
-> **createNativeScript**(`json`): `object`
-
-Generate new Natice Script for token minting
-
-#### Parameters
-
-• **json**: [`NativeConfig`](../namespaces/T/type-aliases/NativeConfig.md)
-
-Native token config
-
-#### Returns
-
-`object`
-
-Native token instance
-
-##### policyId
-
-> **policyId**: `string`
-
-##### script
-
-> **script**: [`Script`](../namespaces/T/type-aliases/Script.md)
-
-#### Defined in
-
-[src/core/cw3.ts:243](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L243)
-
-***
 
 ### createTx()
 
 > **createTx**(): `TxBuilder`
+
+Defined in: [core/cw3.ts:187](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L187)
 
 Generate new transaction builder
 
@@ -700,21 +423,21 @@ Generate new transaction builder
 
 Transaction builder instance
 
-#### Defined in
-
-[src/core/cw3.ts:196](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L196)
-
 ***
 
 ### importTx()
 
 > **importTx**(`tx`): `TxFinalizer`
 
+Defined in: [core/cw3.ts:196](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L196)
+
 Import transaction from CBOR string
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 Transaction JSON
 
@@ -724,29 +447,33 @@ Transaction JSON
 
 Transaction finalizer instance
 
-#### Defined in
-
-[src/core/cw3.ts:205](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L205)
-
 ***
 
 ### observeTx()
 
 > **observeTx**(`txHash`, `checkInterval`, `maxTime`): `Promise`\<`boolean`\>
 
+Defined in: [core/cw3.ts:224](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L224)
+
 Observe transaction
 
 #### Parameters
 
-• **txHash**: `string`
+##### txHash
+
+`string`
 
 Transaction hash
 
-• **checkInterval**: `number`
+##### checkInterval
+
+`number`
 
 Check interval in ms
 
-• **maxTime**: `number`
+##### maxTime
+
+`number`
 
 Maximum time to wait in ms
 
@@ -756,109 +483,21 @@ Maximum time to wait in ms
 
 Transaction status (boolean)
 
-#### Defined in
-
-[src/core/cw3.ts:225](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L225)
-
-***
-
-### signMessageWithAccount()
-
-> **signMessageWithAccount**(`account`, `message`, `password`?): `Promise`\<[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)\>
-
-Sign message with account private key
-
-#### Parameters
-
-• **account**: [`Account`](Account.md)
-
-Account instance
-
-• **message**: `string`
-
-Message to sign
-
-• **password?**: `string`
-
-Password for xprv key (optional)
-
-#### Returns
-
-`Promise`\<[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)\>
-
-Signed message
-
-#### Defined in
-
-[src/core/cw3.ts:254](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L254)
-
-***
-
-### signMessageWithVrfKey()
-
-> **signMessageWithVrfKey**(`verificationKey`, `address`, `message`): [`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-Sign message with payment key
-
-#### Parameters
-
-• **verificationKey**: `string`
-
-Payment key
-
-• **address**: `string`
-
-Payment address
-
-• **message**: `string`
-
-Message to sign
-
-#### Returns
-
-[`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-Signed message
-
-#### Defined in
-
-[src/core/cw3.ts:289](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L289)
-
-***
-
-### submitAndObserveTx()
-
-> **submitAndObserveTx**(`tx`): `Promise`\<`boolean`\>
-
-Submit and observe transaction
-
-#### Parameters
-
-• **tx**: `string`
-
-CBOR encoded transaction
-
-#### Returns
-
-`Promise`\<`boolean`\>
-
-Transaction status (boolean)
-
-#### Defined in
-
-[src/core/cw3.ts:234](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L234)
-
 ***
 
 ### submitTx()
 
 > **submitTx**(`tx`): `Promise`\<`string`\>
 
+Defined in: [core/cw3.ts:213](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L213)
+
 Submit transaction to blockchain
 
 #### Parameters
 
-• **tx**: `string`
+##### tx
+
+`string`
 
 CBOR encoded transaction
 
@@ -868,80 +507,18 @@ CBOR encoded transaction
 
 Transaction hash
 
-#### Defined in
-
-[src/core/cw3.ts:214](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L214)
-
 ***
 
 ### tip()
 
-> **tip**(): `Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+> **tip**(): `Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
+
+Defined in: [core/cw3.ts:204](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L204)
 
 Get current tip
 
 #### Returns
 
-`Promise`\<[`Tip`](../namespaces/T/type-aliases/Tip.md)\>
+`Promise`\<[`Tip`](../cardano-web3-js/namespaces/CW3Types/type-aliases/Tip.md)\>
 
 Current tip object
-
-#### Defined in
-
-[src/core/cw3.ts:318](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L318)
-
-***
-
-### verifyMessage()
-
-> **verifyMessage**(`address`, `message`, `signedMessage`): `boolean`
-
-Verify signed message
-
-#### Parameters
-
-• **address**: `string`
-
-Payment address
-
-• **message**: `string`
-
-Message to verify
-
-• **signedMessage**: [`SignedMessage`](../namespaces/T/type-aliases/SignedMessage.md)
-
-Signed message
-
-#### Returns
-
-`boolean`
-
-True if message is verified, false otherwise
-
-#### Defined in
-
-[src/core/cw3.ts:305](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L305)
-
-***
-
-### init()
-
-> `static` **init**(`config`?): `Promise`\<[`CardanoWeb3`](CardanoWeb3.md)\>
-
-Initialize CardanoWeb3 library
-
-#### Parameters
-
-• **config?**: [`InitConfig`](../namespaces/T/type-aliases/InitConfig.md)
-
-Configuration object
-
-#### Returns
-
-`Promise`\<[`CardanoWeb3`](CardanoWeb3.md)\>
-
-CardanoWeb3 instance
-
-#### Defined in
-
-[src/core/cw3.ts:55](https://github.com/xray-network/cardano-web3-js/blob/main/src/core/cw3.ts#L55)
