@@ -1,7 +1,7 @@
 import { TTL } from "@/config"
 
 import KoiosClient, { KoiosTypes } from "cardano-koios-client"
-import * as CW3Types from "@/types"
+import { CW3Types } from "@"
 
 export class KoiosProvider implements CW3Types.Provider {
   private koiosClient: CW3Types.KoiosClient

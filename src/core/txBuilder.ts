@@ -1,11 +1,7 @@
 import { TTL } from "@/config"
 
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import UPLC from "uplc-node"
-import { CardanoWeb3 } from "./cw3"
+import { CardanoWeb3, CML, UPLC, utils, CW3Types } from "@"
 import { TxFinalizer } from "./txFinalizer"
-import utils from "@/utils"
-import * as CW3Types from "@/types"
 
 export class TxBuilder {
   private cw3: CardanoWeb3

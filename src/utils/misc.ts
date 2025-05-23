@@ -1,4 +1,4 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import { CML, CW3Types } from "@"
 
 export const harden = (num: number): number => {
   return 0x80000000 + num
@@ -39,6 +39,7 @@ export const randomBytes = (length: number): Uint8Array => {
     window.crypto.getRandomValues(bytes)
     return bytes
   } else {
+    // TODO: avoid require warning
     const { randomBytes } = require("crypto")
     return Uint8Array.from(randomBytes(length))
   }

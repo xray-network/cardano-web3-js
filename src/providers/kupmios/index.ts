@@ -2,7 +2,7 @@ import { TTL } from "@/config"
 
 import KupoClient, { KupoTypes } from "cardano-kupo-client"
 import OgmiosClient, { OgmiosTypes } from "cardano-ogmios-client"
-import * as CW3Types from "@/types"
+import { CW3Types } from "@"
 import * as KupmiosProviderTypes from "./types"
 
 export class KupmiosProvider implements CW3Types.Provider {

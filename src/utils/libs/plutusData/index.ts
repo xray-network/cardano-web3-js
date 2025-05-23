@@ -1,7 +1,6 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import { Buffer } from "buffer"
 import * as TypeBox from "@sinclair/typebox"
-import * as CW3Types from "@/types"
+import { CML, CW3Types } from "@"
 
 const fromHex = (hex: string): Uint8Array => {
   return new Uint8Array(Buffer.from(hex, "hex"))

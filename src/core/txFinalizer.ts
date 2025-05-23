@@ -1,8 +1,5 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import { CardanoWeb3 } from "./cw3"
+import { CardanoWeb3, CML, utils, CW3Types } from "@"
 import { Account } from "./account"
-import utils from "@/utils"
-import * as CW3Types from "@/types"
 
 export class TxFinalizer {
   private cw3: CardanoWeb3

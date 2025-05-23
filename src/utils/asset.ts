@@ -1,4 +1,3 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import * as Bech32 from "bech32"
 import Blake2b from "blake2b"
 

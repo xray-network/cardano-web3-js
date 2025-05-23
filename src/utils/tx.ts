@@ -1,8 +1,7 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import { CML, CW3Types } from "@"
 import { fromHex } from "./misc"
 import { getShelleyOrByronAddress, getCredentials } from "./address"
 import { scriptToScriptRef } from "./script"
-import * as CW3Types from "@/types"
 
 export const createCostModels = (costModels: CW3Types.CostModels): CML.CostModels => {
   return CML.CostModels.from_json(

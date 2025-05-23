@@ -1,8 +1,7 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
 import * as Bech32 from "bech32"
-import * as Bip39 from "bip39"
+import { CML, CW3Types } from "@"
+import * as Bip39 from "./libs/bip39"
 import { fromHex, harden } from "./misc"
-import * as CW3Types from "@/types"
 
 export const mnemonicGenerate = (length: 12 | 15 | 24 = 24): string => {
   return Bip39.generateMnemonic((32 * length) / 3)

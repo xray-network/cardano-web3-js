@@ -6,8 +6,7 @@ import {
   TTL,
 } from "@/config"
 
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import { Message } from "@"
+import { CML, Message, utils, CW3Types } from "@"
 import { TxBuilder } from "./txBuilder"
 import { TxFinalizer } from "./txFinalizer"
 import { Account } from "./account"
@@ -17,8 +16,6 @@ import KoiosExplorer from "@/explorers/koios"
 import OgmiosExplorer from "@/explorers/ogmios"
 import KupoExplorer from "@/explorers/kupo"
 import NftcdnExplorer from "@/explorers/nftcdn"
-import utils from "@/utils"
-import * as CW3Types from "@/types"
 
 /**
  * CardanoWeb3 class
@@ -277,7 +274,7 @@ export class CardanoWeb3 {
       const hash = CML.PrivateKey.from_bech32(verificationKey).to_public().hash().to_hex()
       if (!paymentCred?.hash || paymentCred?.hash !== hash)
         throw new Error("Verification key does not match the address")
-      return Message().signData(hexAddress, hexMessage, verificationKey)
+      return Message.signData(hexAddress, hexMessage, verificationKey)
     },
 
     /**
@@ -293,7 +290,7 @@ export class CardanoWeb3 {
       const { paymentCred, stakingCred } = utils.address.getCredentials(address)
       const hash = paymentCred?.hash || stakingCred?.hash
       if (!hash) throw new Error("Invalid address")
-      return Message().verifyData(hexAddress, hash, hexMessage, signedMessage)
+      return Message.verifyData(hexAddress, hash, hexMessage, signedMessage)
     },
   }
 }

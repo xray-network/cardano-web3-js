@@ -1,9 +1,7 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import UPLC from "uplc-node"
 import * as CBOR from "cbor-x"
+import { CML, UPLC, CW3Types } from "@"
 import { Data as PlutusData, Constr as PlutusConstr } from "./libs/plutusData"
 import { fromHex, toHex } from "./misc"
-import * as CW3Types from "@/types"
 
 export const scriptToScriptRef = (script: CW3Types.Script): CML.Script => {
   switch (script.language) {

@@ -1,7 +1,5 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import M from "@emurgo/cardano-message-signing-nodejs"
 import { Buffer } from "buffer"
-import * as CW3Types from "@/types"
+import { CML, MSL, CW3Types } from "@"
 
 const fromHex = (hex: string): Uint8Array => {
   return new Uint8Array(Buffer.from(hex, "hex"))
@@ -11,16 +9,16 @@ const toHex = (bytes: Uint8Array): string => {
   return Buffer.from(bytes).toString("hex")
 }
 
-export const Message = () => {
+export const MessageFunc = () => {
   return {
     signData: (addressHex: string, payload: string, privateKey: string): CW3Types.SignedMessage => {
-      const protectedHeaders = M.HeaderMap.new()
-      protectedHeaders.set_algorithm_id(M.Label.from_algorithm_id(M.AlgorithmId.EdDSA))
-      protectedHeaders.set_header(M.Label.new_text("address"), M.CBORValue.new_bytes(fromHex(addressHex)))
-      const protectedSerialized = M.ProtectedHeaderMap.new(protectedHeaders)
-      const unprotectedHeaders = M.HeaderMap.new()
-      const headers = M.Headers.new(protectedSerialized, unprotectedHeaders)
-      const builder = M.COSESign1Builder.new(headers, fromHex(payload), false)
+      const protectedHeaders = MSL.HeaderMap.new()
+      protectedHeaders.set_algorithm_id(MSL.Label.from_algorithm_id(MSL.AlgorithmId.EdDSA))
+      protectedHeaders.set_header(MSL.Label.new_text("address"), MSL.CBORValue.new_bytes(fromHex(addressHex)))
+      const protectedSerialized = MSL.ProtectedHeaderMap.new(protectedHeaders)
+      const unprotectedHeaders = MSL.HeaderMap.new()
+      const headers = MSL.Headers.new(protectedSerialized, unprotectedHeaders)
+      const builder = MSL.COSESign1Builder.new(headers, fromHex(payload), false)
       const toSign = builder.make_data_to_sign().to_bytes()
 
       const priv = CML.PrivateKey.from_bech32(privateKey)
@@ -28,19 +26,19 @@ export const Message = () => {
       const signedSigStruc = priv.sign(toSign).to_raw_bytes()
       const coseSign1 = builder.build(signedSigStruc)
 
-      const key = M.COSEKey.new(
-        M.Label.from_key_type(M.KeyType.OKP) //OKP
+      const key = MSL.COSEKey.new(
+        MSL.Label.from_key_type(MSL.KeyType.OKP) //OKP
       )
-      key.set_algorithm_id(M.Label.from_algorithm_id(M.AlgorithmId.EdDSA))
+      key.set_algorithm_id(MSL.Label.from_algorithm_id(MSL.AlgorithmId.EdDSA))
       key.set_header(
-        M.Label.new_int(M.Int.new_negative(M.BigNum.from_str("1"))),
-        M.CBORValue.new_int(
-          M.Int.new_i32(6) //M.CurveType.Ed25519
+        MSL.Label.new_int(MSL.Int.new_negative(MSL.BigNum.from_str("1"))),
+        MSL.CBORValue.new_int(
+          MSL.Int.new_i32(6) //MSL.CurveType.Ed25519
         )
       ) // crv (-1) set to Ed25519 (6)
       key.set_header(
-        M.Label.new_int(M.Int.new_negative(M.BigNum.from_str("2"))),
-        M.CBORValue.new_bytes(priv.to_public().to_raw_bytes())
+        MSL.Label.new_int(MSL.Int.new_negative(MSL.BigNum.from_str("2"))),
+        MSL.CBORValue.new_bytes(priv.to_public().to_raw_bytes())
       ) // x (-2) set to public key
 
       return {
@@ -54,14 +52,14 @@ export const Message = () => {
       payload: string,
       signedMessage: CW3Types.SignedMessage
     ): boolean => {
-      const cose1 = M.COSESign1.from_bytes(fromHex(signedMessage.signature))
-      const key = M.COSEKey.from_bytes(fromHex(signedMessage.key))
+      const cose1 = MSL.COSESign1.from_bytes(fromHex(signedMessage.signature))
+      const key = MSL.COSEKey.from_bytes(fromHex(signedMessage.key))
 
       const protectedHeaders = cose1.headers().protected().deserialized_headers()
 
       const cose1Address = (() => {
         try {
-          return toHex(protectedHeaders.header(M.Label.new_text("address"))?.as_bytes()!)
+          return toHex(protectedHeaders.header(MSL.Label.new_text("address"))?.as_bytes()!)
         } catch (_e) {
           throw new Error("No address found in signature.")
         }
@@ -89,7 +87,7 @@ export const Message = () => {
 
       const keyCurve = (() => {
         try {
-          const int = key.header(M.Label.new_int(M.Int.new_negative(M.BigNum.from_str("1"))))?.as_int()
+          const int = key.header(MSL.Label.new_int(MSL.Int.new_negative(MSL.BigNum.from_str("1"))))?.as_int()
           if (int?.is_positive()) return parseInt(int.as_positive()?.to_str()!)
           return parseInt(int?.as_negative()?.to_str()!)
         } catch (_e) {
@@ -110,7 +108,7 @@ export const Message = () => {
       const publicKey = (() => {
         try {
           return CML.PublicKey.from_bytes(
-            key.header(M.Label.new_int(M.Int.new_negative(M.BigNum.from_str("2"))))?.as_bytes()!
+            key.header(MSL.Label.new_int(MSL.Int.new_negative(MSL.BigNum.from_str("2"))))?.as_bytes()!
           )
         } catch (_e) {
           throw new Error("No public key found.")
@@ -133,7 +131,7 @@ export const Message = () => {
 
       if (keyHash !== publicKey.hash().to_hex()) return false
 
-      if (cose1AlgorithmId !== keyAlgorithmId && cose1AlgorithmId !== M.AlgorithmId.EdDSA) {
+      if (cose1AlgorithmId !== keyAlgorithmId && cose1AlgorithmId !== MSL.AlgorithmId.EdDSA) {
         return false
       }
 
@@ -147,3 +145,5 @@ export const Message = () => {
     },
   }
 }
+
+export const Message = MessageFunc()

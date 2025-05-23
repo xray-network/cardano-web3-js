@@ -1,4 +1,4 @@
-import * as CW3Types from "@/types"
+import { CW3Types } from "@"
 
 export class Ledger {
   static init = async () => {

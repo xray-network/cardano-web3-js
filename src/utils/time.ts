@@ -1,5 +1,4 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import * as CW3Types from "@/types"
+import { CML, CW3Types } from "@"
 
 export const unixTimeToSlot = (unixTime: number, slotConfig: CW3Types.SlotConfig): number => {
   const timePassed = unixTime - slotConfig.zeroTime

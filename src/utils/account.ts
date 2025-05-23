@@ -1,8 +1,7 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
+import { CML, CW3Types } from "@"
 import cip4 from "./libs/cip4"
 import { getFingerprint, assetNameToAssetNameAscii } from "./asset"
 import { deriveBase, getCredentials, getStakingAddress } from "./address"
-import * as CW3Types from "@/types"
 
 export const checksum = (
   xpubKey: string

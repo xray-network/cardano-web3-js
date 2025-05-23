@@ -1,5 +1,4 @@
-import CML from "@dcspark/cardano-multiplatform-lib-nodejs"
-import * as CW3Types from "@/types"
+import { CML, CW3Types } from "@"
 
 export const isDRepCredential = (drep: CW3Types.DRep): drep is CW3Types.Credential => {
   return !("__typename" in drep)
