@@ -1,6 +1,6 @@
 {
-  "name": "cardano-web3-js-test",
-  "version": "2.2.100",
+  "name": "cardano-web3-js",
+  "version": "2.2.0",
   "author": "XRAY/Network <hello@xray.app>",
   "description": "Cardano Web3 JavaScript SDK",
   "license": "MIT",
