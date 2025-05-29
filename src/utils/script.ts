@@ -1,6 +1,6 @@
 import * as CBOR from "cbor-x"
 import { CML, UPLC, CW3Types } from "@"
-import { Data as PlutusData, Constr as PlutusConstr } from "./libs/plutusData"
+import { Data as PlutusData, Constr as PlutusConstr } from "../libs/plutusData"
 import { fromHex, toHex } from "./misc"
 
 export const scriptToScriptRef = (script: CW3Types.Script): CML.Script => {

@@ -1,6 +1,6 @@
 import * as Bech32 from "bech32"
 import { CML, CW3Types } from "@"
-import * as Bip39 from "./libs/bip39"
+import * as Bip39 from "../libs/bip39"
 import { fromHex, harden } from "./misc"
 
 export const mnemonicGenerate = (length: 12 | 15 | 24 = 24): string => {

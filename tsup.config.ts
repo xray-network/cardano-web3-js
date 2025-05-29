@@ -5,6 +5,9 @@ export default defineConfig({
   format: ["esm", "cjs"],
   dts: true,
   clean: true,
-  minify: true,
-  sourcemap: true,
+  // minify: true,
+  // sourcemap: true,
+  // loader: {
+  //   ".wasm": "file",
+  // },
 })

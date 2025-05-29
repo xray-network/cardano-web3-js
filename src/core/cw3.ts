@@ -12,10 +12,10 @@ import { TxFinalizer } from "./txFinalizer"
 import { Account } from "./account"
 import { Connector } from "./connector"
 import { KoiosProvider } from "@/providers/koios"
-import KoiosExplorer from "@/explorers/koios"
-import OgmiosExplorer from "@/explorers/ogmios"
-import KupoExplorer from "@/explorers/kupo"
-import NftcdnExplorer from "@/explorers/nftcdn"
+import { KoiosClient } from "@/explorers/koios"
+import { OgmiosClient } from "@/explorers/ogmios"
+import { KupoClient } from "@/explorers/kupo"
+import { NftcdnClient } from "@/explorers/nftcdn"
 
 /**
  * CardanoWeb3 class
@@ -40,19 +40,19 @@ export class CardanoWeb3 {
     const network = config?.network || "mainnet"
     this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
     this.explorers = {
-      koios: KoiosExplorer(
+      koios: KoiosClient(
         config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
         config?.explorer?.koios?.headers
       ),
-      ogmios: OgmiosExplorer(
+      ogmios: OgmiosClient(
         config?.explorer?.ogmios?.url || `https://graph.xray.app/output/ogmios/${network}/api/v1`,
         config?.explorer?.ogmios?.headers
       ),
-      kupo: KupoExplorer(
+      kupo: KupoClient(
         config?.explorer?.kupo?.url || `https://graph.xray.app/output/kupo/${network}/api/v1`,
         config?.explorer?.kupo?.headers
       ),
-      nftcdn: NftcdnExplorer(
+      nftcdn: NftcdnClient(
         config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/nftcdn/${network}/api/v1`,
         config?.explorer?.nftcdn?.headers
       ),

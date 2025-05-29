@@ -1,6 +1,7 @@
-import KoiosClient from "cardano-koios-client"
+import __KoiosClient, { KoiosTypes } from "cardano-koios-client"
 import { CW3Types } from "@"
+export type { KoiosTypes } from "cardano-koios-client"
 
-export default (baseUrl: string, headers?: CW3Types.Headers): ReturnType<typeof KoiosClient> => {
-  return KoiosClient(baseUrl, headers)
+export const KoiosClient = (baseUrl: string, headers?: CW3Types.Headers): ReturnType<typeof __KoiosClient> => {
+  return __KoiosClient(baseUrl, headers)
 }

@@ -1,3 +1,10 @@
+/** Class Type */
+export type { CardanoWeb3 } from "@/core/cw3"
+export type { Account } from "@/core/account"
+export type { Connector } from "@/core/connector"
+export type { TxBuilder } from "@/core/txBuilder"
+export type { TxFinalizer } from "@/core/txFinalizer"
+
 /** Account types */
 export type AccountType = "xprv" | "xpub" | "connector" | "address" | "ledger" | "trezor"
 export type AccountConfig = {
@@ -104,19 +111,19 @@ export type InitConfig = {
   ttl?: number
   provider?: Provider
   explorer?: {
-    koios: {
+    koios?: {
       headers?: Headers
       url: string
     }
-    ogmios: {
+    ogmios?: {
       headers?: Headers
       url: string
     }
-    kupo: {
+    kupo?: {
       headers?: Headers
       url: string
     }
-    nftcdn: {
+    nftcdn?: {
       headers?: Headers
       url: string
     }
