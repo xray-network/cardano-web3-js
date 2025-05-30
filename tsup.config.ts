@@ -1,5 +1,5 @@
 import { defineConfig } from "tsup"
-import { pluginReplace } from '@espcom/esbuild-plugin-replace'
+import { pluginReplace } from "@espcom/esbuild-plugin-replace"
 
 export default defineConfig([
   {
@@ -22,8 +22,8 @@ export default defineConfig([
           filter: /\.ts$/,
           replace: "cardano-wasm-libs/nodejs",
           replacer: () => "cardano-wasm-libs/browser",
-        }
-      ])
+        },
+      ]),
     ],
   },
   {
@@ -39,8 +39,8 @@ export default defineConfig([
           filter: /\.ts$/,
           replace: "cardano-wasm-libs/nodejs",
           replacer: () => "cardano-wasm-libs/browser",
-        }
-      ])
+        },
+      ]),
     ],
   },
 ])
