@@ -1,4 +1,4 @@
-/** Class Type */
+/** Class types */
 export type { CardanoWeb3 } from "@/core/cw3"
 export type { Account } from "@/core/account"
 export type { Connector } from "@/core/connector"

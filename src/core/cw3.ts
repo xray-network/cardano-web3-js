@@ -198,7 +198,7 @@ export class CardanoWeb3 {
    * Get current tip
    * @returns Current tip object
    */
-  tip = async () => {
+  getTip = async () => {
     return await this.provider.getTip()
   }
 
