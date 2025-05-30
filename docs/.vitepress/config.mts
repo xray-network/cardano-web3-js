@@ -111,7 +111,7 @@ export default defineConfig({
         text: "Typedoc API",
         items: [
           { text: "API Reference", link: "/api/" },
-          { text: "Documentation", collapsed: true, items: typedocSidebar },
+          { text: "Declarations", collapsed: true, items: typedocSidebar },
         ],
       },
     ],
