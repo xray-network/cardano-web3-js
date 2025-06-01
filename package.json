@@ -58,7 +58,7 @@
     "cardano-kupo-client": "^1.0.1",
     "cardano-nftcdn-client": "^1.0.6",
     "cardano-ogmios-client": "^1.0.0",
-    "cardano-wasm-libs": "^1.0.4",
+    "cardano-wasm-libs": "^1.0.5",
     "cbor-x": "^1.6.0",
     "js-sha256": "^0.11.0"
   },

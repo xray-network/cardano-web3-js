@@ -739,10 +739,10 @@ cardano-ogmios-client@^1.0.0:
   dependencies:
     openapi-fetch "^0.13.5"
 
-cardano-wasm-libs@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/cardano-wasm-libs/-/cardano-wasm-libs-1.0.4.tgz#42bd245e39b8726523f65c0c6f327582c5d422df"
-  integrity sha512-Hc2XCBZzwG23jd+1UgJH1m2URkMt0NJfR0XdRuldyijMXz43UYXvo7xkY1pTooJhJPN1WmuXMLV7DghXP/ntxg==
+cardano-wasm-libs@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/cardano-wasm-libs/-/cardano-wasm-libs-1.0.5.tgz#4158e2cf3366c000d41cf1dfdef25eec74fc3879"
+  integrity sha512-ysIRbWc9rBea2NNOBmi5ajzDDS2egOPvC3dgP77YY92B/Y9kfDv1L089Vj/UghfBq2VbTYVd+fITVpwoLc/E/A==
 
 cbor-extract@^2.2.0:
   version "2.2.0"
