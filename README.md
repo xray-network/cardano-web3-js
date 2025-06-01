@@ -42,7 +42,7 @@ const state = await account.getState() // update balance & delegation info
 
 console.log(mnemonic) // generated mnemonic
 console.log(account.__config) // account info (xpub, changeAddress, creds, etc)
-console.log(account.__state) // balance & delegation info
+console.log(state) // balance & delegation info
 
 const tx = await web3
   .createTx()
