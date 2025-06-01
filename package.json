@@ -1,6 +1,6 @@
 {
   "name": "cardano-web3-js",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "author": "XRAY/Network <hello@xray.app>",
   "description": "Cardano Web3 JavaScript SDK",
   "license": "MIT",
@@ -28,7 +28,8 @@
         "web": "./dist/web/index.js",
         "node": "./dist/nodejs/index.js",
         "default": "./dist/nodejs/index.js"
-      }
+      },
+      "default": "./dist/nodejs/index.js"
     },
     "./browser": "./dist/browser/index.js",
     "./web": "./dist/web/index.js",
