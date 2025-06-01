@@ -1,6 +1,6 @@
 import { defineConfig } from "vitepress"
 import { tabsMarkdownPlugin } from "vitepress-plugin-tabs"
-import { quickStartSidebar, docsSidebar } from "../docs/docs-sidebar"
+import { sidebar } from "../docs/docs-sidebar"
 import typedocSidebar from "../api/typedoc-sidebar.json"
 
 // https://vitepress.dev/reference/site-config
@@ -105,10 +105,10 @@ export default defineConfig({
     },
 
     sidebar: [
-      quickStartSidebar,
-      docsSidebar,
+      ...sidebar,
       {
         text: "Typedoc API",
+        collapsed: true,
         items: [
           { text: "API Reference", link: "/api/" },
           { text: "Declarations", collapsed: true, items: typedocSidebar },

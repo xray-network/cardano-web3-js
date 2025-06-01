@@ -1,34 +1,38 @@
 # Accounts & Keys
 
-Here we will learn how to generate accounts and get data from the blockchain about it
+This section describes how to create and manage accounts in CardanoWeb3js. An account is a collection of keys and configurations that allow you to interact with the Cardano blockchain.
 
-## __config & __state
+## Account `config` and `state`
 
-See type definitions of [__config](/api/namespaces/T/type-aliases/AccountConfig) and [__state](/api/namespaces/T/type-aliases/AccountState) in API
+An account is an object that contains information about the account configuration and its state. The configuration includes details such as the type of account (e.g., mnemonic, xprv, xpub), keys, and derivation paths. The state includes information about the account's UTXOs, aggregated balance, pool delegation, and available rewards.
+
+See type definitions of [AccountConfig](/api/cardano-web3-js/namespaces/CW3Types/type-aliases/AccountConfig) and [AccountState](/api/cardano-web3-js/namespaces/CW3Types/type-aliases/AccountState) in Typedoc API
 
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
-const mnemonicGenerated = web3.utils.keys.mnemonicGenerate()
+const mnemonicGenerated = utils.keys.mnemonicGenerate()
 const account = web3.account.fromMnemonic(mnemonicGenerated)
 
-await account.updateState() // update state (utxo, aggregated balance, pool delegation, available rewards) via provider
+const state = await account.getState() // account state (utxo, aggregated balance, pool delegation, available rewards) via provider
 
 console.log(account.__config)
-console.log(account.__state)
+console.log(state)
 ```
 
 
 ## From mnemonic
 
+Create account from mnemonic phrase, it will be used to derive xprvKey and xpubKey
+
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
-const mnemonicGenerated = web3.utils.keys.mnemonicGenerate()
+const mnemonicGenerated = utils.keys.mnemonicGenerate()
 const account = web3.account.fromMnemonic(mnemonicGenerated)
 
 console.log(account.__config)
@@ -37,16 +41,18 @@ console.log(account.__config)
 
 ## From private key
 
+Create account from xprvKey previously generated
+
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 // Mnemonic can be decoded to xprvKey also
-// const mnemonicGenerated = web3.utils.keys.mnemonicGenerate()
-// const xprvKeyGenerated = web3.utils.keys.mnemonicToXprvKey(mnemonicGenerated)
+// const mnemonicGenerated = utils.keys.mnemonicGenerate()
+// const xprvKeyGenerated = utils.keys.mnemonicToXprvKey(mnemonicGenerated)
 
-const xprvKeyGenerated = web3.utils.keys.xprvKeyGenerate()
+const xprvKeyGenerated = utils.keys.xprvKeyGenerate()
 const account = web3.account.fromXprvKey(xprvKeyGenerated)
 
 console.log(account.__config)
@@ -54,12 +60,13 @@ console.log(account.__config)
 
 
 ## From public key 
-Read only, you cannot sign a tx with this account when creating a tx
+
+Readonly account, no private key available so you can't sign transactions
 
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 const account = web3.account.fromXpubKey("xpub...")
 
@@ -68,12 +75,13 @@ console.log(account.__config)
 
 
 ## From wallet connector
-Available only in the browser env
+
+Available only in browser environment with Cardano wallet connector
 
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 const wallets = await web3.connector.list() // list of available wallets in window.cardano object
 console.log(wallets)
@@ -91,7 +99,7 @@ Available for account with "xprv" type
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 const account = web3.account.fromXprvKey("xprv...")
 
@@ -109,7 +117,7 @@ Available for accounts with type "xpub" | "xprv
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 const account = web3.account.fromXprvKey("xprv...")
 const exportedJson = account.exportAccount(

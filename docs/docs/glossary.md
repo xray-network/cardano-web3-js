@@ -10,6 +10,15 @@ For more detailed information, you can refer to the following resources. These d
 
 ## Definitions
 
+### xprvKey
+A master extended private key used in Cardano wallets to derive child private keys and addresses. It is the root of a hierarchical deterministic (HD) wallet, allowing for the generation of multiple accounts and addresses while maintaining security.
+
+### vrfKey
+Already derived from xprvKey verification key of the account (address) used to sign transactions in Cardano. It is used to verify the authenticity of messages and transactions, ensuring that they originate from the owner of the corresponding private key.
+
+### xpubKey
+An extended public key derived from an xprvKey, which can generate multiple child public keys and addresses without revealing the private keys. It is used to receive funds and verify transactions.
+
 ### Wallet
 A software application or hardware device that stores private keys and interacts with blockchain networks to send, receive, and manage cryptocurrencies.
 

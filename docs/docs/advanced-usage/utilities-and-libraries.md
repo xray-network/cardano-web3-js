@@ -5,21 +5,19 @@ The utilities object contains various useful functions and libraries
 ## Utilities
 
 ```ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const web3 = await CardanoWeb3.init()
+import { utils } from "cardano-web3-js"
 
 const {
   account,
   address,
-  address,
-  assets,
+  asset,
+  governance,
   keys,
   misc,
   script,
   time,
   tx
-} = web3.utils
+} = utils
 
 const xpub = keys.xprvKeyToXpubKey("xprv...", [1852, 1815, 0], [0, 0]) // [AccountDerivationPath] and [AddressDerivationPath] are optional
 const mnemonic = keys.mnemonicGenerate() // 24 words mnemonic (default)
@@ -38,24 +36,13 @@ const stakingAddress = address.getStakingAddress("addr1...") // get staking addr
 ## Third-party Libs
 
 ```ts
-import { CardanoWeb3 } from "cardano-web3-js"
-
-const web3 = await CardanoWeb3.init()
-
-const {
+import {
   CML, // dcSpark @ Cardano Multiplatform Library
   MSL, // Emurgo @ Message Signing Library
   UPLC, // UPLC @ Untyped Plutus Core Library
   Message, // Message Signing/Verification lib (MSL abstraction)
-  Data, // Lucid Plutus Data Serialization Lib
-  Constr, // Lucid Plutus Data Construction Lib
-} = web3
+  PlutusData, // Lucid Plutus Data Serialization Lib
+  PlutusConstr, // Lucid Plutus Data Construction Lib
+} from "cardano-web3-js"
 
-const {
-  Bech32, // Bech32 encoding and decoding library
-  Bip39, // Bip39 mnemonic library (only english words supported)
-  Blake2b, // Blake2b hashing library
-  Buffer, // Buffer polyfill for browser
-  Cborg, // Implementation of the Concise Binary Object Representation (CBOR)
-} = web3.utils
 ```

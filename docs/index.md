@@ -40,24 +40,22 @@ CardanoWeb3js is a versatile TypeScript library designed for seamless integratio
 
 This library is a set of abstractions over various opensource libraries and SDKs that are required to work with the Cardano blockchain: [CML](https://github.com/dcSpark/cardano-multiplatform-lib) by dcSpark, [MSL](https://github.com/Emurgo/message-signing) by Emurgo, [UPLC](https://aiken-lang.org/uplc) by Aiken, [Plutus Data](https://github.com/spacebudz/lucid/tree/main/src/plutus) by Spacebudz, and other.
 
-Building an SDK is always a compromise between functionality, ease of code understanding, and modularity. We think we've managed to find the middle ground on this one. We believe that you will enjoy the ease of working with CW3js! ✨
-
 ## Features of CardanoWeb3js
 
 <div class="two-cols">
   <div>
 
 ### **Feature-Rich**
-  * [Private and public keys](/docs/accounts/accounts-and-keys) generation
-  * [Accounts handling](/docs/accounts/accounts-and-keys)
+  * [Private and public keys](/docs/accounts-and-keys) generation
+  * [Accounts handling](/docs/accounts-and-keys)
     * With mnemonic
     * With private Key
     * With wallet connector
-  * Built-in data providers ([Koios, Kupo+Ogmios](/docs/cardano-web3/providers))
-  * Built-in blockchain explorer clients ([Koios](/docs/explorers/koios), [NFTCDN](/docs/explorers/xray-graph-nftcdn), [Pricing](/docs/explorers/xray-graph-pricing))
-  * [Deriving payment, staking, script addresses](/docs/accounts/addresses)
+  * Built-in data providers ([Koios, Kupo+Ogmios](/docs/advanced-usage/providers))
+  * Built-in blockchain explorer clients ([Koios](/docs/explorers/koios), [Ogmios](/docs/explorers/ogmios), [Kupo](/docs/explorers/kupo), [NFTCDN](/docs/explorers/xray-graph-nftcdn))
+  * [Deriving payment, staking, script addresses](/docs/advanced-usage/addresses)
   * [Building, signing, and submitting transactions](/docs/transactions/basic-transactions)
-  * [Data (messages) encryption and decryption](/docs/cardano-web3/advanced-usage)
+  * [Data (messages) encryption and decryption](/docs/advanced-usage/sign-and-verify-message)
   * [Native Scripts building](/docs/transactions/basic-transactions)
   * [Plutus Data serialization / deserialization](/docs/transactions/smart-contracts-transactions) (with Static Types Resolution)
 
@@ -87,9 +85,9 @@ Building an SDK is always a compromise between functionality, ease of code under
 <table style="width: 100%; display: table">
   <thead>
     <tr>
-      <th style="width: 33%">Node.js</th>
-      <th style="width: 33%">Browser (CSR)</th>
-      <th style="width: 33%">SSR</th>
+      <th style="width: 33%">Browser (Bundler)</th>
+      <th style="width: 33%">Nodejs</th>
+      <th style="width: 33%">Web</th>
     </tr>
   </thead>
   <tbody>
@@ -98,15 +96,17 @@ Building an SDK is always a compromise between functionality, ease of code under
       <td>✅</td>
       <td>✅</td>
     </tr>
+    <tr>
+      <td>Outputs JS that is suitable for interoperation with a Bundler like Webpack</td>
+      <td>Outputs JS that uses CommonJS modules and ESM modules to run in NodeJS environments of various versions</td>
+      <td>Outputs JS that can be natively imported as an ES module in a browser. Works with Serverless environs such as Cloudflare Workers</td>
+    </tr>
   </tbody>
 </table>
 
-<small>SSR involves prerendering pages with Node.js and executing them in the browser environment. Related concepts include SSR (Server-Side Rendering), SSG (Static Site Generation), ISR (Incremental Static Regeneration), and CSR (Client-Side Rendering)</small>
-
 ## Development
 
-CardanoWeb3js is under active development: architectures, methods, and approaches can change rapidly, so you can get actively involved by visiting our repository: https://github.com/xray-network/cardano-web3-js
+CardanoWeb3js is under active development: architectures, methods, and approaches can change rapidly, so you can get actively involved by visiting our repository. 
 
-Issues: https://github.com/xray-network/cardano-web3-js/issues
-
-<a href="https://github.com/xray-network/cardano-web3-js">![GitHub stars](https://img.shields.io/github/stars/xray-network/cardano-web3-js)</a>
+* Repository: https://github.com/xray-network/cardano-web3-js
+* Issues: https://github.com/xray-network/cardano-web3-js/issues

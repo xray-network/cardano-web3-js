@@ -13,7 +13,7 @@ XRAY/Network manages a standalone Koios cluster, which is the default data provi
 ```ts title="Get network tip"
 import { CardanoWeb3, KoiosProvider } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KoiosProvider(
     "https://api.koios.rest/api/v1",
     {}, // pass custom haeders if needed
@@ -26,7 +26,7 @@ console.log(tip)
 ```ts title="UTXOs by address"
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KoiosProvider(
     "https://api.koios.rest/api/v1",
     {}, // pass custom haeders if needed
@@ -39,7 +39,7 @@ console.log(utxos)
 ```ts title="Get datum and script by hash"
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KoiosProvider(
     "https://api.koios.rest/api/v1",
     {}, // pass custom haeders if needed
@@ -65,7 +65,7 @@ XRAY/Network manages a standalone Ogmios and Kupo (with the match all parameter)
 ```ts title="Get network tip"
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KupmiosProvider({
     ogmiosUrl: "https://ogmios.com/api",
     kupoUrl: "https://kupo.com/api",
@@ -80,7 +80,7 @@ console.log(tip)
 ```ts title="UTXOs by address"
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KupmiosProvider({
     ogmiosUrl: "https://ogmios.com/api",
     kupoUrl: "https://kupo.com/api",
@@ -95,7 +95,7 @@ console.log(utxos)
 ```ts title="Get datum and script by hash"
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init({
+const web3 = new CardanoWeb3({
   provider: new KupmiosProvider({
     ogmiosUrl: "https://ogmios.com/api",
     kupoUrl: "https://kupo.com/api",
@@ -112,13 +112,13 @@ console.log(script)
 
 ## Mastering Custom Provider
 
-Provider interface must implements [Provider](/api/namespaces/T/type-aliases/Provider) type
+Provider interface must implements [Provider](/api/cardano-web3-js/namespaces/CW3Types/type-aliases/Provider) type
 
 ```ts
-import { T } from "cardano-web3-js"
+import { CW3Types } from "cardano-web3-js"
 
 
-const NewProvider = (): T.Provider => {
+const NewProvider = (): CW3Types.Provider => {
   return {
     ...
   }

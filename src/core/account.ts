@@ -24,6 +24,7 @@ export class Account {
    * Create a new account from mnemonic
    * @param cw3 CardanoWeb3 instance
    * @param mnemonic 24-word mnemonic
+   * @param password Optional password to encrypt the xprv key
    * @param accountPath Account derivation path (e.g. [1852, 1815, 0])
    * @param addressPath Address derivation path (e.g. [0, 0])
    * @returns Account instance
@@ -43,6 +44,7 @@ export class Account {
    * Create a new account from xprv key
    * @param cw3 CardanoWeb3 instance
    * @param xprvKey Extended private key
+   * @param password Optional password to encrypt the xprv key
    * @param accountPath Account derivation path (e.g. [1852, 1815, 0])
    * @param addressPath Address derivation path (e.g. [0, 0])
    * @returns Account instance
