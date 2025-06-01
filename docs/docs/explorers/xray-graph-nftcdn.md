@@ -3,19 +3,20 @@
 Metadata/Datums indexer & Image Server with IPFS gateway.
 
 :::info
-XRAY/Network manages a standalone NFTCDN cluster. Unauthenticated uses a basic tariff with limits on requests from Origin and IP addresses, so be aware that if the load on your application grows, you should switch to paid tariffs and recharge [XRAY/Graph](https://xray.app).
+XRAY/Network manages a standalone NFTCDN cluster. Unauthenticated uses a basic tariff with limits on requests from Origin and IP addresses, so be aware that if the load on your application grows, you should switch to paid tariffs and recharge [XRAY/Graph](https://xray.app). Or instantiate your own NFTCDN instance.
 :::
 
 ### Tips
 
-* You can configure API url and headers when [initializing](/docs/cardano-web3/initialization) CW3js.
+* Client repository: https://github.com/xray-network/cardano-nftcdn-client
+* You can configure API url and headers when [initializing](/docs/initialization) CW3js
 
 ## Usage examples
 
 ```ts
-import { CardanoWeb3 } from "cardano-web3-js"
+import { CardanoWeb3, NftcdnTypes } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
 const metadata = await client.GET("/metadata/{fingerprint}", {
   params: {

@@ -34,37 +34,32 @@ Check [/test](/test) folder for detailed usage examples. Or read the documentati
 ``` ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const app = async () => {
-  const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 
-  const mnemonic = web3.utils.keys.mnemonicGenerate()
-  const account = web3.account.fromMnemonic(mnemonic)
-  await account.updateState() // update balance & delegation info
-  const { utxos } = account.__state
+const mnemonic = web3.utils.keys.mnemonicGenerate()
+const account = web3.account.fromMnemonic(mnemonic)
+const state = await account.getState() // update balance & delegation info
 
-  console.log(mnemonic) // generated mnemonic
-  console.log(account.__config) // account info (xpub, changeAddress, creds, etc)
-  console.log(account.__state) // balance & delegation info
+console.log(mnemonic) // generated mnemonic
+console.log(account.__config) // account info (xpub, changeAddress, creds, etc)
+console.log(account.__state) // balance & delegation info
 
-  const tx = await web3
-    .createTx()
-    .addInputs(utxos)
-    .addOutput(
-      {
-        address: "addr1qxpm2aqmn48he8dtp9p8hk9gtew6cypy6ra3mgs8xkn86qmd3vtjzheq22w8mmfhm8agpmywnlu2rsxgkdrctv7mcc3s9anhjz",
-        value: 2000000n,
-      },
-    )
-    .applyAndBuild()
+const tx = await web3
+  .createTx()
+  .addInputs(state.utxos)
+  .addOutput(
+    {
+      address: "addr1qxpm2aqmn48he8dtp9p8hk9gtew6cypy6ra3mgs8xkn86qmd3vtjzheq22w8mmfhm8agpmywnlu2rsxgkdrctv7mcc3s9anhjz",
+      value: 2000000n,
+    },
+  )
+  .applyAndBuild()
 
-  const tx_hash = await tx_unsigned
-    .signWithAccount(account)
-    .applyAndSubmit() // submit tx
+const tx_hash = await tx_unsigned
+  .signWithAccount(account)
+  .applyAndSubmit() // submit tx
 
-  console.log(tx_hash)
-}
-
-app()
+console.log(tx_hash)
 ```
 
 ## Web3 Configuration Parameteres
@@ -75,40 +70,36 @@ app()
 ``` ts
 import { CardanoWeb3, KoiosProvider, KupmiosProvider, BlockfrostProvider } from "cardano-web3-js"
 
-const app = async () => {
-  const providerHeaders = {
-    "x-api-key": "YOUR_API_KEY_01",
-  }
-
-  const koiosHeaders = {
-    "x-api-key": "YOUR_API_KEY_02",
-  }
-
-  const web3 = await CardanoWeb3.init({
-    network: "preprod", // "mainnet" | "preprod" | "preview" | "custom"
-    protocolParams: {...}, // override protocolParams, eg. in case of custom network
-    ttl: 900, // 900 secs = 15 minutes
-    provider: new KoiosProvider("https://api.koios.rest/api/v1", providerHeaders),
-    explorer: {
-      koios: {
-        headers: koiosHeaders,
-        url: "https://preprod.koios.rest/api/v1",
-      },
-      nftcdn: {
-        headers: {},
-        url: "https://graph.xray.app/output/nftcdn/preprod/api/v1",
-      },
-      pricing: {
-        headers: {},
-        url: "https://graph.xray.app/output/pricing/mainnet/api/v1", // only mainnet available
-      },
-    }
-  })
-
-  console.log(web3.__config) // web3 instance config
+const providerHeaders = {
+  "x-api-key": "YOUR_API_KEY_01",
 }
 
-app()
+const koiosHeaders = {
+  "x-api-key": "YOUR_API_KEY_02",
+}
+
+const web3 = new CardanoWeb3({
+  network: "preprod", // "mainnet" | "preprod" | "preview" | "custom"
+  protocolParams: {...}, // override protocolParams, eg. in case of custom network
+  ttl: 900, // 900 secs = 15 minutes
+  provider: new KoiosProvider("https://api.koios.rest/api/v1", providerHeaders),
+  explorer: {
+    koios: {
+      headers: koiosHeaders,
+      url: "https://preprod.koios.rest/api/v1",
+    },
+    nftcdn: {
+      headers: {},
+      url: "https://graph.xray.app/output/nftcdn/preprod/api/v1",
+    },
+    pricing: {
+      headers: {},
+      url: "https://graph.xray.app/output/pricing/mainnet/api/v1", // only mainnet available
+    },
+  }
+})
+
+console.log(web3.__config) // web3 instance config
 ```
 </details>
 

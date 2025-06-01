@@ -7,9 +7,9 @@ Smart contracts have a more complex threshold of entry for the developer, this i
 ```ts
 import { CardanoWeb3, Data } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 const account = web3.account.fromXprvKey("xprv...")
-await account.updateState()
+const state = await account.getState()
 
 const MyDatumSchema = web3.Data.Object({
   myVariableA: web3.Data.Bytes(),
@@ -61,21 +61,21 @@ console.log(submitted_hash)
 ```ts
 import { CardanoWeb3, T } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 const account = web3.account.fromXprvKey("xprv...")
-await account.updateState()
+const state = await account.getState()
 
 const alwaysSucceedScript: T.Script = {
   language: "PlutusV2",
   script: "480100002221200101",
 }
 const datum = web3.Data.void()
-const scriptAddress = web3.utils.script.scriptToAddress(alwaysSucceedScript) // detect address by script, you can pass known
+const scriptAddress = utils.script.scriptToAddress(alwaysSucceedScript) // detect address by script, you can pass known
 
 const tx_build = await web3
   .createTx()
   .setChangeAddress(account.__config.paymentAddress)
-  .addInputs(account.__state.utxos)
+  .addInputs(state.utxos)
   .payToContract(
     {
       address: scriptAddress,
@@ -102,11 +102,11 @@ console.log(submitted_hash)
 ```ts
 import { CardanoWeb3 } from "cardano-web3-js"
 
-const web3 = await CardanoWeb3.init()
+const web3 = new CardanoWeb3()
 const account = web3.account.fromXprvKey("xprv...")
-await account.updateState()
+const state = await account.getState()
 
-const scriptAddress = web3.utils.script.scriptToAddress(alwaysSucceedScript)
+const scriptAddress = utils.script.scriptToAddress(alwaysSucceedScript)
 const utxos = await web3.provider.getUtxosByAddress(scriptAddress)
 const utxoRef = utxos.find((utxo) => utxo.scriptHash) // find referene utxo for script reference input
 const utxoToCollect = utxos.find((utxo) => utxo.datumType === "inline" && !utxo.scriptHash) // utxo to collect, pass known
@@ -115,7 +115,7 @@ const emptyRedeemer = web3.Data.void()
 const tx_build = await web3
   .createTx()
   .setChangeAddress(account.__config.paymentAddress)
-  .addInputs(account.__state.utxos)
+  .addInputs(state.utxos)
   // .attachScript(alwaysSucceedScript) // not nedeed, if the script is loaded from readFrom UTXO
   .readFrom([utxoRef!])
   .collectFrom([utxoToCollect!], emptyRedeemer)

@@ -1,4 +1,4 @@
-import { CardanoWeb3, T } from "../src"
+import { CardanoWeb3, CW3Types } from "@"
 
 // Preview Network
 export const testData = {
@@ -8,8 +8,8 @@ export const testData = {
     "xpub1nyyqpaq3hgsqzzmw8hzz5qgjw3z22uypxn0z7afhucww4r2de6r576k36sufu06wz42l8s3f2pul5g9dq83hx8fn92usvdaerp8mjtqyusz8e",
   xprvKey:
     "xprv1mqxe3f9anrqpuwh80nypu5twu7m0fryp834p49es3x5wyln5heyys5lt2ezl2v4dsdc4uxeacfm0ugj2nj4jcjt9vjtjv8emnrv3ek0ksr9mfp82hzza3zfu8h30gmr9rxa6std89kmyylf2y55c0xmytsld3s4n",
-  accountPath: [1852, 1815, 0] as T.AccountDerivationPath,
-  addressPath: [0, 0] as T.AddressDerivationPath,
+  accountPath: [1852, 1815, 0] as CW3Types.AccountDerivationPath,
+  addressPath: [0, 0] as CW3Types.AddressDerivationPath,
   checksumId: "DXLZ-4647",
   checksumImage:
     "ebe486ccfac1bac1501692ae96d2e492b8d0b88d9863985ff224efd03d565782a93cbebd21870376b42b34e5f4c698de727de9d512c30938f764c3da08b686ab",
@@ -39,15 +39,15 @@ export const testData = {
             quantity: 1_000n, // Dummy 1K Test Token
           },
         ],
-        datumHash: null,
-        datumType: null,
-        scriptHash: null,
-        datum: null,
-        script: null,
+        datumHash: null as any,
+        datumType: null as any,
+        scriptHash: null as any,
+        datum: null as any,
+        script: null as any,
       },
     ],
-    balance: { value: 5_000_000_000n, assets: [] }, // Dummy 5K ADA
-    delegation: null,
+    balance: { value: 5_000_000_000n, assets: [] as any[] }, // Dummy 5K ADA
+    delegation: null as any,
     rewards: 10_000_000n, // Dumnmy 10 ADA
   },
 }

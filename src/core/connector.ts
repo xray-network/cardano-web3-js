@@ -1,5 +1,4 @@
-import * as T from "../types"
-import * as L from "../types/links"
+import { CW3Types } from "@"
 
 declare global {
   interface Window {
@@ -37,7 +36,7 @@ export class Connector {
    * @param extensions Wallet extensions
    * @returns Connector instance
    */
-  static init = async (wallet: string, extensions?: any): Promise<L.Connector | undefined> => {
+  static init = async (wallet: string, extensions?: any): Promise<Connector | undefined> => {
     if (typeof window === "undefined") throw new Error("Connector is only available in the browser environment")
     const connector = new Connector()
     if (!window?.cardano?.[wallet]) throw new Error(`Wallet ${wallet} not found`)
@@ -68,7 +67,7 @@ export class Connector {
    * @param paginate Pagination options
    * @returns List of UTXOs
    */
-  getUtxos = async (amount?: string, paginate?: T.ConnectorPaginate): Promise<string[] | null> => {
+  getUtxos = async (amount?: string, paginate?: CW3Types.ConnectorPaginate): Promise<string[] | null> => {
     return await this.__api.getUtxos(amount, paginate)
   }
 
@@ -93,7 +92,7 @@ export class Connector {
    * @param paginate Pagination options
    * @returns Array of used addresses
    */
-  getUsedAddresses = async (paginate?: T.ConnectorPaginate): Promise<string[]> => {
+  getUsedAddresses = async (paginate?: CW3Types.ConnectorPaginate): Promise<string[]> => {
     return await this.__api.getUsedAddresses(paginate)
   }
 
@@ -137,7 +136,7 @@ export class Connector {
    * @param payload Message to sign
    * @returns Signed message
    */
-  signData = async (addr: string, payload: string): Promise<T.SignedMessage> => {
+  signData = async (addr: string, payload: string): Promise<CW3Types.SignedMessage> => {
     return await this.__api.signData(addr, payload)
   }
 

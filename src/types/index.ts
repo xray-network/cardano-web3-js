@@ -1,5 +1,11 @@
+/** Class types */
+export type { CardanoWeb3 } from "@/core/cw3"
+export type { Account } from "@/core/account"
+export type { Connector } from "@/core/connector"
+export type { TxBuilder } from "@/core/txBuilder"
+export type { TxFinalizer } from "@/core/txFinalizer"
+
 /** Account types */
-import type { Account } from "./links"
 export type AccountType = "xprv" | "xpub" | "connector" | "address" | "ledger" | "trezor"
 export type AccountConfig = {
   configVersion: number
@@ -31,11 +37,9 @@ export type AccountExportV1 = {
 export type AccountState = {
   utxos: Utxo[]
   balance: Balance
-  delegation: string | null
-  rewards: bigint
 }
 export type AccountDelegation = {
-  delegation: string
+  delegation: string | null
   rewards: bigint
 }
 export type AccountAddressDerivation = {
@@ -46,6 +50,18 @@ export type AccountMultiAddressing = {
   isMulti: boolean
   utxos: Utxo[]
   derivation: AccountAddressDerivation[]
+}
+/** DRep */
+export type AlwaysAbstain = {
+  __typename: "AlwaysAbstain"
+}
+export type AlwaysNoConfidence = {
+  __typename: "AlwaysNoConfidence"
+}
+export type DRep = Credential | AlwaysAbstain | AlwaysNoConfidence
+export type DrepAnchor = {
+  url: string
+  dataHash: string
 }
 
 /** Provider types */
@@ -59,27 +75,29 @@ export type Provider = {
   getDatumByHash(datumHash: string): Promise<string | undefined>
   getScriptByHash(scriptHash: string): Promise<Script | undefined>
   getDelegation(stakingAddress: string): Promise<AccountDelegation>
-  evaluateTx(tx: string): Promise<RedeemerCost[]>
-  observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
+  evaluateTx(tx: string, additionalUtxos?: Utxo[]): Promise<RedeemerCost[]>
   submitTx(tx: string): Promise<string>
-  submitAndObserveTx(tx: string, checkInterval?: number, maxTime?: number): Promise<boolean>
+  observeTx(txHash: string, checkInterval?: number, maxTime?: number): Promise<boolean>
 }
 
 /** Explorer types */
 import type KoiosClientInstance from "cardano-koios-client"
+import type OgmiosClientInstance from "cardano-ogmios-client"
+import type KupoClientInstance from "cardano-kupo-client"
 import type NftcdnClientInstance from "cardano-nftcdn-client"
-import type PricingClientInstance from "cardano-pricing-client"
 export type KoiosClient = ReturnType<typeof KoiosClientInstance>
+export type OgmiosClient = ReturnType<typeof OgmiosClientInstance>
+export type KupoClient = ReturnType<typeof KupoClientInstance>
 export type NftcdnClient = ReturnType<typeof NftcdnClientInstance>
-export type PricingClient = ReturnType<typeof PricingClientInstance>
-export type Explorer = {
+export type Explorers = {
   koios: KoiosClient
+  ogmios: OgmiosClient
+  kupo: KupoClient
   nftcdn: NftcdnClient
-  // pricing: PricingClient
 }
 
 /** Connector types */
-import type { Connector } from "./links"
+import type { Connector } from "../core/connector"
 export type ConnectorPaginate = {
   page: number
   limit: number
@@ -93,15 +111,19 @@ export type InitConfig = {
   ttl?: number
   provider?: Provider
   explorer?: {
-    koios: {
+    koios?: {
       headers?: Headers
       url: string
     }
-    nftcdn: {
+    ogmios?: {
       headers?: Headers
       url: string
     }
-    pricing: {
+    kupo?: {
+      headers?: Headers
+      url: string
+    }
+    nftcdn?: {
       headers?: Headers
       url: string
     }
@@ -164,6 +186,8 @@ export type ProtocolParameters = {
   maxValSize: number
   keyDeposit: bigint
   poolDeposit: bigint
+  drepDeposit: bigint
+  govActionDeposit: bigint
   priceMem: number
   priceStep: number
   maxTxExMem: bigint

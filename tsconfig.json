@@ -1,17 +1,21 @@
 {
   "compilerOptions": {
+    // "strict": true,
     "module": "ESNext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "ESNext",
     "noImplicitAny": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": false,
     "baseUrl": ".",
     "declaration": true,
-    "outDir": "dist"
-    // "strict": true,
+    "outDir": "dist",
+    "paths": {
+      "@": ["src"],
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "test"]
 }
