@@ -32,6 +32,23 @@ features:
     details: CardanoWeb3js library empowers developers to build innovative blockchain solutions. Experience fast, reliable, and user-friendly tools for all your development needs
 ---
 
+
+
+## Quickstart
+
+```ts
+import { CardanoWeb3, utils } from "cardano-web3-js"
+const web3 = new CardanoWeb3()
+
+const mnemonic = utils.keys.mnemonicGenerate()
+const account = web3.account.fromMnemonic(mnemonic)
+const state = await account.getState()
+
+console.log("Mnemonic:", mnemonic)
+console.log("Account Address:", account.__config.paymentAddress)
+console.log("Account State:", state)
+```
+
 <br />
 <hr />
 <br />
