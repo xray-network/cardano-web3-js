@@ -1,4 +1,4 @@
-# Government Actions
+# Governance Actions
 
 This section describes how to perform government actions such delegating votes to DRep, registering DRep, updating DRep, and deregistering DRep using the CardanoWeb3js library.
 
