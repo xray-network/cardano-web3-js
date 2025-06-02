@@ -55,7 +55,7 @@ console.log("Account State:", state)
 
 CardanoWeb3js is a versatile TypeScript library designed for seamless integration with the Cardano blockchain. It supports both Node.js and browser environments, streamlining transaction creation, smart contract deployment, and data exploration. Ideal for developers, this toolkit simplifies Cardano cryptographic operations and API interactions.
 
-This library is a set of abstractions over various opensource libraries and SDKs that are required to work with the Cardano blockchain: [CML](https://github.com/dcSpark/cardano-multiplatform-lib) by dcSpark, [MSL](https://github.com/Emurgo/message-signing) by Emurgo, [UPLC](https://aiken-lang.org/uplc) by Aiken, [Plutus Data](https://github.com/spacebudz/lucid/tree/main/src/plutus) by Spacebudz, and other.
+This library is a set of abstractions over various opensource libraries and SDKs that are required to work with the Cardano blockchain: [CML](https://github.com/dcSpark/cardano-multiplatform-lib) by dcSpark, [MSL](https://github.com/Emurgo/message-signing) by Emurgo, [UPLC](https://aiken-lang.org/uplc) by Aiken, [Plutus Data](https://github.com/spacebudz/lucid) by Spacebudz, and other.
 
 ## Features of CardanoWeb3js
 
