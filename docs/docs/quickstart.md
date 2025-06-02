@@ -57,33 +57,3 @@ console.log(account.__config) // account details (private and public keys, deriv
 console.log(state) // account state (utxo, aggregated balance, pool delegation, available rewards) via provider
 
 ```
-
-
-## Versions
-
-There are several versions of CardanoWeb3 that you can use:
-:::tabs
-== Default
-```ts
-import { CardanoWeb3 } from "cardano-web3-js"
-```
-<small>This is the default import for CardanoWeb3, which is suitable for most environments. Selected automatically based on your environment (Node.js, browser, or web serverless), if your bundler supports it.</small>
-
-== NodeJS
-```ts
-import { CardanoWeb3 } from "cardano-web3-js/nodejs"
-```
-<small>This version is optimized for Node.js environments, providing access to Node.js-specific features and libraries.</small>
-== Browser (Bundlers)
-```ts
-import { CardanoWeb3 } from "cardano-web3-js/browser"
-```
-<small>This version is optimized for browser environments, allowing you to use CardanoWeb3 in web applications.</small>
-
-== Web & Serverless
-```ts
-import { CardanoWeb3 } from "cardano-web3-js/web"
-```
-<small>This version is optimized for serverless environments, such as Cloudflare Workers, where you might not have access to Node.js-specific features.</small>
-
-:::
