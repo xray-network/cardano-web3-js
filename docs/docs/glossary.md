@@ -34,6 +34,9 @@ A secret cryptographic key that allows a user to access and manage their cryptoc
 ### Public Key
 A cryptographic key derived from a private key that can be shared publicly. It is used to receive funds and verify digital signatures.
 
+### DRep (Delegated Representative)
+A representative in the Cardano governance system who is delegated voting power by stakeholders to participate in decision-making processes on their behalf.
+
 ### Payment Address
 An address used to receive cryptocurrency payments. It is derived from a public key.
 
@@ -63,7 +66,6 @@ A unique digital asset verified using blockchain technology, representing owners
 
 ### Tokens
 Digital assets created on a blockchain that can represent various utilities or assets, such as cryptocurrencies, loyalty points, or other forms of value.
-
 
 ### Fingerprint
 A Cardano token fingerprint is a unique identifier derived from the token's policy ID and asset name, typically encoded in Base58 format to facilitate easy reference and sharing.

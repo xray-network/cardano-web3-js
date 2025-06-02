@@ -120,7 +120,7 @@ import { CardanoWeb3 } from "cardano-web3-js"
 const web3 = new CardanoWeb3()
 
 const account = web3.account.fromXprvKey("xprv...")
-const exportedJson = account.exportAccount(
+const exportedJson = account.exportAccount()
 const importedAccount = web3.account.importAccount(exportedJson)
 
 console.log(importedAccount.__config)

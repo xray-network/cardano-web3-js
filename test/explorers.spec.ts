@@ -1,7 +1,7 @@
 import { expect, it, describe } from "vitest"
 import { CardanoWeb3 } from "@"
 
-describe("Explorer", async () => {
+describe("Explorers", async () => {
   describe("Mainnet", async () => {
     const web3 = new CardanoWeb3()
 

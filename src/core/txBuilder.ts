@@ -571,14 +571,14 @@ export class TxBuilder {
    */
   governance: {
     delegateToDRep: (rewardAddress: string, drep: CW3Types.DRep, redeemer?: string) => TxBuilder
-    registerDRep: (rewardAddress: string, drepInfo: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
+    registerDRep: (rewardAddress: string, drepInfo?: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
     deregisterDRep: (rewardAddress: string, redeemer?: string) => TxBuilder
-    updateDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
+    updateDRep: (rewardAddress: string, drepAnchor?: CW3Types.DrepAnchor, redeemer?: string) => TxBuilder
   } = {
     delegateToDRep: (rewardAddress: string, drep: CW3Types.DRep, redeemer?: string) => {
       this.queue.push(async () => {
         const { stakingCred } = utils.address.getCredentials(rewardAddress)
-        const drepInstance = utils.governance.toDrep(drep)
+        const drepInstance = utils.governance.toDRep(drep)
 
         switch (stakingCred.type) {
           case "key": {
@@ -630,11 +630,14 @@ export class TxBuilder {
       return this
     },
 
-    registerDRep: (rewardAddress: string, drepAnchor: CW3Types.DrepAnchor, redeemer?: string) => {
+    registerDRep: (rewardAddress: string, drepAnchor?: CW3Types.DrepAnchor, redeemer?: string) => {
       this.queue.push(async () => {
         const { stakingCred } = utils.address.getCredentials(rewardAddress)
         const drepAnchorInstance = drepAnchor
-          ? CML.Anchor.new(CML.Url.from_json(drepAnchor.url), CML.AnchorDocHash.from_hex(drepAnchor.dataHash))
+          ? CML.Anchor.new(
+              CML.Url.from_cbor_hex(utils.misc.fromStringToHex(drepAnchor.url)),
+              CML.AnchorDocHash.from_hex(drepAnchor.dataHash)
+            )
           : undefined
 
         switch (stakingCred.type) {

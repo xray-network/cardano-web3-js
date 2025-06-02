@@ -52,13 +52,8 @@ export type AccountMultiAddressing = {
   derivation: AccountAddressDerivation[]
 }
 /** DRep */
-export type AlwaysAbstain = {
-  __typename: "AlwaysAbstain"
-}
-export type AlwaysNoConfidence = {
-  __typename: "AlwaysNoConfidence"
-}
-export type DRep = Credential | AlwaysAbstain | AlwaysNoConfidence
+type DRepOptions<T extends string> = T | (string & {})
+export type DRep = DRepOptions<"AlwaysAbstain" | "AlwaysNoConfidence">
 export type DrepAnchor = {
   url: string
   dataHash: string

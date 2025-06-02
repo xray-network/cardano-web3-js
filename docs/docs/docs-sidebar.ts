@@ -15,6 +15,7 @@ export const sidebar = [
       { text: "Rewards & Stake Registration", link: "/docs/transactions/rewards-and-stake-registration" },
       { text: "Mint & Burn Tokens", link: "/docs/transactions/mint-and-burn-transactions" },
       { text: "Smart Contracts TXs", link: "/docs/transactions/smart-contracts-transactions" },
+      { text: "Government Actions", link: "/docs/transactions/government-actions" },
     ],
   },
   {
