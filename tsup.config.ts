@@ -38,7 +38,7 @@ export default defineConfig([
         {
           filter: /\.ts$/,
           replace: "cardano-wasm-libs/nodejs",
-          replacer: () => "cardano-wasm-libs/browser",
+          replacer: () => "cardano-wasm-libs/web",
         },
       ]),
     ],
