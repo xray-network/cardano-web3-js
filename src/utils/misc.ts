@@ -1,4 +1,5 @@
 import { CML, CW3Types } from "@"
+import { Buffer } from "buffer"
 
 export const harden = (num: number): number => {
   return 0x80000000 + num

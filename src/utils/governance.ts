@@ -1,5 +1,6 @@
 import { CML, CW3Types } from "@"
 import * as Bech32 from "bech32"
+import { Buffer } from "buffer"
 
 export const toDRep = (drep: CW3Types.DRep): CML.DRep => {
   if (drep === "AlwaysAbstain") {

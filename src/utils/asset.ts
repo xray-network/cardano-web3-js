@@ -1,5 +1,6 @@
 import * as Bech32 from "bech32"
 import Blake2b from "blake2b"
+import { Buffer } from "buffer"
 
 export const getFingerprint = (policyId: string, assetName?: string): string => {
   const readablePart = "asset"

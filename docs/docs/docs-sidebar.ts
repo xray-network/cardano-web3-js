@@ -29,7 +29,6 @@ export const sidebar = [
       { text: "Sign & Verify Message", link: "/docs/advanced-usage/sign-and-verify-message" },
       { text: "Addresses", link: "/docs/advanced-usage/addresses" },
       { text: "Accessing Types", link: "/docs/advanced-usage/accessing-types" },
-      { text: "SSR (Server Side Rendering)", link: "/docs/advanced-usage/server-side-rendering" },
     ],
   },
   {
