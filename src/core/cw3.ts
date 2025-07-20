@@ -38,22 +38,22 @@ export class CardanoWeb3 {
    */
   constructor(config?: CW3Types.InitConfig) {
     const network = config?.network || "mainnet"
-    this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/koios/${network}/api/v1`)
+    this.provider = config?.provider || new KoiosProvider(`https://graph.xray.app/output/services/koios/${network}/api/v1`)
     this.explorers = {
       koios: KoiosClient(
-        config?.explorer?.koios?.url || `https://graph.xray.app/output/koios/${network}/api/v1`,
+        config?.explorer?.koios?.url || `https://graph.xray.app/output/services/koios/${network}/api/v1`,
         config?.explorer?.koios?.headers
       ),
       ogmios: OgmiosClient(
-        config?.explorer?.ogmios?.url || `https://graph.xray.app/output/ogmios/${network}/api/v1`,
+        config?.explorer?.ogmios?.url || `https://graph.xray.app/output/services/ogmios/${network}/api/v1`,
         config?.explorer?.ogmios?.headers
       ),
       kupo: KupoClient(
-        config?.explorer?.kupo?.url || `https://graph.xray.app/output/kupo/${network}/api/v1`,
+        config?.explorer?.kupo?.url || `https://graph.xray.app/output/services/kupo/${network}/api/v1`,
         config?.explorer?.kupo?.headers
       ),
       nftcdn: NftcdnClient(
-        config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/nftcdn/${network}/api/v1`,
+        config?.explorer?.nftcdn?.url || `https://graph.xray.app/output/services/nftcdn/${network}/api/v1`,
         config?.explorer?.nftcdn?.headers
       ),
     }

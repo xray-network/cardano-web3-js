@@ -20,7 +20,7 @@ import { CardanoWeb3, KupoTypes } from "cardano-web3-js"
 const web3 = new CardanoWeb3({
   explorer: {
     "kupo": {
-      url: "https://graph.xray.app/output/kupo/mainnet/api/v1",
+      url: "https://graph.xray.app/output/services/kupo/mainnet/api/v1",
       headers: {
         Authorization: `Bearer ${process.env.KUPO_API_KEY}`,
       }
@@ -36,5 +36,5 @@ console.log((await web3.explorers.kupo.GET("/health")).data)
 ## Direct API Access (needs authentication)
 
 ```
-https://graph.xray.app/output/kupo/mainnet/api/v1/health
+https://graph.xray.app/output/services/kupo/mainnet/api/v1/health
 ```

@@ -28,5 +28,5 @@ console.log(health)
 ## Direct API Access
 
 ```
-https://graph.xray.app/output/ogmios/mainnet/api/v1/health
+https://graph.xray.app/output/services/ogmios/mainnet/api/v1/health
 ```

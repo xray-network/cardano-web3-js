@@ -78,11 +78,11 @@ const web3 = new CardanoWeb3({
     },
     nftcdn: {
       headers: {}, // pass custom headers
-      url: "https://graph.xray.app/output/nftcdn/mainnet/api/v1",
+      url: "https://graph.xray.app/output/services/nftcdn/mainnet/api/v1",
     },
     pricing: {
       headers: {}, // pass custom headers
-      url: "https://graph.xray.app/output/pricing/mainnet/api/v1", // only mainnet available
+      url: "https://graph.xray.app/output/services/pricing/mainnet/api/v1", // only mainnet available
     },
   }
 })

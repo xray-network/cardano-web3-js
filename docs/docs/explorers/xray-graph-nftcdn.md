@@ -18,7 +18,7 @@ import { CardanoWeb3, NftcdnTypes } from "cardano-web3-js"
 
 const web3 = new CardanoWeb3()
 
-const metadata = await client.GET("/metadata/{fingerprint}", {
+const metadata = await web3.explorers.nftcdn.GET("/metadata/{fingerprint}", {
   params: {
     path: {
       fingerprint: "asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx",
@@ -31,11 +31,11 @@ console.log(metadata)
 ## Direct Image Access (by Fingerprint)
 
 ```
-https://graph.xray.app/output/nftcdn/mainnet/api/v1/image/asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx
+https://graph.xray.app/output/services/nftcdn/mainnet/api/v1/image/asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx
 ```
 
 ## Direct Metadata Access (by Fingerprint)
 
 ```
-https://graph.xray.app/output/nftcdn/mainnet/api/v1/metadata/asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx
+https://graph.xray.app/output/services/nftcdn/mainnet/api/v1/metadata/asset1zwa4chw9xm7xwk7g46ef94qsj28hmnd7qffhgx
 ```

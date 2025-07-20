@@ -38,5 +38,5 @@ console.log(accountInfo)
 ## Direct API Access
 
 ```
-https://graph.xray.app/output/koios/mainnet/api/v1/tip
+https://graph.xray.app/output/services/koios/mainnet/api/v1/tip
 ```
